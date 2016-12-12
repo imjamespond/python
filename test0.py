@@ -25,4 +25,5 @@ if __name__ == '__main__':
     }
     return feed_dict
   with tf.Session() as sess:
+    #同时运行乘,除
     print sess.run([mulop,divop], feed_dict=fill_feed_dict([7.],[2.],input1_value,input2_value))

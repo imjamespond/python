@@ -17,5 +17,5 @@ if __name__ == '__main__':
   arr.append(image)
   arr = np.array(arr)
   print(arr)
-  arr.reshape(1,256)
+  arr = arr.reshape(1,256)
   print(arr)
