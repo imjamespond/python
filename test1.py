@@ -4,13 +4,16 @@ Created on Nov 29, 2016
 
 @author: james
 '''
-
+import os
 import time
 import tensorflow as tf
 import numpy as np
 from PIL import Image
-#import com.tf.utils as utils
-from com.tf import utils
+#import com.tf.mnist as mnist
+from com.tf import mnist
+
+TRAINNING_IMAGE_FILES = ['img/2-1.png', 'img/2-2.png', 'img/2-7.png']
+TESTING_IMAGE_FILES = ['img/2-4.png']
 
 # Basic model parameters as external flags.
 flags = tf.app.flags
@@ -19,30 +22,29 @@ flags.DEFINE_float('learning_rate', 0.01, 'Initial learning rate.')
 flags.DEFINE_integer('max_steps', 200, 'Number of steps to run trainer.')
 flags.DEFINE_integer('hidden1', 128, 'Number of units in hidden layer 1.')
 flags.DEFINE_integer('hidden2', 32, 'Number of units in hidden layer 2.')
-flags.DEFINE_integer('batch_size', 4, 'Batch size. Must divide evenly into the dataset sizes.')
+flags.DEFINE_integer('batch_size', len(TRAINNING_IMAGE_FILES), 'Batch size. Must divide evenly into the dataset sizes.')
 flags.DEFINE_string('train_dir', 'data', 'Directory to put the training data.')
 flags.DEFINE_boolean('fake_data', False, 'If true, uses fake data for unit testing.')
-NUM_CLASSES = 2 
-IMAGE_SIZE = 28 
-CHANNELS = 1#jpeg got rpg namely 3 ,while png is 1
-IMAGE_PIXELS = IMAGE_SIZE * IMAGE_SIZE * CHANNELS
-IMAGE_FILES = ['img/2-1.png', 'img/2-2.png', 'img/2-7.png', 'img/2-4.png']
 
 #
 train_images = []
-for filename in IMAGE_FILES:
+for filename in TRAINNING_IMAGE_FILES:
   image = Image.open(filename)#读取image数据
-  image = image.resize((IMAGE_SIZE,IMAGE_SIZE))#resize图像
+  image = image.resize((mnist.IMAGE_SIZE,mnist.IMAGE_SIZE))#resize图像
   image = np.array(image)#通过numpy得到数组
   train_images.append(image)
   #print(image)
 
-train_images = np.array(train_images)#展开rpg
-print(train_images)
-train_images = train_images.reshape(4, IMAGE_PIXELS)#重塑
+train_images = np.array(train_images)#展开
+train_images = train_images.reshape(len(TRAINNING_IMAGE_FILES), mnist.IMAGE_PIXELS)#重塑
 
-label = [0,1,1,1]
+label = [0,1,1]
 train_labels = np.array(label)
+
+def placeholder_inputs(batch_size, pixel_num):
+  images_placeholder = tf.placeholder(tf.float32, shape=(batch_size, pixel_num))
+  labels_placeholder = tf.placeholder(tf.int32, shape=(batch_size))
+  return images_placeholder, labels_placeholder
 
 def fill_feed_dict(images_feed,labels_feed, images_pl, labels_pl):
   feed_dict = {
@@ -70,15 +72,15 @@ def do_eval(sess,
 def run_training():
   with tf.Graph().as_default():
     #持有image,label数据
-    images_placeholder, labels_placeholder = utils.placeholder_inputs(4, IMAGE_PIXELS)
+    images_placeholder, labels_placeholder = placeholder_inputs(len(TRAINNING_IMAGE_FILES), mnist.IMAGE_PIXELS)
     #推测模型
-    logits = utils.inference(images_placeholder, FLAGS.hidden1, FLAGS.hidden2, IMAGE_PIXELS, NUM_CLASSES)
+    logits = mnist.inference(images_placeholder, FLAGS.hidden1, FLAGS.hidden2)
     #输出丢失计算
-    loss = utils.cal_loss(logits, labels_placeholder)
+    loss = mnist.loss(logits, labels_placeholder)
     #输出应用梯度
-    train_op = utils.training(loss, FLAGS.learning_rate)
+    train_op = mnist.training(loss, FLAGS.learning_rate)
     #输出对比罗杰斯和label(在评估中)
-    eval_correct = utils.evaluation(logits, labels_placeholder)
+    eval_correct = mnist.evaluation(logits, labels_placeholder)
     #保存训练的checkpoint
     saver = tf.train.Saver()
     
@@ -96,7 +98,8 @@ def run_training():
         # Print status to stdout.
         print('Step %d: loss = %.2f (%.3f sec)' % (step, loss_value, duration))
       if (step + 1) % 1000 == 0 or (step + 1) == FLAGS.max_steps:
-        saver.save(sess, FLAGS.train_dir, global_step=step)
+        checkpoint_file = os.path.join(FLAGS.train_dir, 'model.ckpt')
+        saver.save(sess, checkpoint_file, global_step=step)
         print('Training Data Eval:')
         do_eval(sess, eval_correct, images_placeholder, labels_placeholder, train_images)
 
