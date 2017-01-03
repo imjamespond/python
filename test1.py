@@ -12,7 +12,7 @@ from PIL import Image
 #import com.tf.mnist as mnist
 from com.tf import mnist
 
-TRAINNING_IMAGE_FILES = ['img/2-1.png', 'img/2-2.png', 'img/2-7.png']
+TRAINNING_IMAGE_FILES = ['img/2-1.png', 'img/2-2.png', 'img/2-7.png', 'img/1-1.png']
 TESTING_IMAGE_FILES = ['img/2-4.png']
 
 # Basic model parameters as external flags.
@@ -22,11 +22,11 @@ flags.DEFINE_float('learning_rate', 0.01, 'Initial learning rate.')
 flags.DEFINE_integer('max_steps', 200, 'Number of steps to run trainer.')
 flags.DEFINE_integer('hidden1', 128, 'Number of units in hidden layer 1.')
 flags.DEFINE_integer('hidden2', 32, 'Number of units in hidden layer 2.')
-flags.DEFINE_integer('batch_size', len(TRAINNING_IMAGE_FILES), 'Batch size. Must divide evenly into the dataset sizes.')
+flags.DEFINE_integer('batch_size', 1, 'Batch size. 分批处理尺寸,必须是数据量能除尽, Must divide evenly into the dataset sizes.')
 flags.DEFINE_string('train_dir', 'data', 'Directory to put the training data.')
 flags.DEFINE_boolean('fake_data', False, 'If true, uses fake data for unit testing.')
 
-def get_image_data(image_files):
+def get_image_data(image_files,labels):
   train_images = []
   for filename in image_files:
     image = Image.open(filename)#读取image数据
@@ -37,21 +37,33 @@ def get_image_data(image_files):
     
   train_images = np.array(train_images)#展开
   train_images = train_images.reshape(len(image_files), mnist.IMAGE_PIXELS)#重塑
-  
-  label = [0,1,1]
-  train_labels = np.array(label)
+
+  train_labels = np.array(labels)
   
   return train_images,train_labels
 
-train_images,train_labels = get_image_data(TRAINNING_IMAGE_FILES)
-test_images,test_labels = get_image_data(TESTING_IMAGE_FILES)
+train_images,train_labels = get_image_data(TRAINNING_IMAGE_FILES,[2,2,2,1])
+test_images,test_labels = get_image_data(TESTING_IMAGE_FILES,[2])
 
-def placeholder_inputs(batch_size, pixel_num):
-  images_placeholder = tf.placeholder(tf.float32, shape=(batch_size, pixel_num))
+def placeholder_inputs(batch_size):
+  images_placeholder = tf.placeholder(tf.float32, shape=(batch_size, mnist.IMAGE_PIXELS))
   labels_placeholder = tf.placeholder(tf.int32, shape=(batch_size))
   return images_placeholder, labels_placeholder
 
-def fill_feed_dict(images_feed,labels_feed, images_pl, labels_pl):
+def fill_feed_dict(images_feed,labels_feed, images_pl, labels_pl):  
+  """Fills the feed_dict for training the given step.为训练特定步数填充
+  A feed_dict takes the form of:
+  feed_dict = {
+      <placeholder>: <tensor of values to be passed for placeholder>,
+      ....
+  }
+  Args:
+    data_set: The set of images and labels, from input_data.read_data_sets()
+    images_pl: The images placeholder, from placeholder_inputs().
+    labels_pl: The labels placeholder, from placeholder_inputs().
+  Returns:
+    feed_dict: The feed dictionary mapping from placeholders to values.
+  """
   feed_dict = {
       images_pl: images_feed,
       labels_pl: labels_feed,
@@ -62,13 +74,15 @@ def do_eval(sess,
             eval_correct,
             images_placeholder,
             labels_placeholder,
-            data_set):
+            images, labels):
   # And run one epoch of eval.
   true_count = 0  # Counts the number of correct predictions.
-  steps_per_epoch = 4 // FLAGS.batch_size
+  steps_per_epoch = len(images) // FLAGS.batch_size
   num_examples = steps_per_epoch * FLAGS.batch_size
   for step in xrange(steps_per_epoch):
-    feed_dict = fill_feed_dict(train_images, train_labels, images_placeholder, labels_placeholder)
+    images_batch = images[step:step+FLAGS.batch_size]
+    labels_batch = labels[step:step+FLAGS.batch_size]
+    feed_dict = fill_feed_dict(images_batch, labels_batch, images_placeholder, labels_placeholder)
     true_count += sess.run(eval_correct, feed_dict=feed_dict)
   precision = true_count / num_examples
   print('  Num examples: %d  Num correct: %d  Precision @ 1: %0.04f' %
@@ -77,8 +91,7 @@ def do_eval(sess,
 def run_training():
   with tf.Graph().as_default():
     #持有image,label数据
-    images_placeholder, labels_placeholder = placeholder_inputs(len(TRAINNING_IMAGE_FILES), mnist.IMAGE_PIXELS)
-    test_images_placeholder, test_labels_placeholder = placeholder_inputs(len(TESTING_IMAGE_FILES), mnist.IMAGE_PIXELS)
+    images_placeholder, labels_placeholder = placeholder_inputs(FLAGS.batch_size)
     #推测模型
     logits = mnist.inference(images_placeholder, FLAGS.hidden1, FLAGS.hidden2)
     #输出丢失计算
@@ -96,7 +109,10 @@ def run_training():
     
     for step in xrange(FLAGS.max_steps):
       start_time = time.time()
-      feed_dict = fill_feed_dict(train_images, train_labels, images_placeholder, labels_placeholder)
+      batch = step % len(train_images)
+      train_images_batch = train_images[batch:batch+FLAGS.batch_size]
+      train_labels_batch = train_labels[batch:batch+FLAGS.batch_size]
+      feed_dict = fill_feed_dict(train_images_batch, train_labels_batch, images_placeholder, labels_placeholder)
       # Run one step of the model.  The return values are the activations
       # from the `train_op` (which is discarded) and the `loss` Op.  To
       # inspect the values of your Ops or variables, you may include them
@@ -113,7 +129,7 @@ def run_training():
         checkpoint_file = os.path.join(FLAGS.train_dir, 'model.ckpt')
         saver.save(sess, checkpoint_file, global_step=step)
         print('Training Data Eval:')
-        do_eval(sess, eval_correct, test_images_placeholder, test_labels_placeholder, train_images)
+        do_eval(sess, eval_correct, images_placeholder, labels_placeholder, test_images, test_labels)
 
 def main(_):
   run_training()
