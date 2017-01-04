@@ -83,7 +83,9 @@ def do_eval(sess,
     images_batch = images[step:step+FLAGS.batch_size]
     labels_batch = labels[step:step+FLAGS.batch_size]
     feed_dict = fill_feed_dict(images_batch, labels_batch, images_placeholder, labels_placeholder)
-    true_count += sess.run(eval_correct, feed_dict=feed_dict)
+    accuracy = sess.run(eval_correct, feed_dict=feed_dict)
+    print("accuracy:%.3f" % (accuracy))
+    true_count+=accuracy
   precision = true_count / num_examples
   print('  Num examples: %d  Num correct: %d  Precision @ 1: %0.04f' %
         (num_examples, true_count, precision))
@@ -122,10 +124,10 @@ def run_training():
       _, loss_value = sess.run([train_op, loss], feed_dict=feed_dict)
       duration = time.time() - start_time
       
-      if step % 10 == 0:
+      if step % 3 == 0:
         # Print status to stdout.
         print('Step %d: loss = %.2f (%.3f sec)' % (step, loss_value, duration))
-      if (step + 1) % 1000 == 0 or (step + 1) == FLAGS.max_steps:
+      if (step + 1) % 10 == 0 or (step + 1) == FLAGS.max_steps:
         checkpoint_file = os.path.join(FLAGS.train_dir, 'model.ckpt')
         saver.save(sess, checkpoint_file, global_step=step)
         print('Training Data Eval:')
