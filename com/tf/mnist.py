@@ -26,13 +26,14 @@ def inference(images, hidden1_units, hidden2_units):
     softmax_linear: Output tensor with the computed logits.
   """
   # Hidden 1
+  # Returns a context manager for use when defining a Python op 定义一个输出时返回一个管理器
   with tf.name_scope('hidden1'):
     weights = tf.Variable(
         tf.truncated_normal([IMAGE_PIXELS, hidden1_units],
                             stddev=1.0 / math.sqrt(float(IMAGE_PIXELS))),
         name='weights')
     biases = tf.Variable(tf.zeros([hidden1_units]), name='biases')
-    hidden1 = tf.nn.relu(tf.matmul(images, weights) + biases)
+    hidden1 = tf.nn.relu(tf.matmul(images, weights) + biases)#矫正
   # Hidden 2
   with tf.name_scope('hidden2'):
     weights = tf.Variable(
