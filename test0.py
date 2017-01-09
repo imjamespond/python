@@ -18,8 +18,11 @@ if __name__ == '__main__':
   mulop = tf.mul(input1_value, input2_value)
   divop = tf.div(input1_value, input2_value, "divop_")
   
-  matmul1 = tf.matmul(input1_value, input2_value)
-  softmax1 = tf.nn.softmax(matmul1)
+  matmul_ = tf.matmul(input1_value, input2_value)
+  softmax_matmul_ = tf.nn.softmax(matmul_)
+  
+  reducesum_x = [[1, 1, 1], [1, 1, 1]]
+  reducesum_ = tf.reduce_sum(reducesum_x, reduction_indices=[1])
   
   def fill_feed_dict(feed1,feed2, input1, input2):
     feed_dict = {
@@ -31,8 +34,10 @@ if __name__ == '__main__':
   with tf.Session() as sess:
     #同时运行乘,除
     print sess.run([mulop,divop], feed_dict=fill_feed_dict([7.],[2.],input1_value,input2_value))
-    print sess.run(matmul1, feed_dict=fill_feed_dict([[1,2,3]],[[4],[5],[6]], input1_value,input2_value))
-    print sess.run(matmul1, feed_dict=fill_feed_dict([[1,2,3],[4,5,6]],[[0,0,0,0],[0,0,0,0],[0,0,0,0]], input1_value,input2_value))
+    print sess.run(matmul_, feed_dict=fill_feed_dict([[1,2,3]],[[4],[5],[6]], input1_value,input2_value))
+    #3个像素两张图, 4个label3个像素权重
+    print sess.run(matmul_, feed_dict=fill_feed_dict([[1,2,3],[4,5,6]],[[0,0,0,0],[0,0,0,0],[0,0,0,0]], input1_value,input2_value))
     #4 even evidences
-    print sess.run(softmax1,feed_dict=fill_feed_dict([[1,2,3],[4,5,6]],[[0,0,0,0],[0,0,0,0],[0,0,0,0]], input1_value,input2_value))
+    print sess.run(softmax_matmul_,feed_dict=fill_feed_dict([[1,2,3],[4,5,6]],[[0,0,0,0],[0,0,0,0],[0,0,0,1]], input1_value,input2_value))
    
+    print sess.run(reducesum_)
