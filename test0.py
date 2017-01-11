@@ -41,7 +41,7 @@ if __name__ == '__main__':
   reducesum_ = tf.reduce_sum(reducesum_x, reduction_indices=[1])  
   argmax_ = tf.argmax(reducesum_,0)
   
-  matmul1_ = tf.matmul(images_, weights1_)
+  matmul1_ = tf.nn.relu(tf.matmul(images_, weights1_))
   labels_ = tf.to_int64(labels_)
   softmax_cross_entropy_with_logits_matmul_ = tf.nn.sparse_softmax_cross_entropy_with_logits(matmul1_, labels_, name='xentropy')
   reduce_mean_ = tf.reduce_mean(softmax_cross_entropy_with_logits_matmul_, name='xentropy_mean')
@@ -92,9 +92,9 @@ if __name__ == '__main__':
     
     print "softmax_cross_entropy_with_logits_matmul"
     print sess.run(softmax_cross_entropy_with_logits_matmul_,feed_dict={images_:images, labels_:labels})
+    print sess.run(argmax1_,feed_dict={images_:images, labels_:labels})
     for step in xrange(100):
       _,loss = sess.run([train_step,reduce_mean_],feed_dict={images_:images, labels_:labels})
       if step % 10 == 0:
         print loss
-        print sess.run(argmax1_,feed_dict={images_:images, labels_:labels})
     
