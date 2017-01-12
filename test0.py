@@ -7,6 +7,8 @@ Created on 2016年11月28日
 import tensorflow as tf
 import numpy
 import math
+import os
+
 if __name__ == '__main__':
   with tf.name_scope('foo'):
     var = tf.constant('foo')
@@ -51,6 +53,8 @@ if __name__ == '__main__':
   train_step = tf.train.GradientDescentOptimizer(0.01).minimize(softmax_cross_entropy_with_logits_matmul_)
   argmax1_ = tf.argmax(matmul1_,0)
   
+  saver = tf.train.Saver()
+  
   def fill_feed_dict(feed1,feed2, input1, input2):
     feed_dict = {
         input1: feed1,
@@ -72,6 +76,9 @@ if __name__ == '__main__':
     for _ in range(3):
       sess.run(update)
       print sess.run(state)
+      
+    sess_save = os.path.join('data', 'sess_save')
+    saver.save(sess, sess_save)
         
     images = [[1,2,3],[1,2,3.5]]
     labels = numpy.array([1,1])
