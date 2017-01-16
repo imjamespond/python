@@ -7,6 +7,7 @@ Created on 2016/11/28
 import xml.etree.ElementTree as ET
 import re
 import math
+from os import listdir
 from sets import Set
 
 def do_job(xml):
@@ -40,7 +41,14 @@ def do_job(xml):
             if(SqlType == 1 or SqlType == 12):
               prop.text = '1'
   
-  tree.write('db2_vertica.xml')
+  #tree.write('db2_vertica.xml')
+  text = ET.tostring(root).replace("'", "&apos;")
+  xmlfile = open('db2_vertica.xml', 'wb+')
+  #tree.write(xmlfile, xml_declaration=True, encoding='UTF-8')
+  xmlfile.write('<?xml version="1.0" encoding="UTF-8"?>\n')
+  xmlfile.write(text)
+  xmlfile.close()
+
   
 def getDSSQLTypeEQ1FromRecord(rec):
   _set = Set([])
@@ -80,7 +88,11 @@ def getDSSchemaFromRecord(rec,_set):
             gg = re.sub(r""+field+".*\[[max\\=]?\d+\\\]", repl, gg)
           prop.text = prop.text[:m.start()] +gg + prop.text[m.end():]
 def repl(m):
-  str = m.string[m.regs[0][0] : m.regs[0][1]]
-  return re.sub(r'd+\\\]', '999\\\]', str)
+  li = re.findall(r"\\\[(?:max\\=)?(\d+)\\\]",m.string)
+  _len = math.ceil(int(li[0])*1.5)
+  _str = m.string[m.regs[0][0] : m.regs[0][1]]
+  return re.sub(r'\d+\\\]', str(_len)+'\\\]', _str)
 if __name__ == '__main__':
-  do_job('data/db2_vertica_无unicode.xml')
+  for f in listdir("data"):
+    print(f)
+  #do_job('data/db2_vertica_无unicode.xml')
