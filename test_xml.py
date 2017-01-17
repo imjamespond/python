@@ -59,21 +59,19 @@ def getDSSQLTypeEQ1FromRecord(rec):
   for prop in rec.findall('Property'):
     if(prop.get('Name')=='OrchestrateCode'):
       #print(prop.text)
-      m = re.search(r"(DSSQLType=\{.+\})", prop.text,re.MULTILINE)
-      if(m):
+      for m in re.finditer(r"DSSQLType=\{.+\}", prop.text, re.MULTILINE):
         #print(m.start(), m.end())
-        for g in m.groups(): 
-          #print("DSSQLType:",g)
-          
-          for t in g.split(","):
-            #print(t.strip())
-            t = t.strip()
-            t_ = t.split("=")
-            if(t_[1]=="1" or t_[1]=="12"):
-              _set.add( t_[0])
-          gg = re.sub(r"=1,", "=12,", g)
-          #print(gg)
-          prop.text = prop.text[:m.start()] +gg + prop.text[m.end():]
+        mstr = m.string[m.regs[0][0] : m.regs[0][1]]
+        print("DSSQLType:",mstr)
+        for t in mstr.split(","):
+          #print(t.strip())
+          t = t.strip()
+          t_ = t.split("=")
+          if(t_[1]=="1" or t_[1]=="12"):
+            _set.add( t_[0])
+        gg = re.sub(r"=1,", "=12,", mstr)
+        #print(gg)
+        prop.text = prop.text[:m.start()] +gg + prop.text[m.end():]
   print(_set)
   return _set
 
