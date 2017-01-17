@@ -19,9 +19,15 @@ if __name__ == '__main__':
   for g in m.groups():
     print g
     
+  #non-capturing but the substring matched by the group cannot be retrieved
   li = re.findall(r"\\\[(?:max\\=)?(\d+)\\\]","CUST_ID\\:nullable string\\[max\\=1221\\]\\;\n")
   for g in li:
     print g
+  #character except
+  li = re.findall(r"[^u](string)","CUST_ID\\:nullable string\\[max\\=1221\\]\\;\n")
+  for g in li:
+    print g
+  print re.sub(r"(?<=[^u])(string)","ustring","CUST_ID\\:nullable string\\[max\\=1221\\]\\;\n")
     
   li = re.findall(r'(?:review: )?(http://url.com/(\d+))\s?','this is the message. review: http://url.com/123 http://url.com/456')
   for g in li:
@@ -31,3 +37,27 @@ if __name__ == '__main__':
   for g in m.groups():
     print g
     
+  w = "TEMPLATES = ( ('index.html', 'home'), ('base.html', 'base'))"
+  # find outer parens
+  outer = re.compile("\((.+)\)")
+  m = outer.search(w)
+  inner_str = m.group(1)
+  
+  # find inner pairs
+  innerre = re.compile("\('([^']+)', '([^']+)'\)")
+  
+  results = innerre.findall(inner_str)
+  for x,y in results:
+    print "%s <-> %s" % (x,y)
+  '''
+by default search finds the longest match
+  
+Explanation:
+outer matches the first-starting group of parentheses using \( and \); by default search finds the longest match, giving us the outermost ( ) pair. The match m contains exactly what's between those outer parentheses; its content corresponds to the .+ bit of outer.
+innerre matches exactly one of your ('a', 'b') pairs, again using \( and \) to match the content parens in your input string, and using two groups inside the ' ' to match the strings inside of those single quotes.
+Then, we use findall (rather than search or match) to get all matches for innerre (rather than just one). At this point results is a list of pairs, as demonstrated by the print loop.
+Update: To match the whole thing, you could try something like this:
+
+rx = re.compile("^TEMPLATES = \(.+\)")
+rx.match(w)
+  '''
