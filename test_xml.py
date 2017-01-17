@@ -24,6 +24,7 @@ def do_job(file):
   for rec in recs:
     _set = getDSSQLTypeEQ1FromRecord(rec)
     getDSDisplayWidthFromRecord(rec, _set)
+    getDSSQLPrecisionFromRecord(rec, _set)
     getDSSchemaFromRecord(rec, _set)
     
     for collection in rec.findall('Collection'):
@@ -59,7 +60,7 @@ def getDSSQLTypeEQ1FromRecord(rec):
   for prop in rec.findall('Property'):
     if(prop.get('Name')=='OrchestrateCode'):
       #print(prop.text)
-      for m in re.finditer(r"DSSQLType=\{.+\}", prop.text, re.MULTILINE):
+      for m in re.finditer(r"(?<=DSSQLType=\{).+(?=\})", prop.text, re.MULTILINE):
         #print(m.start(), m.end())
         mstr = m.string[m.regs[0][0] : m.regs[0][1]]
         print("DSSQLType:",mstr)
@@ -83,6 +84,17 @@ def getDSDisplayWidthFromRecord(rec,_set):
         #print(m.start(), m.end())
         mstr = m.string[m.regs[0][0] : m.regs[0][1]]
         print("DSDisplayWidth:",mstr)
+        for field in _set:
+          mstr = re.sub(r"(?<="+field+"=)\d+", repl1, mstr)
+        prop.text = prop.text[:m.start()] + mstr + prop.text[m.end():]
+def getDSSQLPrecisionFromRecord(rec,_set):
+  #OrchestrateCode
+  for prop in rec.findall('Property'):
+    if(prop.get('Name')=='OrchestrateCode'):
+      for m in re.finditer(r"DSSQLPrecision=\{.+\}", prop.text,re.MULTILINE):
+        #print(m.start(), m.end())
+        mstr = m.string[m.regs[0][0] : m.regs[0][1]]
+        print("DSSQLPrecision:",mstr)
         for field in _set:
           mstr = re.sub(r"(?<="+field+"=)\d+", repl1, mstr)
         prop.text = prop.text[:m.start()] + mstr + prop.text[m.end():]
