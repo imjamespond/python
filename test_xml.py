@@ -10,8 +10,10 @@ import math
 from os import listdir
 from sets import Set
 
-def do_job(xml):
-  tree = ET.parse(xml)
+gDir="data/"
+
+def do_job(file):
+  tree = ET.parse(gDir+file)
   root = tree.getroot()
   print(root.tag)
   for child in root:
@@ -43,7 +45,7 @@ def do_job(xml):
   
   #tree.write('db2_vertica.xml')
   text = ET.tostring(root).replace("'", "&apos;")
-  xmlfile = open('db2_vertica.xml', 'wb+')
+  xmlfile = open(gDir+"output/"+file, 'wb+')
   #tree.write(xmlfile, xml_declaration=True, encoding='UTF-8')
   xmlfile.write('<?xml version="1.0" encoding="UTF-8"?>\n')
   xmlfile.write(text)
@@ -94,5 +96,5 @@ def repl(m):
   return re.sub(r'\d+\\\]', str(_len)+'\\\]', _str)
 if __name__ == '__main__':
   for f in listdir("data"):
-    print(f)
-  #do_job('data/db2_vertica_无unicode.xml')
+    if f.endswith('.xml'):
+      do_job(f)
