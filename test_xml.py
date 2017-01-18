@@ -39,8 +39,9 @@ def do_job(file):
               #print field,":",prop.text
               prop.text = '12'
           elif(prop.get('Name')=='Precision'):
-            prec = scaleby1_5(prop.text)
-            prop.text = str(prec)
+            if(SqlType == 1 or SqlType == 12):
+              prec = scaleby1_5(prop.text)
+              prop.text = str(prec)
           elif(prop.get('Name')=='ExtendedPrecision'):
             if(SqlType == 1 or SqlType == 12):
               prop.text = '1'
@@ -130,6 +131,6 @@ def scaleby1_5(s):
     return num
 
 if __name__ == '__main__':
-  for f in listdir("data"):
+  for f in listdir(gDir):
     if f.endswith('.xml'):
       do_job(f)
