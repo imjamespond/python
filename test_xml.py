@@ -33,6 +33,9 @@ def do_job(file):
         for prop in subrec.findall('Property'): 
           if(prop.get('Name')=='Name'):
             field = prop.text
+            
+            if(prop.text == 'supportedTransactionModel'):
+              collection.remove(subrec)
           elif(prop.get('Name')=='SqlType'):
             SqlType = int(prop.text)
             if(SqlType == 1):
@@ -45,6 +48,7 @@ def do_job(file):
           elif(prop.get('Name')=='ExtendedPrecision'):
             if(SqlType == 1 or SqlType == 12):
               prop.text = '1'
+            
   
   #tree.write('db2_vertica.xml')
   text = ET.tostring(root).replace("'", "&apos;")

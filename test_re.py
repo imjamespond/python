@@ -37,7 +37,7 @@ if __name__ == '__main__':
   for g in m.groups():
     print g
     
-  w = "TEMPLATES = ( ('index.html', 'home'), ('base.html', 'base'))"
+  w = "foobar blahblablahblablahbla TEMPLATES = ( ('index.html', 'home'), ('base.html', 'base')) blahblablahblablahbla TEMPLATES = ( ('index.html', 'home'), ('base.html', 'base')) "
   # find outer parens
   outer = re.compile("\((.+)\)")
   m = outer.search(w)
