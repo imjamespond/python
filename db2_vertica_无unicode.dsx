@@ -1,0 +1,3090 @@
+BEGIN HEADER
+   CharacterSet "CP936"
+   ExportingTool "IBM InfoSphere DataStage Export"
+   ToolVersion "8"
+   ServerName "P260DTAS"
+   ToolInstanceID "dstage1"
+   MDISVersion "1.0"
+   Date "2017-01-04"
+   Time "08.58.47"
+   ServerVersion "11.3"
+END HEADER
+BEGIN DSJOB
+   Identifier "db2400_vertica_yd_now_u"
+   DateModified "2017-01-03"
+   TimeModified "18.23.48"
+   BEGIN DSRECORD
+      Identifier "ROOT"
+      OLEType "CJobDefn"
+      Readonly "0"
+      Name "db2400_vertica_yd_now_u"
+      NextID "2"
+      Container "V0"
+      JobVersion "56.0.0"
+      ControlAfterSubr "0"
+      Parameters "CParameters"
+      BEGIN DSSUBRECORD
+         Name "dba_vertica_param"
+         Prompt "dba_vertica_param parameters"
+         Default "(As pre-defined)"
+         ParamType "13"
+         ParamLength "0"
+         ParamScale "0"
+      END DSSUBRECORD
+      MetaBag "CMetaProperty"
+      BEGIN DSSUBRECORD
+         Owner "APT"
+         Name "AdvancedRuntimeOptions"
+         Value "#DSProjectARTOptions#"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Owner "APT"
+         Name "TraceMode"
+         Value "0"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Owner "APT"
+         Name "TraceSeq"
+         Value "1"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Owner "APT"
+         Name "TraceRecords"
+         Value "100"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Owner "APT"
+         Name "TraceSkip"
+         Value "0"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Owner "APT"
+         Name "TracePeriod"
+         Value "1"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Owner "APT"
+         Name "RecordJobPerformanceData"
+         Value "0"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Owner "APT"
+         Name "IdentList"
+         Value "db2400|vertica|Copy_2"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Owner "APT"
+         Name "ClientCodePage"
+         Value "936"
+      END DSSUBRECORD
+      NULLIndicatorPosition "0"
+      OrchestrateCode =+=+=+=
+#################################################################
+#### STAGE: db2400
+## Operator
+pxbridge
+## Operator options
+-Orientation link
+-XMLProperties '<?xml version=\\'1.0\\' encoding=\\'UTF-16\\'?><Properties version=\\'1.1\\'><Common><Context type=\\'int\\'>1</Context><Variant type=\\'string\\'>3.5</Variant><DescriptorVersion type=\\'string\\'>1.0</DescriptorVersion><PartitionType type=\\'int\\'>-1</PartitionType><RCP type=\\'int\\'>0</RCP></Common><Connection><DataSource modified=\\'1\\' type=\\'string\\'><![CDATA[[&\"dba_vertica_param.db2_data\"]]]></DataSource><Username modified=\\'1\\' type=\\'string\\'><![CDATA[[&\"dba_vertica_param.db2_name\"]]]></Username><Password modified=\\'1\\' type=\\'string\\'><![CDATA[[&\"dba_vertica_param.db2_pwd\"]]]></Password></Connection><Usage><GenerateSQL type=\\'bool\\'><![CDATA[0]]></GenerateSQL><EnableQuotedIDs type=\\'bool\\'><![CDATA[0]]></EnableQuotedIDs><SQL><SelectStatement modified=\\'1\\' type=\\'string\\'><![CDATA[SELECT * FROM FDMDALIB.F_AGT_CDEP_ACCT FETCH FIRST 10000 ROWS ONLY]]><ReadStatementFromFile type=\\'bool\\'><![CDATA[0]]></ReadStatementFromFile><Tables collapsed=\\'1\\'></Tables><Parameters collapsed=\\'1\\'></Parameters><Columns collapsed=\\'1\\'></Columns></SelectStatement><EnablePartitioning collapsed=\\'1\\' type=\\'bool\\'><![CDATA[0]]></EnablePartitioning></SQL><Transaction><RecordCount type=\\'int\\'><![CDATA[2000]]></RecordCount><EndOfWave collapsed=\\'1\\' type=\\'int\\'><![CDATA[0]]></EndOfWave></Transaction><Session><IsolationLevel type=\\'int\\'><![CDATA[1]]></IsolationLevel><AutocommitMode type=\\'int\\'><![CDATA[0]]></AutocommitMode><ArraySize type=\\'int\\'><![CDATA[2000]]></ArraySize><SchemaReconciliation><FailOnSizeMismatch type=\\'bool\\'><![CDATA[1]]></FailOnSizeMismatch><FailOnTypeMismatch type=\\'bool\\'><![CDATA[1]]></FailOnTypeMismatch><FailOnCodePageMismatch type=\\'bool\\'><![CDATA[0]]></FailOnCodePageMismatch></SchemaReconciliation><PassLobLocator collapsed=\\'1\\' type=\\'bool\\'><![CDATA[0]]></PassLobLocator><CodePage collapsed=\\'1\\' type=\\'int\\'><![CDATA[0]]></CodePage></Session><BeforeAfter collapsed=\\'1\\' type=\\'bool\\'><![CDATA[0]]></BeforeAfter><LimitRows collapsed=\\'1\\' type=\\'bool\\'><![CDATA[0]]></LimitRows></Usage></Properties >'
+-connector '{
+   variant=\\'3.5\\', 
+   library=ccodbc, 
+   version=1.0, 
+   variantlist=\\'V1;3.5::ccodbc\\', 
+   versionlist=\\'1.0\\', 
+   name=ODBCConnector
+}'
+-source 0 '{
+      DSDescription={ACCOUNT_ID=\\'\\\T\\\T
+Searchable\\? N \\', ACCOUNT_NAME=\\'\\\T\\\T
+Searchable\\? N \\', ACCOUNT_SHORT_NAME=\\'\\\T\\\T
+Searchable\\? N \\', CUST_ID=\\'\\\T\\\T
+Searchable\\? N \\', CUST_TYPE_CD=\\'\\\T\\\T\\\T
+Searchable\\? N \\', PRODUCT_ID=\\'\\\T\\\T
+Searchable\\? N \\', COMP_PROD_ID=\\'\\\T\\\T\\\T
+Searchable\\? N \\', PROD_SUBS_ID=\\'\\\T\\\T\\\T
+Searchable\\? N \\', MEDIUM_TYPE_CDS=\\'\\\T\\\T\\\T
+Searchable\\? N \\', DEPOSIT_KIND_CD=\\'\\\T\\\T\\\T
+Searchable\\? N \\', ACCT_ATTR_CD=\\'\\\T\\\T\\\T
+Searchable\\? N \\', ACCT_STATUS_CD=\\'\\\T\\\T\\\T
+Searchable\\? N \\', RLOSS_STATUS_CDS=\\'\\\T\\\T\\\T
+Searchable\\? N \\', AUTH_MODE_CD=\\'\\\T\\\T\\\T
+Searchable\\? N \\', DRAW_MODE_CDS=\\'\\\T\\\T\\\T
+Searchable\\? N \\', DRAW_CERT_TYPE_CD=\\'\\\T\\\T\\\T\\\T
+Searchable\\? N \\', DRAW_CERT_NO=\\'\\\T\\\T\\\T
+Searchable\\? N \\', EXCHANGE_RANGE_CD=\\'\\\T\\\T\\\T
+Searchable\\? N \\', DEPOSIT_RANGE_CD=\\'\\\T\\\T\\\T
+Searchable\\? N \\', BELONG_ORG_ID=\\'\\\T\\\T\\\T
+Searchable\\? N \\', OPEN_DATE=\\'\\\T\\\T
+Searchable\\? N \\', OPEN_ORG_ID=\\'\\\T\\\T\\\T
+Searchable\\? N \\', OPEN_CHK_BOOK_NO=\\'\\\T\\\T\\\T
+Searchable\\? N \\', OPEN_CERT_TYPE_CD=\\'\\\T\\\T\\\T\\\T
+Searchable\\? N \\', OPEN_CERT_NO=\\'\\\T\\\T\\\T
+Searchable\\? N \\', CLOSE_DATE=\\'\\\T\\\T
+Searchable\\? N \\', CLOSE_ORG_ID=\\'\\\T\\\T\\\T
+Searchable\\? N \\', LAST_NO_ACCT_DATE=\\'\\\T\\\T\\\T
+Searchable\\? N \\', ZERO_BAL_ACCT_FLG=\\'\\\T\\\T\\\T
+Searchable\\? N \\', ETL_JOB=\\'ETL
+Searchable\\? N \\', ETL_SRC_TABLE=\\'ETL
+Searchable\\? N \\', ETL_FIRST_DATE=\\'\\\T\\\T\\\T\\\T
+Searchable\\? N \\', ETL_TX_DATE=\\'\\\T\\\T\\\T\\\T
+Searchable\\? N \\'}, 
+      DSIsKey={ACCOUNT_ID=1}, 
+      DSDisplayWidth={ACCOUNT_ID=32, ACCOUNT_NAME=200, ACCOUNT_SHORT_NAME=60, CUST_ID=11, CUST_TYPE_CD=1, PRODUCT_ID=30, COMP_PROD_ID=30, PROD_SUBS_ID=30, MEDIUM_TYPE_CDS=8, DEPOSIT_KIND_CD=2, ACCT_ATTR_CD=4, ACCT_STATUS_CD=3, RLOSS_STATUS_CDS=10, AUTH_MODE_CD=2, DRAW_MODE_CDS=16, DRAW_CERT_TYPE_CD=3, DRAW_CERT_NO=30, EXCHANGE_RANGE_CD=1, DEPOSIT_RANGE_CD=1, BELONG_ORG_ID=6, OPEN_DATE=10, OPEN_ORG_ID=6, OPEN_CHK_BOOK_NO=20, OPEN_CERT_TYPE_CD=3, OPEN_CERT_NO=30, CLOSE_DATE=10, CLOSE_ORG_ID=6, LAST_NO_ACCT_DATE=10, ZERO_BAL_ACCT_FLG=1, ETL_JOB=50, ETL_SRC_TABLE=50, ETL_FIRST_DATE=10, ETL_TX_DATE=10}, 
+      DSSQLType={ACCOUNT_ID=12, ACCOUNT_NAME=12, ACCOUNT_SHORT_NAME=12, CUST_ID=1, CUST_TYPE_CD=1, PRODUCT_ID=12, COMP_PROD_ID=12, PROD_SUBS_ID=12, MEDIUM_TYPE_CDS=1, DEPOSIT_KIND_CD=1, ACCT_ATTR_CD=1, ACCT_STATUS_CD=1, RLOSS_STATUS_CDS=1, AUTH_MODE_CD=1, DRAW_MODE_CDS=1, DRAW_CERT_TYPE_CD=1, DRAW_CERT_NO=12, EXCHANGE_RANGE_CD=1, DEPOSIT_RANGE_CD=1, BELONG_ORG_ID=1, OPEN_DATE=9, OPEN_ORG_ID=1, OPEN_CHK_BOOK_NO=1, OPEN_CERT_TYPE_CD=1, OPEN_CERT_NO=12, CLOSE_DATE=9, CLOSE_ORG_ID=1, LAST_NO_ACCT_DATE=9, ZERO_BAL_ACCT_FLG=1, ETL_JOB=12, ETL_SRC_TABLE=12, ETL_FIRST_DATE=9, ETL_TX_DATE=9}, 
+      DSSQLPrecision={ACCOUNT_ID=32, ACCOUNT_NAME=200, ACCOUNT_SHORT_NAME=60, CUST_ID=11, CUST_TYPE_CD=1, PRODUCT_ID=30, COMP_PROD_ID=30, PROD_SUBS_ID=30, MEDIUM_TYPE_CDS=8, DEPOSIT_KIND_CD=2, ACCT_ATTR_CD=4, ACCT_STATUS_CD=3, RLOSS_STATUS_CDS=10, AUTH_MODE_CD=2, DRAW_MODE_CDS=16, DRAW_CERT_TYPE_CD=3, DRAW_CERT_NO=30, EXCHANGE_RANGE_CD=1, DEPOSIT_RANGE_CD=1, BELONG_ORG_ID=6, OPEN_DATE=10, OPEN_ORG_ID=6, OPEN_CHK_BOOK_NO=20, OPEN_CERT_TYPE_CD=3, OPEN_CERT_NO=30, CLOSE_DATE=10, CLOSE_ORG_ID=6, LAST_NO_ACCT_DATE=10, ZERO_BAL_ACCT_FLG=1, ETL_JOB=50, ETL_SRC_TABLE=50, ETL_FIRST_DATE=10, ETL_TX_DATE=10}, 
+      DSSchema=\\'record
+         (
+           ACCOUNT_ID\\:string\\[max\\=32\\]\\;
+           ACCOUNT_NAME\\:nullable string\\[max\\=200\\]\\;
+           ACCOUNT_SHORT_NAME\\:nullable string\\[max\\=60\\]\\;
+           CUST_ID\\:nullable string\\[11\\]\\;
+           CUST_TYPE_CD\\:nullable string\\[1\\]\\;
+           PRODUCT_ID\\:nullable string\\[max\\=30\\]\\;
+           COMP_PROD_ID\\:nullable string\\[max\\=30\\]\\;
+           PROD_SUBS_ID\\:nullable string\\[max\\=30\\]\\;
+           MEDIUM_TYPE_CDS\\:nullable string\\[8\\]\\;
+           DEPOSIT_KIND_CD\\:nullable string\\[2\\]\\;
+           ACCT_ATTR_CD\\:nullable string\\[4\\]\\;
+           ACCT_STATUS_CD\\:nullable string\\[3\\]\\;
+           RLOSS_STATUS_CDS\\:nullable string\\[10\\]\\;
+           AUTH_MODE_CD\\:nullable string\\[2\\]\\;
+           DRAW_MODE_CDS\\:nullable string\\[16\\]\\;
+           DRAW_CERT_TYPE_CD\\:nullable string\\[3\\]\\;
+           DRAW_CERT_NO\\:nullable string\\[max\\=30\\]\\;
+           EXCHANGE_RANGE_CD\\:nullable string\\[1\\]\\;
+           DEPOSIT_RANGE_CD\\:nullable string\\[1\\]\\;
+           BELONG_ORG_ID\\:nullable string\\[6\\]\\;
+           OPEN_DATE\\:nullable date\\;
+           OPEN_ORG_ID\\:nullable string\\[6\\]\\;
+           OPEN_CHK_BOOK_NO\\:nullable string\\[20\\]\\;
+           OPEN_CERT_TYPE_CD\\:nullable string\\[3\\]\\;
+           OPEN_CERT_NO\\:nullable string\\[max\\=30\\]\\;
+           CLOSE_DATE\\:nullable date\\;
+           CLOSE_ORG_ID\\:nullable string\\[6\\]\\;
+           LAST_NO_ACCT_DATE\\:nullable date\\;
+           ZERO_BAL_ACCT_FLG\\:nullable string\\[1\\]\\;
+           ETL_JOB\\:nullable string\\[max\\=50\\]\\;
+           ETL_SRC_TABLE\\:nullable string\\[max\\=50\\]\\;
+           ETL_FIRST_DATE\\:nullable date\\;
+           ETL_TX_DATE\\:nullable date\\;
+         )\\'
+}'
+   
+
+## General options
+[ident('db2400'); jobmon_ident('db2400')]
+## Outputs
+0> [modify (
+  ACCOUNT_ID:not_nullable string[max=32]=ACCOUNT_ID;
+  ACCOUNT_NAME:nullable string[max=200]=ACCOUNT_NAME;
+  ACCOUNT_SHORT_NAME:nullable string[max=60]=ACCOUNT_SHORT_NAME;
+  CUST_ID:nullable string[11]=CUST_ID;
+  CUST_TYPE_CD:nullable string[1]=CUST_TYPE_CD;
+  PRODUCT_ID:nullable string[max=30]=PRODUCT_ID;
+  COMP_PROD_ID:nullable string[max=30]=COMP_PROD_ID;
+  PROD_SUBS_ID:nullable string[max=30]=PROD_SUBS_ID;
+  MEDIUM_TYPE_CDS:nullable string[8]=MEDIUM_TYPE_CDS;
+  DEPOSIT_KIND_CD:nullable string[2]=DEPOSIT_KIND_CD;
+  ACCT_ATTR_CD:nullable string[4]=ACCT_ATTR_CD;
+  ACCT_STATUS_CD:nullable string[3]=ACCT_STATUS_CD;
+  RLOSS_STATUS_CDS:nullable string[10]=RLOSS_STATUS_CDS;
+  AUTH_MODE_CD:nullable string[2]=AUTH_MODE_CD;
+  DRAW_MODE_CDS:nullable string[16]=DRAW_MODE_CDS;
+  DRAW_CERT_TYPE_CD:nullable string[3]=DRAW_CERT_TYPE_CD;
+  DRAW_CERT_NO:nullable string[max=30]=DRAW_CERT_NO;
+  EXCHANGE_RANGE_CD:nullable string[1]=EXCHANGE_RANGE_CD;
+  DEPOSIT_RANGE_CD:nullable string[1]=DEPOSIT_RANGE_CD;
+  BELONG_ORG_ID:nullable string[6]=BELONG_ORG_ID;
+  OPEN_DATE:nullable date=OPEN_DATE;
+  OPEN_ORG_ID:nullable string[6]=OPEN_ORG_ID;
+  OPEN_CHK_BOOK_NO:nullable string[20]=OPEN_CHK_BOOK_NO;
+  OPEN_CERT_TYPE_CD:nullable string[3]=OPEN_CERT_TYPE_CD;
+  OPEN_CERT_NO:nullable string[max=30]=OPEN_CERT_NO;
+  CLOSE_DATE:nullable date=CLOSE_DATE;
+  CLOSE_ORG_ID:nullable string[6]=CLOSE_ORG_ID;
+  LAST_NO_ACCT_DATE:nullable date=LAST_NO_ACCT_DATE;
+  ZERO_BAL_ACCT_FLG:nullable string[1]=ZERO_BAL_ACCT_FLG;
+  ETL_JOB:nullable string[max=50]=ETL_JOB;
+  ETL_SRC_TABLE:nullable string[max=50]=ETL_SRC_TABLE;
+  ETL_FIRST_DATE:nullable date=ETL_FIRST_DATE;
+  ETL_TX_DATE:nullable date=ETL_TX_DATE;
+keep
+  ACCOUNT_ID,ACCOUNT_NAME,ACCOUNT_SHORT_NAME,CUST_ID,
+  CUST_TYPE_CD,PRODUCT_ID,COMP_PROD_ID,PROD_SUBS_ID,
+  MEDIUM_TYPE_CDS,DEPOSIT_KIND_CD,ACCT_ATTR_CD,ACCT_STATUS_CD,
+  RLOSS_STATUS_CDS,AUTH_MODE_CD,DRAW_MODE_CDS,DRAW_CERT_TYPE_CD,
+  DRAW_CERT_NO,EXCHANGE_RANGE_CD,DEPOSIT_RANGE_CD,BELONG_ORG_ID,
+  OPEN_DATE,OPEN_ORG_ID,OPEN_CHK_BOOK_NO,OPEN_CERT_TYPE_CD,
+  OPEN_CERT_NO,CLOSE_DATE,CLOSE_ORG_ID,LAST_NO_ACCT_DATE,
+  ZERO_BAL_ACCT_FLG,ETL_JOB,ETL_SRC_TABLE,ETL_FIRST_DATE,
+  ETL_TX_DATE;
+)] 'db2400:DSLink3.v'
+;
+
+#################################################################
+#### STAGE: vertica
+## Operator
+pxbridge
+## Operator options
+-Orientation link
+-XMLProperties '<?xml version=\\'1.0\\' encoding=\\'UTF-16\\'?><Properties version=\\'1.1\\'><Common><Context type=\\'int\\'>2</Context><Variant type=\\'string\\'>3.5</Variant><DescriptorVersion type=\\'string\\'>1.0</DescriptorVersion><PartitionType type=\\'int\\'>-1</PartitionType><RCP type=\\'int\\'>0</RCP></Common><Connection><DataSource modified=\\'1\\' type=\\'string\\'><![CDATA[[&\"dba_vertica_param.v_data\"]]]></DataSource><Username modified=\\'1\\' type=\\'string\\'><![CDATA[[&\"dba_vertica_param.v_name\"]]]></Username><Password modified=\\'1\\' type=\\'string\\'><![CDATA[[&\"dba_vertica_param.v_pwd\"]]]></Password></Connection><Usage><WriteMode type=\\'int\\'><![CDATA[0]]></WriteMode><GenerateSQL modified=\\'1\\' type=\\'bool\\'><![CDATA[1]]></GenerateSQL><TableName modified=\\'1\\' type=\\'string\\'><![CDATA[BIEZSLIB.F_AGT_CDEP_ACCT]]></TableName><EnableQuotedIDs type=\\'bool\\'><![CDATA[0]]></EnableQuotedIDs><SQL collapsed=\\'1\\'></SQL><TableAction modified=\\'1\\' type=\\'int\\'><![CDATA[3]]><GenerateTruncateStatement type=\\'bool\\'><![CDATA[1]]><FailOnError type=\\'bool\\'><![CDATA[1]]></FailOnError></GenerateTruncateStatement></TableAction><Transaction><RecordCount modified=\\'1\\' type=\\'int\\'><![CDATA[20000]]></RecordCount></Transaction><Session><IsolationLevel type=\\'int\\'><![CDATA[1]]></IsolationLevel><AutocommitMode modified=\\'1\\' type=\\'int\\'><![CDATA[1]]></AutocommitMode><ArraySize modified=\\'1\\' type=\\'int\\'><![CDATA[20000]]></ArraySize><SchemaReconciliation><FailOnSizeMismatch type=\\'bool\\'><![CDATA[1]]></FailOnSizeMismatch><FailOnTypeMismatch type=\\'bool\\'><![CDATA[1]]></FailOnTypeMismatch><FailOnCodePageMismatch type=\\'bool\\'><![CDATA[0]]></FailOnCodePageMismatch><DropUnmatchedFields type=\\'bool\\'><![CDATA[1]]></DropUnmatchedFields></SchemaReconciliation><CodePage collapsed=\\'1\\' type=\\'int\\'><![CDATA[0]]></CodePage><FailOnRowErrorPX type=\\'bool\\'><![CDATA[1]]></FailOnRowErrorPX></Session><Logging><LogColumnValues collapsed=\\'1\\' type=\\'bool\\'><![CDATA[0]]></LogColumnValues></Logging><BeforeAfter collapsed=\\'1\\' type=\\'bool\\'><![CDATA[0]]></BeforeAfter></Usage></Properties >'
+-connector '{
+   variant=\\'3.5\\', 
+   library=ccodbc, 
+   version=1.0, 
+   variantlist=\\'V1;3.5::ccodbc\\', 
+   versionlist=\\'1.0\\', 
+   name=ODBCConnector
+}'
+-target 0 '{
+      DSDescription={ACCOUNT_ID=\\'\\<none\\>
+Searchable\\? N \\', ACCOUNT_NAME=\\'\\<none\\>
+Searchable\\? N \\', ACCOUNT_SHORT_NAME=\\'\\<none\\>
+Searchable\\? N \\', CUST_ID=\\'\\<none\\>
+Searchable\\? N \\', CUST_TYPE_CD=\\'\\<none\\>
+Searchable\\? N \\', PRODUCT_ID=\\'\\<none\\>
+Searchable\\? N \\', COMP_PROD_ID=\\'\\<none\\>
+Searchable\\? N \\', PROD_SUBS_ID=\\'\\<none\\>
+Searchable\\? N \\', MEDIUM_TYPE_CDS=\\'\\<none\\>
+Searchable\\? N \\', DEPOSIT_KIND_CD=\\'\\<none\\>
+Searchable\\? N \\', ACCT_ATTR_CD=\\'\\<none\\>
+Searchable\\? N \\', ACCT_STATUS_CD=\\'\\<none\\>
+Searchable\\? N \\', RLOSS_STATUS_CDS=\\'\\<none\\>
+Searchable\\? N \\', AUTH_MODE_CD=\\'\\<none\\>
+Searchable\\? N \\', DRAW_MODE_CDS=\\'\\<none\\>
+Searchable\\? N \\', DRAW_CERT_TYPE_CD=\\'\\<none\\>
+Searchable\\? N \\', DRAW_CERT_NO=\\'\\<none\\>
+Searchable\\? N \\', EXCHANGE_RANGE_CD=\\'\\<none\\>
+Searchable\\? N \\', DEPOSIT_RANGE_CD=\\'\\<none\\>
+Searchable\\? N \\', BELONG_ORG_ID=\\'\\<none\\>
+Searchable\\? N \\', OPEN_DATE=\\'\\<none\\>
+Searchable\\? N \\', OPEN_ORG_ID=\\'\\<none\\>
+Searchable\\? N \\', OPEN_CHK_BOOK_NO=\\'\\<none\\>
+Searchable\\? N \\', OPEN_CERT_TYPE_CD=\\'\\<none\\>
+Searchable\\? N \\', OPEN_CERT_NO=\\'\\<none\\>
+Searchable\\? N \\', CLOSE_DATE=\\'\\<none\\>
+Searchable\\? N \\', CLOSE_ORG_ID=\\'\\<none\\>
+Searchable\\? N \\', LAST_NO_ACCT_DATE=\\'\\<none\\>
+Searchable\\? N \\', ZERO_BAL_ACCT_FLG=\\'\\<none\\>
+Searchable\\? N \\', ETL_JOB=\\'\\<none\\>
+Searchable\\? N \\', ETL_SRC_TABLE=\\'\\<none\\>
+Searchable\\? N \\', ETL_FIRST_DATE=\\'\\<none\\>
+Searchable\\? N \\', ETL_TX_DATE=\\'\\<none\\>
+Searchable\\? N \\'}, 
+      DSDisplayWidth={ACCOUNT_ID=64, ACCOUNT_NAME=400, ACCOUNT_SHORT_NAME=120, CUST_ID=22, CUST_TYPE_CD=2, PRODUCT_ID=60, COMP_PROD_ID=60, PROD_SUBS_ID=60, MEDIUM_TYPE_CDS=16, DEPOSIT_KIND_CD=4, ACCT_ATTR_CD=8, ACCT_STATUS_CD=6, RLOSS_STATUS_CDS=20, AUTH_MODE_CD=4, DRAW_MODE_CDS=32, DRAW_CERT_TYPE_CD=6, DRAW_CERT_NO=60, EXCHANGE_RANGE_CD=2, DEPOSIT_RANGE_CD=2, BELONG_ORG_ID=12, OPEN_DATE=10, OPEN_ORG_ID=12, OPEN_CHK_BOOK_NO=40, OPEN_CERT_TYPE_CD=6, OPEN_CERT_NO=60, CLOSE_DATE=10, CLOSE_ORG_ID=12, LAST_NO_ACCT_DATE=10, ZERO_BAL_ACCT_FLG=2, ETL_JOB=100, ETL_SRC_TABLE=100, ETL_FIRST_DATE=10, ETL_TX_DATE=10}, 
+      DSSQLType={ACCOUNT_ID=12, ACCOUNT_NAME=12, ACCOUNT_SHORT_NAME=12, CUST_ID=12, CUST_TYPE_CD=12, PRODUCT_ID=12, COMP_PROD_ID=12, PROD_SUBS_ID=12, MEDIUM_TYPE_CDS=12, DEPOSIT_KIND_CD=12, ACCT_ATTR_CD=12, ACCT_STATUS_CD=12, RLOSS_STATUS_CDS=12, AUTH_MODE_CD=12, DRAW_MODE_CDS=12, DRAW_CERT_TYPE_CD=12, DRAW_CERT_NO=12, EXCHANGE_RANGE_CD=12, DEPOSIT_RANGE_CD=12, BELONG_ORG_ID=12, OPEN_DATE=9, OPEN_ORG_ID=12, OPEN_CHK_BOOK_NO=12, OPEN_CERT_TYPE_CD=12, OPEN_CERT_NO=12, CLOSE_DATE=9, CLOSE_ORG_ID=12, LAST_NO_ACCT_DATE=9, ZERO_BAL_ACCT_FLG=12, ETL_JOB=12, ETL_SRC_TABLE=12, ETL_FIRST_DATE=9, ETL_TX_DATE=9}, 
+      DSDerivation={ACCOUNT_ID=\\'DSLink3\\.ACCOUNT_ID\\', ACCOUNT_NAME=\\'DSLink3\\.ACCOUNT_NAME\\', ACCOUNT_SHORT_NAME=\\'DSLink3\\.ACCOUNT_SHORT_NAME\\', CUST_ID=\\'DSLink3\\.CUST_ID\\', CUST_TYPE_CD=\\'DSLink3\\.CUST_TYPE_CD\\', PRODUCT_ID=\\'DSLink3\\.PRODUCT_ID\\', COMP_PROD_ID=\\'DSLink3\\.COMP_PROD_ID\\', PROD_SUBS_ID=\\'DSLink3\\.PROD_SUBS_ID\\', MEDIUM_TYPE_CDS=\\'DSLink3\\.MEDIUM_TYPE_CDS\\', DEPOSIT_KIND_CD=\\'DSLink3\\.DEPOSIT_KIND_CD\\', ACCT_ATTR_CD=\\'DSLink3\\.ACCT_ATTR_CD\\', ACCT_STATUS_CD=\\'DSLink3\\.ACCT_STATUS_CD\\', RLOSS_STATUS_CDS=\\'DSLink3\\.RLOSS_STATUS_CDS\\', AUTH_MODE_CD=\\'DSLink3\\.AUTH_MODE_CD\\', DRAW_MODE_CDS=\\'DSLink3\\.DRAW_MODE_CDS\\', DRAW_CERT_TYPE_CD=\\'DSLink3\\.DRAW_CERT_TYPE_CD\\', DRAW_CERT_NO=\\'DSLink3\\.DRAW_CERT_NO\\', EXCHANGE_RANGE_CD=\\'DSLink3\\.EXCHANGE_RANGE_CD\\', DEPOSIT_RANGE_CD=\\'DSLink3\\.DEPOSIT_RANGE_CD\\', BELONG_ORG_ID=\\'DSLink3\\.BELONG_ORG_ID\\', OPEN_DATE=\\'DSLink3\\.OPEN_DATE\\', OPEN_ORG_ID=\\'DSLink3\\.OPEN_ORG_ID\\', OPEN_CHK_BOOK_NO=\\'DSLink3\\.OPEN_CHK_BOOK_NO\\', OPEN_CERT_TYPE_CD=\\'DSLink3\\.OPEN_CERT_TYPE_CD\\', OPEN_CERT_NO=\\'DSLink3\\.OPEN_CERT_NO\\', CLOSE_DATE=\\'DSLink3\\.CLOSE_DATE\\', CLOSE_ORG_ID=\\'DSLink3\\.CLOSE_ORG_ID\\', LAST_NO_ACCT_DATE=\\'DSLink3\\.LAST_NO_ACCT_DATE\\', ZERO_BAL_ACCT_FLG=\\'DSLink3\\.ZERO_BAL_ACCT_FLG\\', ETL_JOB=\\'DSLink3\\.ETL_JOB\\', ETL_SRC_TABLE=\\'DSLink3\\.ETL_SRC_TABLE\\', ETL_FIRST_DATE=\\'DSLink3\\.ETL_FIRST_DATE\\', ETL_TX_DATE=\\'DSLink3\\.ETL_TX_DATE\\'}, 
+      DSSQLPrecision={ACCOUNT_ID=64, ACCOUNT_NAME=400, ACCOUNT_SHORT_NAME=120, CUST_ID=22, CUST_TYPE_CD=2, PRODUCT_ID=60, COMP_PROD_ID=60, PROD_SUBS_ID=60, MEDIUM_TYPE_CDS=16, DEPOSIT_KIND_CD=4, ACCT_ATTR_CD=8, ACCT_STATUS_CD=6, RLOSS_STATUS_CDS=20, AUTH_MODE_CD=4, DRAW_MODE_CDS=32, DRAW_CERT_TYPE_CD=6, DRAW_CERT_NO=60, EXCHANGE_RANGE_CD=2, DEPOSIT_RANGE_CD=2, BELONG_ORG_ID=12, OPEN_DATE=10, OPEN_ORG_ID=12, OPEN_CHK_BOOK_NO=40, OPEN_CERT_TYPE_CD=6, OPEN_CERT_NO=60, CLOSE_DATE=10, CLOSE_ORG_ID=12, LAST_NO_ACCT_DATE=10, ZERO_BAL_ACCT_FLG=2, ETL_JOB=100, ETL_SRC_TABLE=100, ETL_FIRST_DATE=10, ETL_TX_DATE=10}, 
+      DSSchema=\\'record
+         (
+           ACCOUNT_ID\\:string\\[max\\=64\\]\\;
+           ACCOUNT_NAME\\:nullable string\\[max\\=400\\]\\;
+           ACCOUNT_SHORT_NAME\\:nullable string\\[max\\=120\\]\\;
+           CUST_ID\\:nullable string\\[max\\=22\\]\\;
+           CUST_TYPE_CD\\:nullable string\\[max\\=2\\]\\;
+           PRODUCT_ID\\:nullable string\\[max\\=60\\]\\;
+           COMP_PROD_ID\\:nullable string\\[max\\=60\\]\\;
+           PROD_SUBS_ID\\:nullable string\\[max\\=60\\]\\;
+           MEDIUM_TYPE_CDS\\:nullable string\\[max\\=16\\]\\;
+           DEPOSIT_KIND_CD\\:nullable string\\[max\\=4\\]\\;
+           ACCT_ATTR_CD\\:nullable string\\[max\\=8\\]\\;
+           ACCT_STATUS_CD\\:nullable string\\[max\\=6\\]\\;
+           RLOSS_STATUS_CDS\\:nullable string\\[max\\=20\\]\\;
+           AUTH_MODE_CD\\:nullable string\\[max\\=4\\]\\;
+           DRAW_MODE_CDS\\:nullable string\\[max\\=32\\]\\;
+           DRAW_CERT_TYPE_CD\\:nullable string\\[max\\=6\\]\\;
+           DRAW_CERT_NO\\:nullable string\\[max\\=60\\]\\;
+           EXCHANGE_RANGE_CD\\:nullable string\\[max\\=2\\]\\;
+           DEPOSIT_RANGE_CD\\:nullable string\\[max\\=2\\]\\;
+           BELONG_ORG_ID\\:nullable string\\[max\\=12\\]\\;
+           OPEN_DATE\\:nullable date\\;
+           OPEN_ORG_ID\\:nullable string\\[max\\=12\\]\\;
+           OPEN_CHK_BOOK_NO\\:nullable string\\[max\\=40\\]\\;
+           OPEN_CERT_TYPE_CD\\:nullable string\\[max\\=6\\]\\;
+           OPEN_CERT_NO\\:nullable string\\[max\\=60\\]\\;
+           CLOSE_DATE\\:nullable date\\;
+           CLOSE_ORG_ID\\:nullable string\\[max\\=12\\]\\;
+           LAST_NO_ACCT_DATE\\:nullable date\\;
+           ZERO_BAL_ACCT_FLG\\:nullable string\\[max\\=2\\]\\;
+           ETL_JOB\\:nullable string\\[max\\=100\\]\\;
+           ETL_SRC_TABLE\\:nullable string\\[max\\=100\\]\\;
+           ETL_FIRST_DATE\\:nullable date\\;
+           ETL_TX_DATE\\:nullable date\\;
+         )\\'
+}'
+   
+
+## General options
+[ident('vertica'); jobmon_ident('vertica')]
+## Inputs
+0< [] 'Copy_2:DSLink4.v'
+;
+
+#################################################################
+#### STAGE: Copy_2
+## Operator
+copy
+## General options
+[ident('Copy_2'); jobmon_ident('Copy_2')]
+## Inputs
+0< [] 'db2400:DSLink3.v'
+## Outputs
+0> [modify (
+  ACCOUNT_ID:string[max=64]=ACCOUNT_ID;
+  ACCOUNT_NAME:nullable string[max=400]=ACCOUNT_NAME;
+  ACCOUNT_SHORT_NAME:nullable string[max=120]=ACCOUNT_SHORT_NAME;
+  CUST_ID:nullable string[max=22]=CUST_ID;
+  CUST_TYPE_CD:nullable string[max=2]=CUST_TYPE_CD;
+  PRODUCT_ID:nullable string[max=60]=PRODUCT_ID;
+  COMP_PROD_ID:nullable string[max=60]=COMP_PROD_ID;
+  PROD_SUBS_ID:nullable string[max=60]=PROD_SUBS_ID;
+  MEDIUM_TYPE_CDS:nullable string[max=16]=MEDIUM_TYPE_CDS;
+  DEPOSIT_KIND_CD:nullable string[max=4]=DEPOSIT_KIND_CD;
+  ACCT_ATTR_CD:nullable string[max=8]=ACCT_ATTR_CD;
+  ACCT_STATUS_CD:nullable string[max=6]=ACCT_STATUS_CD;
+  RLOSS_STATUS_CDS:nullable string[max=20]=RLOSS_STATUS_CDS;
+  AUTH_MODE_CD:nullable string[max=4]=AUTH_MODE_CD;
+  DRAW_MODE_CDS:nullable string[max=32]=DRAW_MODE_CDS;
+  DRAW_CERT_TYPE_CD:nullable string[max=6]=DRAW_CERT_TYPE_CD;
+  DRAW_CERT_NO:nullable string[max=60]=DRAW_CERT_NO;
+  EXCHANGE_RANGE_CD:nullable string[max=2]=EXCHANGE_RANGE_CD;
+  DEPOSIT_RANGE_CD:nullable string[max=2]=DEPOSIT_RANGE_CD;
+  BELONG_ORG_ID:nullable string[max=12]=BELONG_ORG_ID;
+  OPEN_ORG_ID:nullable string[max=12]=OPEN_ORG_ID;
+  OPEN_CHK_BOOK_NO:nullable string[max=40]=OPEN_CHK_BOOK_NO;
+  OPEN_CERT_TYPE_CD:nullable string[max=6]=OPEN_CERT_TYPE_CD;
+  OPEN_CERT_NO:nullable string[max=60]=OPEN_CERT_NO;
+  CLOSE_ORG_ID:nullable string[max=12]=CLOSE_ORG_ID;
+  ZERO_BAL_ACCT_FLG:nullable string[max=2]=ZERO_BAL_ACCT_FLG;
+  ETL_JOB:nullable string[max=100]=ETL_JOB;
+  ETL_SRC_TABLE:nullable string[max=100]=ETL_SRC_TABLE;
+keep
+  OPEN_DATE,CLOSE_DATE,LAST_NO_ACCT_DATE,ETL_FIRST_DATE,
+  ETL_TX_DATE;
+)] 'Copy_2:DSLink4.v'
+;
+
+
+=+=+=+=
+      IsTemplate "0"
+      NLSLocale ",,,,"
+      JobType "3"
+      Category "\\Jobs\\29"
+      CenturyBreakYear "30"
+      NextAliasID "2"
+      ParameterFileDDName "DD00001"
+      ReservedWordCheck "1"
+      TransactionSize "0"
+      ValidationStatus "0"
+      Uploadable "0"
+      PgmCustomizationFlag "0"
+      JobReportFlag "0"
+      AllowMultipleInvocations "0"
+      Act2ActOverideDefaults "0"
+      Act2ActEnableRowBuffer "0"
+      Act2ActUseIPC "0"
+      Act2ActBufferSize "0"
+      Act2ActIPCTimeout "0"
+      ExpressionSemanticCheckFlag "0"
+      TraceOption "0"
+      EnableCacheSharing "0"
+      RuntimeColumnPropagation "0"
+      RelStagesInJobStatus "-1"
+      WebServiceEnabled "0"
+      MFProcessMetaData "0"
+      MFProcessMetaDataXMLFileExchangeMethod "0"
+      IMSProgType "0"
+      CopyLibPrefix "ARDT"
+      RecordPerformanceResults "0"
+   END DSRECORD
+   BEGIN DSRECORD
+      Identifier "V0"
+      OLEType "CContainerView"
+      Readonly "0"
+      Name "Job"
+      NextID "1"
+      IsTopLevel "0"
+      StageList "V0S0|V1S0|V0S2|V0A5"
+      StageXPos "120|504|288|14"
+      StageYPos "192|192|192|11"
+      StageTypes "CCustomStage.CC_GUI|CCustomStage.CC_GUI|CCustomStage|ID_PALETTEANNOTATION"
+      NextStageID "6"
+      SnapToGrid "1"
+      GridLines "0"
+      ZoomValue "100"
+      StageXSize "48|48|48|329"
+      StageYSize "48|48|48|72"
+      ContainerViewSizing "0000 0000 0553 0343 0000 0001 0000 0000"
+      StageNames "db2400|vertica|Copy_2| "
+      StageTypeIDs "ODBCConnectorPX|ODBCConnectorPX|PxCopy| "
+      LinkNames "DSLink3| |DSLink4| "
+      LinkHasMetaDatas "True| |True| "
+      LinkTypes "1| |1| "
+      LinkNamePositionXs "213| |400| "
+      LinkNamePositionYs "216| |209| "
+      TargetStageIDs "V0S2| |V1S0| "
+      SourceStageEffectiveExecutionModes "2| |2| "
+      SourceStageRuntimeExecutionModes "2| |2| "
+      TargetStageEffectiveExecutionModes "2| |2| "
+      TargetStageRuntimeExecutionModes "2| |2| "
+      LinkIsSingleOperatorLookup "False| |False| "
+      LinkIsSortSequential "False| |False| "
+      LinkSortMode "0| |0| "
+      LinkPartColMode "1| |1| "
+      LinkSourcePinIDs "V0S0P1| |V0S2P2| "
+   END DSRECORD
+   BEGIN DSRECORD
+      Identifier "V0A5"
+      OLEType "CAnnotation"
+      Readonly "0"
+      Name "V0A5"
+      NextID "0"
+      AnnotationType "0"
+      AnnotationText =+=+=+=
+400-vertica
+FDMDALIB.F_AGT_CDEP_ACCT
+BIEZSLIB.F_AGT_CDEP_ACCT
+=+=+=+=
+      TextFont "\(5B8B)\(4F53)\\10\\0\\0\\0\\400\\134"
+      TextHorizontalJustification "0"
+      TextVerticalJustification "0"
+      TextColor "0"
+      BackgroundColor "12713983"
+      BackgroundTransparent "0"
+      BorderVisible "1"
+   END DSRECORD
+   BEGIN DSRECORD
+      Identifier "V0S0"
+      OLEType "CCustomStage"
+      Readonly "0"
+      Name "db2400"
+      NextID "2"
+      OutputPins "V0S0P1"
+      StageType "ODBCConnectorPX"
+      AllowColumnMapping "0"
+      Properties "CCustomProperty"
+      BEGIN DSSUBRECORD
+         Name "VariantName"
+         Value "3.5"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "VariantLibrary"
+         Value "ccodbc"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "VariantVersion"
+         Value "1.0"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "SupportedVariants"
+         Value "V1;3.5::ccodbc"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "SupportedVariantsLibraries"
+         Value "ccodbc"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "SupportedVariantsVersions"
+         Value "1.0"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "Orientation"
+         Value "link"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "RejectFromLink"
+         Value "-1"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "RejectThreshold"
+         Value "0"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "RejectNumber"
+         Value "0"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "RejectUsesPercentage"
+         Value "false"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "ConnectorName"
+         Value "ODBCConnector"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "Engine"
+         Value "EE"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "Context"
+         Value "source"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "ConnectionString"
+         Value "/Connection/DataSource"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "Username"
+         Value "/Connection/Username"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "Password"
+         Value "/Connection/Password"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "XMLProperties"
+         Value "<?xml version='1.0' encoding='UTF-16'?><Properties version='1.1'><Common><Context type='int'>1</Context><Variant type='string'>3.5</Variant><DescriptorVersion type='string'>1.0</DescriptorVersion><PartitionType type='int'>-1</PartitionType><RCP type='int'>0</RCP></Common><Connection><DataSource modified='1' type='string'><![CDATA[#dba_vertica_param.db2_data#]]></DataSource><Username modified='1' type='string'><![CDATA[#dba_vertica_param.db2_name#]]></Username><Password modified='1' type='string'><![CDATA[#dba_vertica_param.db2_pwd#]]></Password></Connection><Usage><GenerateSQL type='bool'><![CDATA[0]]></GenerateSQL><EnableQuotedIDs type='bool'><![CDATA[0]]></EnableQuotedIDs><SQL><SelectStatement modified='1' type='string'><![CDATA[SELECT * FROM FDMDALIB.F_AGT_CDEP_ACCT FETCH FIRST 10000 ROWS ONLY]]><ReadStatementFromFile type='bool'><![CDATA[0]]></ReadStatementFromFile><Tables collapsed='1'></Tables><Parameters collapsed='1'></Parameters><Columns collapsed='1'></Columns></SelectStatement><EnablePartitioning collapsed='1' type='bool'><![CDATA[0]]></EnablePartitioning></SQL><Transaction><RecordCount type='int'><![CDATA[2000]]></RecordCount><EndOfWave collapsed='1' type='int'><![CDATA[0]]></EndOfWave></Transaction><Session><IsolationLevel type='int'><![CDATA[1]]></IsolationLevel><AutocommitMode type='int'><![CDATA[0]]></AutocommitMode><ArraySize type='int'><![CDATA[2000]]></ArraySize><SchemaReconciliation><FailOnSizeMismatch type='bool'><![CDATA[1]]></FailOnSizeMismatch><FailOnTypeMismatch type='bool'><![CDATA[1]]></FailOnTypeMismatch><FailOnCodePageMismatch type='bool'><![CDATA[0]]></FailOnCodePageMismatch></SchemaReconciliation><PassLobLocator collapsed='1' type='bool'><![CDATA[0]]></PassLobLocator><CodePage collapsed='1' type='int'><![CDATA[0]]></CodePage></Session><BeforeAfter collapsed='1' type='bool'><![CDATA[0]]></BeforeAfter><LimitRows collapsed='1' type='bool'><![CDATA[0]]></LimitRows></Usage></Properties >"
+      END DSSUBRECORD
+      NextRecordID "0"
+   END DSRECORD
+   BEGIN DSRECORD
+      Identifier "V0S0P1"
+      OLEType "CCustomOutput"
+      Readonly "0"
+      Name "DSLink3"
+      Partner "V0S2|V0S2P1"
+      Properties "CCustomProperty"
+      BEGIN DSSUBRECORD
+         Name "lookup\\type"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "VariantName"
+         Value "3.5"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "VariantLibrary"
+         Value "ccodbc"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "VariantVersion"
+         Value "1.0"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "RejectFromLink"
+         Value "-1"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "RejectThreshold"
+         Value "0"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "RejectNumber"
+         Value "0"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "RejectUsesPercentage"
+         Value "false"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "ConnectorName"
+         Value "ODBCConnector"
+      END DSSUBRECORD
+      Columns "COutputColumn"
+      BEGIN DSSUBRECORD
+         Name "ACCOUNT_ID"
+         Description =+=+=+=
+\(1A)\(1A)
+Searchable? N 
+=+=+=+=
+         SqlType "12"
+         Precision "32"
+         Scale "0"
+         Nullable "0"
+         KeyPosition "1"
+         DisplaySize "32"
+         Group "0"
+         SortKey "0"
+         SortType "0"
+         TableDef "ODBC\\DB400_106\\FDMDALIB.F_AGT_CDEP_ACCT"
+         AllowCRLF "0"
+         LevelNo "0"
+         Occurs "0"
+         PadNulls "0"
+         SignOption "0"
+         SortingOrder "0"
+         ArrayHandling "0"
+         SyncIndicator "0"
+         PadChar ""
+         ColumnReference "ACCOUNT_ID"
+         ExtendedPrecision "0"
+         TaggedSubrec "0"
+         OccursVarying "0"
+         PKeyIsCaseless "0"
+         SCDPurpose "0"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "ACCOUNT_NAME"
+         Description =+=+=+=
+\(1A)\(1A)
+Searchable? N 
+=+=+=+=
+         SqlType "12"
+         Precision "200"
+         Scale "0"
+         Nullable "1"
+         KeyPosition "0"
+         DisplaySize "200"
+         Group "0"
+         SortKey "0"
+         SortType "0"
+         TableDef "ODBC\\DB400_106\\FDMDALIB.F_AGT_CDEP_ACCT"
+         AllowCRLF "0"
+         LevelNo "0"
+         Occurs "0"
+         PadNulls "0"
+         SignOption "0"
+         SortingOrder "0"
+         ArrayHandling "0"
+         SyncIndicator "0"
+         PadChar ""
+         ColumnReference "ACCOUNT_NAME"
+         APTFieldProp "null_field=''"
+         ExtendedPrecision "0"
+         TaggedSubrec "0"
+         OccursVarying "0"
+         PKeyIsCaseless "0"
+         SCDPurpose "0"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "ACCOUNT_SHORT_NAME"
+         Description =+=+=+=
+\(1A)\(1A)
+Searchable? N 
+=+=+=+=
+         SqlType "12"
+         Precision "60"
+         Scale "0"
+         Nullable "1"
+         KeyPosition "0"
+         DisplaySize "60"
+         Group "0"
+         SortKey "0"
+         SortType "0"
+         TableDef "ODBC\\DB400_106\\FDMDALIB.F_AGT_CDEP_ACCT"
+         AllowCRLF "0"
+         LevelNo "0"
+         Occurs "0"
+         PadNulls "0"
+         SignOption "0"
+         SortingOrder "0"
+         ArrayHandling "0"
+         SyncIndicator "0"
+         PadChar ""
+         ColumnReference "ACCOUNT_SHORT_NAME"
+         APTFieldProp "null_field=''"
+         ExtendedPrecision "0"
+         TaggedSubrec "0"
+         OccursVarying "0"
+         PKeyIsCaseless "0"
+         SCDPurpose "0"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "CUST_ID"
+         Description =+=+=+=
+\(1A)\(1A)
+Searchable? N 
+=+=+=+=
+         SqlType "1"
+         Precision "11"
+         Scale "0"
+         Nullable "1"
+         KeyPosition "0"
+         DisplaySize "11"
+         Group "0"
+         SortKey "0"
+         SortType "0"
+         TableDef "ODBC\\DB400_106\\FDMDALIB.F_AGT_CDEP_ACCT"
+         AllowCRLF "0"
+         LevelNo "0"
+         Occurs "0"
+         PadNulls "0"
+         SignOption "0"
+         SortingOrder "0"
+         ArrayHandling "0"
+         SyncIndicator "0"
+         PadChar ""
+         ColumnReference "CUST_ID"
+         APTFieldProp "null_field=''"
+         ExtendedPrecision "0"
+         TaggedSubrec "0"
+         OccursVarying "0"
+         PKeyIsCaseless "0"
+         SCDPurpose "0"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "CUST_TYPE_CD"
+         Description =+=+=+=
+\(1A)\(1A)\(1A)
+Searchable? N 
+=+=+=+=
+         SqlType "1"
+         Precision "1"
+         Scale "0"
+         Nullable "1"
+         KeyPosition "0"
+         DisplaySize "1"
+         Group "0"
+         SortKey "0"
+         SortType "0"
+         TableDef "ODBC\\DB400_106\\FDMDALIB.F_AGT_CDEP_ACCT"
+         AllowCRLF "0"
+         LevelNo "0"
+         Occurs "0"
+         PadNulls "0"
+         SignOption "0"
+         SortingOrder "0"
+         ArrayHandling "0"
+         SyncIndicator "0"
+         PadChar ""
+         ColumnReference "CUST_TYPE_CD"
+         APTFieldProp "null_field=''"
+         ExtendedPrecision "0"
+         TaggedSubrec "0"
+         OccursVarying "0"
+         PKeyIsCaseless "0"
+         SCDPurpose "0"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "PRODUCT_ID"
+         Description =+=+=+=
+\(1A)\(1A)
+Searchable? N 
+=+=+=+=
+         SqlType "12"
+         Precision "30"
+         Scale "0"
+         Nullable "1"
+         KeyPosition "0"
+         DisplaySize "30"
+         Group "0"
+         SortKey "0"
+         SortType "0"
+         TableDef "ODBC\\DB400_106\\FDMDALIB.F_AGT_CDEP_ACCT"
+         AllowCRLF "0"
+         LevelNo "0"
+         Occurs "0"
+         PadNulls "0"
+         SignOption "0"
+         SortingOrder "0"
+         ArrayHandling "0"
+         SyncIndicator "0"
+         PadChar ""
+         ColumnReference "PRODUCT_ID"
+         APTFieldProp "null_field=''"
+         ExtendedPrecision "0"
+         TaggedSubrec "0"
+         OccursVarying "0"
+         PKeyIsCaseless "0"
+         SCDPurpose "0"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "COMP_PROD_ID"
+         Description =+=+=+=
+\(1A)\(1A)\(1A)
+Searchable? N 
+=+=+=+=
+         SqlType "12"
+         Precision "30"
+         Scale "0"
+         Nullable "1"
+         KeyPosition "0"
+         DisplaySize "30"
+         Group "0"
+         SortKey "0"
+         SortType "0"
+         TableDef "ODBC\\DB400_106\\FDMDALIB.F_AGT_CDEP_ACCT"
+         AllowCRLF "0"
+         LevelNo "0"
+         Occurs "0"
+         PadNulls "0"
+         SignOption "0"
+         SortingOrder "0"
+         ArrayHandling "0"
+         SyncIndicator "0"
+         PadChar ""
+         ColumnReference "COMP_PROD_ID"
+         APTFieldProp "null_field=''"
+         ExtendedPrecision "0"
+         TaggedSubrec "0"
+         OccursVarying "0"
+         PKeyIsCaseless "0"
+         SCDPurpose "0"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "PROD_SUBS_ID"
+         Description =+=+=+=
+\(1A)\(1A)\(1A)
+Searchable? N 
+=+=+=+=
+         SqlType "12"
+         Precision "30"
+         Scale "0"
+         Nullable "1"
+         KeyPosition "0"
+         DisplaySize "30"
+         Group "0"
+         SortKey "0"
+         SortType "0"
+         TableDef "ODBC\\DB400_106\\FDMDALIB.F_AGT_CDEP_ACCT"
+         AllowCRLF "0"
+         LevelNo "0"
+         Occurs "0"
+         PadNulls "0"
+         SignOption "0"
+         SortingOrder "0"
+         ArrayHandling "0"
+         SyncIndicator "0"
+         PadChar ""
+         ColumnReference "PROD_SUBS_ID"
+         APTFieldProp "null_field=''"
+         ExtendedPrecision "0"
+         TaggedSubrec "0"
+         OccursVarying "0"
+         PKeyIsCaseless "0"
+         SCDPurpose "0"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "MEDIUM_TYPE_CDS"
+         Description =+=+=+=
+\(1A)\(1A)\(1A)
+Searchable? N 
+=+=+=+=
+         SqlType "1"
+         Precision "8"
+         Scale "0"
+         Nullable "1"
+         KeyPosition "0"
+         DisplaySize "8"
+         Group "0"
+         SortKey "0"
+         SortType "0"
+         TableDef "ODBC\\DB400_106\\FDMDALIB.F_AGT_CDEP_ACCT"
+         AllowCRLF "0"
+         LevelNo "0"
+         Occurs "0"
+         PadNulls "0"
+         SignOption "0"
+         SortingOrder "0"
+         ArrayHandling "0"
+         SyncIndicator "0"
+         PadChar ""
+         ColumnReference "MEDIUM_TYPE_CDS"
+         APTFieldProp "null_field=''"
+         ExtendedPrecision "0"
+         TaggedSubrec "0"
+         OccursVarying "0"
+         PKeyIsCaseless "0"
+         SCDPurpose "0"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "DEPOSIT_KIND_CD"
+         Description =+=+=+=
+\(1A)\(1A)\(1A)
+Searchable? N 
+=+=+=+=
+         SqlType "1"
+         Precision "2"
+         Scale "0"
+         Nullable "1"
+         KeyPosition "0"
+         DisplaySize "2"
+         Group "0"
+         SortKey "0"
+         SortType "0"
+         TableDef "ODBC\\DB400_106\\FDMDALIB.F_AGT_CDEP_ACCT"
+         AllowCRLF "0"
+         LevelNo "0"
+         Occurs "0"
+         PadNulls "0"
+         SignOption "0"
+         SortingOrder "0"
+         ArrayHandling "0"
+         SyncIndicator "0"
+         PadChar ""
+         ColumnReference "DEPOSIT_KIND_CD"
+         APTFieldProp "null_field=''"
+         ExtendedPrecision "0"
+         TaggedSubrec "0"
+         OccursVarying "0"
+         PKeyIsCaseless "0"
+         SCDPurpose "0"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "ACCT_ATTR_CD"
+         Description =+=+=+=
+\(1A)\(1A)\(1A)
+Searchable? N 
+=+=+=+=
+         SqlType "1"
+         Precision "4"
+         Scale "0"
+         Nullable "1"
+         KeyPosition "0"
+         DisplaySize "4"
+         Group "0"
+         SortKey "0"
+         SortType "0"
+         TableDef "ODBC\\DB400_106\\FDMDALIB.F_AGT_CDEP_ACCT"
+         AllowCRLF "0"
+         LevelNo "0"
+         Occurs "0"
+         PadNulls "0"
+         SignOption "0"
+         SortingOrder "0"
+         ArrayHandling "0"
+         SyncIndicator "0"
+         PadChar ""
+         ColumnReference "ACCT_ATTR_CD"
+         APTFieldProp "null_field=''"
+         ExtendedPrecision "0"
+         TaggedSubrec "0"
+         OccursVarying "0"
+         PKeyIsCaseless "0"
+         SCDPurpose "0"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "ACCT_STATUS_CD"
+         Description =+=+=+=
+\(1A)\(1A)\(1A)
+Searchable? N 
+=+=+=+=
+         SqlType "1"
+         Precision "3"
+         Scale "0"
+         Nullable "1"
+         KeyPosition "0"
+         DisplaySize "3"
+         Group "0"
+         SortKey "0"
+         SortType "0"
+         TableDef "ODBC\\DB400_106\\FDMDALIB.F_AGT_CDEP_ACCT"
+         AllowCRLF "0"
+         LevelNo "0"
+         Occurs "0"
+         PadNulls "0"
+         SignOption "0"
+         SortingOrder "0"
+         ArrayHandling "0"
+         SyncIndicator "0"
+         PadChar ""
+         ColumnReference "ACCT_STATUS_CD"
+         APTFieldProp "null_field=''"
+         ExtendedPrecision "0"
+         TaggedSubrec "0"
+         OccursVarying "0"
+         PKeyIsCaseless "0"
+         SCDPurpose "0"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "RLOSS_STATUS_CDS"
+         Description =+=+=+=
+\(1A)\(1A)\(1A)
+Searchable? N 
+=+=+=+=
+         SqlType "1"
+         Precision "10"
+         Scale "0"
+         Nullable "1"
+         KeyPosition "0"
+         DisplaySize "10"
+         Group "0"
+         SortKey "0"
+         SortType "0"
+         TableDef "ODBC\\DB400_106\\FDMDALIB.F_AGT_CDEP_ACCT"
+         AllowCRLF "0"
+         LevelNo "0"
+         Occurs "0"
+         PadNulls "0"
+         SignOption "0"
+         SortingOrder "0"
+         ArrayHandling "0"
+         SyncIndicator "0"
+         PadChar ""
+         ColumnReference "RLOSS_STATUS_CDS"
+         APTFieldProp "null_field=''"
+         ExtendedPrecision "0"
+         TaggedSubrec "0"
+         OccursVarying "0"
+         PKeyIsCaseless "0"
+         SCDPurpose "0"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "AUTH_MODE_CD"
+         Description =+=+=+=
+\(1A)\(1A)\(1A)
+Searchable? N 
+=+=+=+=
+         SqlType "1"
+         Precision "2"
+         Scale "0"
+         Nullable "1"
+         KeyPosition "0"
+         DisplaySize "2"
+         Group "0"
+         SortKey "0"
+         SortType "0"
+         TableDef "ODBC\\DB400_106\\FDMDALIB.F_AGT_CDEP_ACCT"
+         AllowCRLF "0"
+         LevelNo "0"
+         Occurs "0"
+         PadNulls "0"
+         SignOption "0"
+         SortingOrder "0"
+         ArrayHandling "0"
+         SyncIndicator "0"
+         PadChar ""
+         ColumnReference "AUTH_MODE_CD"
+         APTFieldProp "null_field=''"
+         ExtendedPrecision "0"
+         TaggedSubrec "0"
+         OccursVarying "0"
+         PKeyIsCaseless "0"
+         SCDPurpose "0"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "DRAW_MODE_CDS"
+         Description =+=+=+=
+\(1A)\(1A)\(1A)
+Searchable? N 
+=+=+=+=
+         SqlType "1"
+         Precision "16"
+         Scale "0"
+         Nullable "1"
+         KeyPosition "0"
+         DisplaySize "16"
+         Group "0"
+         SortKey "0"
+         SortType "0"
+         TableDef "ODBC\\DB400_106\\FDMDALIB.F_AGT_CDEP_ACCT"
+         AllowCRLF "0"
+         LevelNo "0"
+         Occurs "0"
+         PadNulls "0"
+         SignOption "0"
+         SortingOrder "0"
+         ArrayHandling "0"
+         SyncIndicator "0"
+         PadChar ""
+         ColumnReference "DRAW_MODE_CDS"
+         APTFieldProp "null_field=''"
+         ExtendedPrecision "0"
+         TaggedSubrec "0"
+         OccursVarying "0"
+         PKeyIsCaseless "0"
+         SCDPurpose "0"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "DRAW_CERT_TYPE_CD"
+         Description =+=+=+=
+\(1A)\(1A)\(1A)\(1A)
+Searchable? N 
+=+=+=+=
+         SqlType "1"
+         Precision "3"
+         Scale "0"
+         Nullable "1"
+         KeyPosition "0"
+         DisplaySize "3"
+         Group "0"
+         SortKey "0"
+         SortType "0"
+         TableDef "ODBC\\DB400_106\\FDMDALIB.F_AGT_CDEP_ACCT"
+         AllowCRLF "0"
+         LevelNo "0"
+         Occurs "0"
+         PadNulls "0"
+         SignOption "0"
+         SortingOrder "0"
+         ArrayHandling "0"
+         SyncIndicator "0"
+         PadChar ""
+         ColumnReference "DRAW_CERT_TYPE_CD"
+         APTFieldProp "null_field=''"
+         ExtendedPrecision "0"
+         TaggedSubrec "0"
+         OccursVarying "0"
+         PKeyIsCaseless "0"
+         SCDPurpose "0"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "DRAW_CERT_NO"
+         Description =+=+=+=
+\(1A)\(1A)\(1A)
+Searchable? N 
+=+=+=+=
+         SqlType "12"
+         Precision "30"
+         Scale "0"
+         Nullable "1"
+         KeyPosition "0"
+         DisplaySize "30"
+         Group "0"
+         SortKey "0"
+         SortType "0"
+         TableDef "ODBC\\DB400_106\\FDMDALIB.F_AGT_CDEP_ACCT"
+         AllowCRLF "0"
+         LevelNo "0"
+         Occurs "0"
+         PadNulls "0"
+         SignOption "0"
+         SortingOrder "0"
+         ArrayHandling "0"
+         SyncIndicator "0"
+         PadChar ""
+         ColumnReference "DRAW_CERT_NO"
+         APTFieldProp "null_field=''"
+         ExtendedPrecision "0"
+         TaggedSubrec "0"
+         OccursVarying "0"
+         PKeyIsCaseless "0"
+         SCDPurpose "0"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "EXCHANGE_RANGE_CD"
+         Description =+=+=+=
+\(1A)\(1A)\(1A)
+Searchable? N 
+=+=+=+=
+         SqlType "1"
+         Precision "1"
+         Scale "0"
+         Nullable "1"
+         KeyPosition "0"
+         DisplaySize "1"
+         Group "0"
+         SortKey "0"
+         SortType "0"
+         TableDef "ODBC\\DB400_106\\FDMDALIB.F_AGT_CDEP_ACCT"
+         AllowCRLF "0"
+         LevelNo "0"
+         Occurs "0"
+         PadNulls "0"
+         SignOption "0"
+         SortingOrder "0"
+         ArrayHandling "0"
+         SyncIndicator "0"
+         PadChar ""
+         ColumnReference "EXCHANGE_RANGE_CD"
+         APTFieldProp "null_field=''"
+         ExtendedPrecision "0"
+         TaggedSubrec "0"
+         OccursVarying "0"
+         PKeyIsCaseless "0"
+         SCDPurpose "0"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "DEPOSIT_RANGE_CD"
+         Description =+=+=+=
+\(1A)\(1A)\(1A)
+Searchable? N 
+=+=+=+=
+         SqlType "1"
+         Precision "1"
+         Scale "0"
+         Nullable "1"
+         KeyPosition "0"
+         DisplaySize "1"
+         Group "0"
+         SortKey "0"
+         SortType "0"
+         TableDef "ODBC\\DB400_106\\FDMDALIB.F_AGT_CDEP_ACCT"
+         AllowCRLF "0"
+         LevelNo "0"
+         Occurs "0"
+         PadNulls "0"
+         SignOption "0"
+         SortingOrder "0"
+         ArrayHandling "0"
+         SyncIndicator "0"
+         PadChar ""
+         ColumnReference "DEPOSIT_RANGE_CD"
+         APTFieldProp "null_field=''"
+         ExtendedPrecision "0"
+         TaggedSubrec "0"
+         OccursVarying "0"
+         PKeyIsCaseless "0"
+         SCDPurpose "0"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "BELONG_ORG_ID"
+         Description =+=+=+=
+\(1A)\(1A)\(1A)
+Searchable? N 
+=+=+=+=
+         SqlType "1"
+         Precision "6"
+         Scale "0"
+         Nullable "1"
+         KeyPosition "0"
+         DisplaySize "6"
+         Group "0"
+         SortKey "0"
+         SortType "0"
+         TableDef "ODBC\\DB400_106\\FDMDALIB.F_AGT_CDEP_ACCT"
+         AllowCRLF "0"
+         LevelNo "0"
+         Occurs "0"
+         PadNulls "0"
+         SignOption "0"
+         SortingOrder "0"
+         ArrayHandling "0"
+         SyncIndicator "0"
+         PadChar ""
+         ColumnReference "BELONG_ORG_ID"
+         APTFieldProp "null_field=''"
+         ExtendedPrecision "0"
+         TaggedSubrec "0"
+         OccursVarying "0"
+         PKeyIsCaseless "0"
+         SCDPurpose "0"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "OPEN_DATE"
+         Description =+=+=+=
+\(1A)\(1A)
+Searchable? N 
+=+=+=+=
+         SqlType "9"
+         Precision "10"
+         Scale "0"
+         Nullable "1"
+         KeyPosition "0"
+         DisplaySize "10"
+         Group "0"
+         SortKey "0"
+         SortType "0"
+         TableDef "ODBC\\DB400_106\\FDMDALIB.F_AGT_CDEP_ACCT"
+         AllowCRLF "0"
+         LevelNo "0"
+         Occurs "0"
+         PadNulls "0"
+         SignOption "0"
+         SortingOrder "0"
+         ArrayHandling "0"
+         SyncIndicator "0"
+         PadChar ""
+         ColumnReference "OPEN_DATE"
+         APTFieldProp "null_field=''"
+         ExtendedPrecision "0"
+         TaggedSubrec "0"
+         OccursVarying "0"
+         PKeyIsCaseless "0"
+         SCDPurpose "0"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "OPEN_ORG_ID"
+         Description =+=+=+=
+\(1A)\(1A)\(1A)
+Searchable? N 
+=+=+=+=
+         SqlType "1"
+         Precision "6"
+         Scale "0"
+         Nullable "1"
+         KeyPosition "0"
+         DisplaySize "6"
+         Group "0"
+         SortKey "0"
+         SortType "0"
+         TableDef "ODBC\\DB400_106\\FDMDALIB.F_AGT_CDEP_ACCT"
+         AllowCRLF "0"
+         LevelNo "0"
+         Occurs "0"
+         PadNulls "0"
+         SignOption "0"
+         SortingOrder "0"
+         ArrayHandling "0"
+         SyncIndicator "0"
+         PadChar ""
+         ColumnReference "OPEN_ORG_ID"
+         APTFieldProp "null_field=''"
+         ExtendedPrecision "0"
+         TaggedSubrec "0"
+         OccursVarying "0"
+         PKeyIsCaseless "0"
+         SCDPurpose "0"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "OPEN_CHK_BOOK_NO"
+         Description =+=+=+=
+\(1A)\(1A)\(1A)
+Searchable? N 
+=+=+=+=
+         SqlType "1"
+         Precision "20"
+         Scale "0"
+         Nullable "1"
+         KeyPosition "0"
+         DisplaySize "20"
+         Group "0"
+         SortKey "0"
+         SortType "0"
+         TableDef "ODBC\\DB400_106\\FDMDALIB.F_AGT_CDEP_ACCT"
+         AllowCRLF "0"
+         LevelNo "0"
+         Occurs "0"
+         PadNulls "0"
+         SignOption "0"
+         SortingOrder "0"
+         ArrayHandling "0"
+         SyncIndicator "0"
+         PadChar ""
+         ColumnReference "OPEN_CHK_BOOK_NO"
+         APTFieldProp "null_field=''"
+         ExtendedPrecision "0"
+         TaggedSubrec "0"
+         OccursVarying "0"
+         PKeyIsCaseless "0"
+         SCDPurpose "0"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "OPEN_CERT_TYPE_CD"
+         Description =+=+=+=
+\(1A)\(1A)\(1A)\(1A)
+Searchable? N 
+=+=+=+=
+         SqlType "1"
+         Precision "3"
+         Scale "0"
+         Nullable "1"
+         KeyPosition "0"
+         DisplaySize "3"
+         Group "0"
+         SortKey "0"
+         SortType "0"
+         TableDef "ODBC\\DB400_106\\FDMDALIB.F_AGT_CDEP_ACCT"
+         AllowCRLF "0"
+         LevelNo "0"
+         Occurs "0"
+         PadNulls "0"
+         SignOption "0"
+         SortingOrder "0"
+         ArrayHandling "0"
+         SyncIndicator "0"
+         PadChar ""
+         ColumnReference "OPEN_CERT_TYPE_CD"
+         APTFieldProp "null_field=''"
+         ExtendedPrecision "0"
+         TaggedSubrec "0"
+         OccursVarying "0"
+         PKeyIsCaseless "0"
+         SCDPurpose "0"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "OPEN_CERT_NO"
+         Description =+=+=+=
+\(1A)\(1A)\(1A)
+Searchable? N 
+=+=+=+=
+         SqlType "12"
+         Precision "30"
+         Scale "0"
+         Nullable "1"
+         KeyPosition "0"
+         DisplaySize "30"
+         Group "0"
+         SortKey "0"
+         SortType "0"
+         TableDef "ODBC\\DB400_106\\FDMDALIB.F_AGT_CDEP_ACCT"
+         AllowCRLF "0"
+         LevelNo "0"
+         Occurs "0"
+         PadNulls "0"
+         SignOption "0"
+         SortingOrder "0"
+         ArrayHandling "0"
+         SyncIndicator "0"
+         PadChar ""
+         ColumnReference "OPEN_CERT_NO"
+         APTFieldProp "null_field=''"
+         ExtendedPrecision "0"
+         TaggedSubrec "0"
+         OccursVarying "0"
+         PKeyIsCaseless "0"
+         SCDPurpose "0"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "CLOSE_DATE"
+         Description =+=+=+=
+\(1A)\(1A)
+Searchable? N 
+=+=+=+=
+         SqlType "9"
+         Precision "10"
+         Scale "0"
+         Nullable "1"
+         KeyPosition "0"
+         DisplaySize "10"
+         Group "0"
+         SortKey "0"
+         SortType "0"
+         TableDef "ODBC\\DB400_106\\FDMDALIB.F_AGT_CDEP_ACCT"
+         AllowCRLF "0"
+         LevelNo "0"
+         Occurs "0"
+         PadNulls "0"
+         SignOption "0"
+         SortingOrder "0"
+         ArrayHandling "0"
+         SyncIndicator "0"
+         PadChar ""
+         ColumnReference "CLOSE_DATE"
+         APTFieldProp "null_field=''"
+         ExtendedPrecision "0"
+         TaggedSubrec "0"
+         OccursVarying "0"
+         PKeyIsCaseless "0"
+         SCDPurpose "0"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "CLOSE_ORG_ID"
+         Description =+=+=+=
+\(1A)\(1A)\(1A)
+Searchable? N 
+=+=+=+=
+         SqlType "1"
+         Precision "6"
+         Scale "0"
+         Nullable "1"
+         KeyPosition "0"
+         DisplaySize "6"
+         Group "0"
+         SortKey "0"
+         SortType "0"
+         TableDef "ODBC\\DB400_106\\FDMDALIB.F_AGT_CDEP_ACCT"
+         AllowCRLF "0"
+         LevelNo "0"
+         Occurs "0"
+         PadNulls "0"
+         SignOption "0"
+         SortingOrder "0"
+         ArrayHandling "0"
+         SyncIndicator "0"
+         PadChar ""
+         ColumnReference "CLOSE_ORG_ID"
+         APTFieldProp "null_field=''"
+         ExtendedPrecision "0"
+         TaggedSubrec "0"
+         OccursVarying "0"
+         PKeyIsCaseless "0"
+         SCDPurpose "0"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "LAST_NO_ACCT_DATE"
+         Description =+=+=+=
+\(1A)\(1A)\(1A)
+Searchable? N 
+=+=+=+=
+         SqlType "9"
+         Precision "10"
+         Scale "0"
+         Nullable "1"
+         KeyPosition "0"
+         DisplaySize "10"
+         Group "0"
+         SortKey "0"
+         SortType "0"
+         TableDef "ODBC\\DB400_106\\FDMDALIB.F_AGT_CDEP_ACCT"
+         AllowCRLF "0"
+         LevelNo "0"
+         Occurs "0"
+         PadNulls "0"
+         SignOption "0"
+         SortingOrder "0"
+         ArrayHandling "0"
+         SyncIndicator "0"
+         PadChar ""
+         ColumnReference "LAST_NO_ACCT_DATE"
+         APTFieldProp "null_field=''"
+         ExtendedPrecision "0"
+         TaggedSubrec "0"
+         OccursVarying "0"
+         PKeyIsCaseless "0"
+         SCDPurpose "0"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "ZERO_BAL_ACCT_FLG"
+         Description =+=+=+=
+\(1A)\(1A)\(1A)
+Searchable? N 
+=+=+=+=
+         SqlType "1"
+         Precision "1"
+         Scale "0"
+         Nullable "1"
+         KeyPosition "0"
+         DisplaySize "1"
+         Group "0"
+         SortKey "0"
+         SortType "0"
+         TableDef "ODBC\\DB400_106\\FDMDALIB.F_AGT_CDEP_ACCT"
+         AllowCRLF "0"
+         LevelNo "0"
+         Occurs "0"
+         PadNulls "0"
+         SignOption "0"
+         SortingOrder "0"
+         ArrayHandling "0"
+         SyncIndicator "0"
+         PadChar ""
+         ColumnReference "ZERO_BAL_ACCT_FLG"
+         APTFieldProp "null_field=''"
+         ExtendedPrecision "0"
+         TaggedSubrec "0"
+         OccursVarying "0"
+         PKeyIsCaseless "0"
+         SCDPurpose "0"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "ETL_JOB"
+         Description =+=+=+=
+ETL
+Searchable? N 
+=+=+=+=
+         SqlType "12"
+         Precision "50"
+         Scale "0"
+         Nullable "1"
+         KeyPosition "0"
+         DisplaySize "50"
+         Group "0"
+         SortKey "0"
+         SortType "0"
+         TableDef "ODBC\\DB400_106\\FDMDALIB.F_AGT_CDEP_ACCT"
+         AllowCRLF "0"
+         LevelNo "0"
+         Occurs "0"
+         PadNulls "0"
+         SignOption "0"
+         SortingOrder "0"
+         ArrayHandling "0"
+         SyncIndicator "0"
+         PadChar ""
+         ColumnReference "ETL_JOB"
+         APTFieldProp "null_field=''"
+         ExtendedPrecision "0"
+         TaggedSubrec "0"
+         OccursVarying "0"
+         PKeyIsCaseless "0"
+         SCDPurpose "0"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "ETL_SRC_TABLE"
+         Description =+=+=+=
+ETL
+Searchable? N 
+=+=+=+=
+         SqlType "12"
+         Precision "50"
+         Scale "0"
+         Nullable "1"
+         KeyPosition "0"
+         DisplaySize "50"
+         Group "0"
+         SortKey "0"
+         SortType "0"
+         TableDef "ODBC\\DB400_106\\FDMDALIB.F_AGT_CDEP_ACCT"
+         AllowCRLF "0"
+         LevelNo "0"
+         Occurs "0"
+         PadNulls "0"
+         SignOption "0"
+         SortingOrder "0"
+         ArrayHandling "0"
+         SyncIndicator "0"
+         PadChar ""
+         ColumnReference "ETL_SRC_TABLE"
+         APTFieldProp "null_field=''"
+         ExtendedPrecision "0"
+         TaggedSubrec "0"
+         OccursVarying "0"
+         PKeyIsCaseless "0"
+         SCDPurpose "0"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "ETL_FIRST_DATE"
+         Description =+=+=+=
+\(1A)\(1A)\(1A)\(1A)
+Searchable? N 
+=+=+=+=
+         SqlType "9"
+         Precision "10"
+         Scale "0"
+         Nullable "1"
+         KeyPosition "0"
+         DisplaySize "10"
+         Group "0"
+         SortKey "0"
+         SortType "0"
+         TableDef "ODBC\\DB400_106\\FDMDALIB.F_AGT_CDEP_ACCT"
+         AllowCRLF "0"
+         LevelNo "0"
+         Occurs "0"
+         PadNulls "0"
+         SignOption "0"
+         SortingOrder "0"
+         ArrayHandling "0"
+         SyncIndicator "0"
+         PadChar ""
+         ColumnReference "ETL_FIRST_DATE"
+         APTFieldProp "null_field=''"
+         ExtendedPrecision "0"
+         TaggedSubrec "0"
+         OccursVarying "0"
+         PKeyIsCaseless "0"
+         SCDPurpose "0"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "ETL_TX_DATE"
+         Description =+=+=+=
+\(1A)\(1A)\(1A)\(1A)
+Searchable? N 
+=+=+=+=
+         SqlType "9"
+         Precision "10"
+         Scale "0"
+         Nullable "1"
+         KeyPosition "0"
+         DisplaySize "10"
+         Group "0"
+         SortKey "0"
+         SortType "0"
+         TableDef "ODBC\\DB400_106\\FDMDALIB.F_AGT_CDEP_ACCT"
+         AllowCRLF "0"
+         LevelNo "0"
+         Occurs "0"
+         PadNulls "0"
+         SignOption "0"
+         SortingOrder "0"
+         ArrayHandling "0"
+         SyncIndicator "0"
+         PadChar ""
+         ColumnReference "ETL_TX_DATE"
+         APTFieldProp "null_field=''"
+         ExtendedPrecision "0"
+         TaggedSubrec "0"
+         OccursVarying "0"
+         PKeyIsCaseless "0"
+         SCDPurpose "0"
+      END DSSUBRECORD
+      MetaBag "CMetaProperty"
+      BEGIN DSSUBRECORD
+         Owner "APT"
+         Name "DiskWriteInc"
+         Value "1048576"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Owner "APT"
+         Name "BufFreeRun"
+         Value "50"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Owner "APT"
+         Name "MaxMemBufSize"
+         Value "3145728"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Owner "APT"
+         Name "QueueUpperSize"
+         Value "0"
+      END DSSUBRECORD
+      LeftTextPos "213"
+      TopTextPos "216"
+      LinkMinimised "0"
+   END DSRECORD
+   BEGIN DSRECORD
+      Identifier "V0S2"
+      OLEType "CCustomStage"
+      Readonly "0"
+      Name "Copy_2"
+      NextID "3"
+      InputPins "V0S2P1"
+      OutputPins "V0S2P2"
+      StageType "PxCopy"
+      AllowColumnMapping "0"
+      Properties "CCustomProperty"
+      BEGIN DSSUBRECORD
+         Name "force"
+         Value " "
+      END DSSUBRECORD
+      NextRecordID "0"
+   END DSRECORD
+   BEGIN DSRECORD
+      Identifier "V0S2P1"
+      OLEType "CCustomInput"
+      Readonly "0"
+      Name "DSLink3"
+      Partner "V0S0|V0S0P1"
+      LinkType "1"
+      MetaBag "CMetaProperty"
+      BEGIN DSSUBRECORD
+         Owner "APT"
+         Name "RTColumnProp"
+         Value "0"
+      END DSSUBRECORD
+      TransactionSize "0"
+      TXNBehaviour "0"
+      EnableTxGroup "0"
+      LinkMinimised "0"
+   END DSRECORD
+   BEGIN DSRECORD
+      Identifier "V0S2P2"
+      OLEType "CCustomOutput"
+      Readonly "0"
+      Name "DSLink4"
+      Partner "V1S0|V1S0P1"
+      Columns "COutputColumn"
+      BEGIN DSSUBRECORD
+         Name "ACCOUNT_ID"
+         Description =+=+=+=
+<none>
+Searchable? N 
+=+=+=+=
+         SqlType "12"
+         Precision "64"
+         Scale "0"
+         Nullable "0"
+         KeyPosition "0"
+         DisplaySize "64"
+         Derivation "DSLink3.ACCOUNT_ID"
+         Group "0"
+         ParsedDerivation "DSLink3.ACCOUNT_ID"
+         SourceColumn "DSLink3.ACCOUNT_ID"
+         SortKey "0"
+         SortType "0"
+         TableDef "ODBC\\VTC_94\\BIEZSLIB.F_AGT_CDEP_ACCT"
+         AllowCRLF "0"
+         LevelNo "0"
+         Occurs "0"
+         PadNulls "0"
+         SignOption "0"
+         SortingOrder "0"
+         ArrayHandling "0"
+         SyncIndicator "0"
+         PadChar ""
+         ColumnReference "ACCOUNT_ID"
+         ExtendedPrecision "0"
+         TaggedSubrec "0"
+         OccursVarying "0"
+         PKeyIsCaseless "0"
+         SCDPurpose "0"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "ACCOUNT_NAME"
+         Description =+=+=+=
+<none>
+Searchable? N 
+=+=+=+=
+         SqlType "12"
+         Precision "400"
+         Scale "0"
+         Nullable "1"
+         KeyPosition "0"
+         DisplaySize "400"
+         Derivation "DSLink3.ACCOUNT_NAME"
+         Group "0"
+         ParsedDerivation "DSLink3.ACCOUNT_NAME"
+         SourceColumn "DSLink3.ACCOUNT_NAME"
+         SortKey "0"
+         SortType "0"
+         TableDef "ODBC\\VTC_94\\BIEZSLIB.F_AGT_CDEP_ACCT"
+         AllowCRLF "0"
+         LevelNo "0"
+         Occurs "0"
+         PadNulls "0"
+         SignOption "0"
+         SortingOrder "0"
+         ArrayHandling "0"
+         SyncIndicator "0"
+         PadChar ""
+         ColumnReference "ACCOUNT_NAME"
+         APTFieldProp "null_field=''"
+         ExtendedPrecision "0"
+         TaggedSubrec "0"
+         OccursVarying "0"
+         PKeyIsCaseless "0"
+         SCDPurpose "0"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "ACCOUNT_SHORT_NAME"
+         Description =+=+=+=
+<none>
+Searchable? N 
+=+=+=+=
+         SqlType "12"
+         Precision "120"
+         Scale "0"
+         Nullable "1"
+         KeyPosition "0"
+         DisplaySize "120"
+         Derivation "DSLink3.ACCOUNT_SHORT_NAME"
+         Group "0"
+         ParsedDerivation "DSLink3.ACCOUNT_SHORT_NAME"
+         SourceColumn "DSLink3.ACCOUNT_SHORT_NAME"
+         SortKey "0"
+         SortType "0"
+         TableDef "ODBC\\VTC_94\\BIEZSLIB.F_AGT_CDEP_ACCT"
+         AllowCRLF "0"
+         LevelNo "0"
+         Occurs "0"
+         PadNulls "0"
+         SignOption "0"
+         SortingOrder "0"
+         ArrayHandling "0"
+         SyncIndicator "0"
+         PadChar ""
+         ColumnReference "ACCOUNT_SHORT_NAME"
+         APTFieldProp "null_field=''"
+         ExtendedPrecision "0"
+         TaggedSubrec "0"
+         OccursVarying "0"
+         PKeyIsCaseless "0"
+         SCDPurpose "0"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "CUST_ID"
+         Description =+=+=+=
+<none>
+Searchable? N 
+=+=+=+=
+         SqlType "12"
+         Precision "22"
+         Scale "0"
+         Nullable "1"
+         KeyPosition "0"
+         DisplaySize "22"
+         Derivation "DSLink3.CUST_ID"
+         Group "0"
+         ParsedDerivation "DSLink3.CUST_ID"
+         SourceColumn "DSLink3.CUST_ID"
+         SortKey "0"
+         SortType "0"
+         TableDef "ODBC\\VTC_94\\BIEZSLIB.F_AGT_CDEP_ACCT"
+         AllowCRLF "0"
+         LevelNo "0"
+         Occurs "0"
+         PadNulls "0"
+         SignOption "0"
+         SortingOrder "0"
+         ArrayHandling "0"
+         SyncIndicator "0"
+         PadChar ""
+         ColumnReference "CUST_ID"
+         APTFieldProp "null_field=''"
+         ExtendedPrecision "0"
+         TaggedSubrec "0"
+         OccursVarying "0"
+         PKeyIsCaseless "0"
+         SCDPurpose "0"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "CUST_TYPE_CD"
+         Description =+=+=+=
+<none>
+Searchable? N 
+=+=+=+=
+         SqlType "12"
+         Precision "2"
+         Scale "0"
+         Nullable "1"
+         KeyPosition "0"
+         DisplaySize "2"
+         Derivation "DSLink3.CUST_TYPE_CD"
+         Group "0"
+         ParsedDerivation "DSLink3.CUST_TYPE_CD"
+         SourceColumn "DSLink3.CUST_TYPE_CD"
+         SortKey "0"
+         SortType "0"
+         TableDef "ODBC\\VTC_94\\BIEZSLIB.F_AGT_CDEP_ACCT"
+         AllowCRLF "0"
+         LevelNo "0"
+         Occurs "0"
+         PadNulls "0"
+         SignOption "0"
+         SortingOrder "0"
+         ArrayHandling "0"
+         SyncIndicator "0"
+         PadChar ""
+         ColumnReference "CUST_TYPE_CD"
+         APTFieldProp "null_field=''"
+         ExtendedPrecision "0"
+         TaggedSubrec "0"
+         OccursVarying "0"
+         PKeyIsCaseless "0"
+         SCDPurpose "0"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "PRODUCT_ID"
+         Description =+=+=+=
+<none>
+Searchable? N 
+=+=+=+=
+         SqlType "12"
+         Precision "60"
+         Scale "0"
+         Nullable "1"
+         KeyPosition "0"
+         DisplaySize "60"
+         Derivation "DSLink3.PRODUCT_ID"
+         Group "0"
+         ParsedDerivation "DSLink3.PRODUCT_ID"
+         SourceColumn "DSLink3.PRODUCT_ID"
+         SortKey "0"
+         SortType "0"
+         TableDef "ODBC\\VTC_94\\BIEZSLIB.F_AGT_CDEP_ACCT"
+         AllowCRLF "0"
+         LevelNo "0"
+         Occurs "0"
+         PadNulls "0"
+         SignOption "0"
+         SortingOrder "0"
+         ArrayHandling "0"
+         SyncIndicator "0"
+         PadChar ""
+         ColumnReference "PRODUCT_ID"
+         APTFieldProp "null_field=''"
+         ExtendedPrecision "0"
+         TaggedSubrec "0"
+         OccursVarying "0"
+         PKeyIsCaseless "0"
+         SCDPurpose "0"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "COMP_PROD_ID"
+         Description =+=+=+=
+<none>
+Searchable? N 
+=+=+=+=
+         SqlType "12"
+         Precision "60"
+         Scale "0"
+         Nullable "1"
+         KeyPosition "0"
+         DisplaySize "60"
+         Derivation "DSLink3.COMP_PROD_ID"
+         Group "0"
+         ParsedDerivation "DSLink3.COMP_PROD_ID"
+         SourceColumn "DSLink3.COMP_PROD_ID"
+         SortKey "0"
+         SortType "0"
+         TableDef "ODBC\\VTC_94\\BIEZSLIB.F_AGT_CDEP_ACCT"
+         AllowCRLF "0"
+         LevelNo "0"
+         Occurs "0"
+         PadNulls "0"
+         SignOption "0"
+         SortingOrder "0"
+         ArrayHandling "0"
+         SyncIndicator "0"
+         PadChar ""
+         ColumnReference "COMP_PROD_ID"
+         APTFieldProp "null_field=''"
+         ExtendedPrecision "0"
+         TaggedSubrec "0"
+         OccursVarying "0"
+         PKeyIsCaseless "0"
+         SCDPurpose "0"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "PROD_SUBS_ID"
+         Description =+=+=+=
+<none>
+Searchable? N 
+=+=+=+=
+         SqlType "12"
+         Precision "60"
+         Scale "0"
+         Nullable "1"
+         KeyPosition "0"
+         DisplaySize "60"
+         Derivation "DSLink3.PROD_SUBS_ID"
+         Group "0"
+         ParsedDerivation "DSLink3.PROD_SUBS_ID"
+         SourceColumn "DSLink3.PROD_SUBS_ID"
+         SortKey "0"
+         SortType "0"
+         TableDef "ODBC\\VTC_94\\BIEZSLIB.F_AGT_CDEP_ACCT"
+         AllowCRLF "0"
+         LevelNo "0"
+         Occurs "0"
+         PadNulls "0"
+         SignOption "0"
+         SortingOrder "0"
+         ArrayHandling "0"
+         SyncIndicator "0"
+         PadChar ""
+         ColumnReference "PROD_SUBS_ID"
+         APTFieldProp "null_field=''"
+         ExtendedPrecision "0"
+         TaggedSubrec "0"
+         OccursVarying "0"
+         PKeyIsCaseless "0"
+         SCDPurpose "0"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "MEDIUM_TYPE_CDS"
+         Description =+=+=+=
+<none>
+Searchable? N 
+=+=+=+=
+         SqlType "12"
+         Precision "16"
+         Scale "0"
+         Nullable "1"
+         KeyPosition "0"
+         DisplaySize "16"
+         Derivation "DSLink3.MEDIUM_TYPE_CDS"
+         Group "0"
+         ParsedDerivation "DSLink3.MEDIUM_TYPE_CDS"
+         SourceColumn "DSLink3.MEDIUM_TYPE_CDS"
+         SortKey "0"
+         SortType "0"
+         TableDef "ODBC\\VTC_94\\BIEZSLIB.F_AGT_CDEP_ACCT"
+         AllowCRLF "0"
+         LevelNo "0"
+         Occurs "0"
+         PadNulls "0"
+         SignOption "0"
+         SortingOrder "0"
+         ArrayHandling "0"
+         SyncIndicator "0"
+         PadChar ""
+         ColumnReference "MEDIUM_TYPE_CDS"
+         APTFieldProp "null_field=''"
+         ExtendedPrecision "0"
+         TaggedSubrec "0"
+         OccursVarying "0"
+         PKeyIsCaseless "0"
+         SCDPurpose "0"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "DEPOSIT_KIND_CD"
+         Description =+=+=+=
+<none>
+Searchable? N 
+=+=+=+=
+         SqlType "12"
+         Precision "4"
+         Scale "0"
+         Nullable "1"
+         KeyPosition "0"
+         DisplaySize "4"
+         Derivation "DSLink3.DEPOSIT_KIND_CD"
+         Group "0"
+         ParsedDerivation "DSLink3.DEPOSIT_KIND_CD"
+         SourceColumn "DSLink3.DEPOSIT_KIND_CD"
+         SortKey "0"
+         SortType "0"
+         TableDef "ODBC\\VTC_94\\BIEZSLIB.F_AGT_CDEP_ACCT"
+         AllowCRLF "0"
+         LevelNo "0"
+         Occurs "0"
+         PadNulls "0"
+         SignOption "0"
+         SortingOrder "0"
+         ArrayHandling "0"
+         SyncIndicator "0"
+         PadChar ""
+         ColumnReference "DEPOSIT_KIND_CD"
+         APTFieldProp "null_field=''"
+         ExtendedPrecision "0"
+         TaggedSubrec "0"
+         OccursVarying "0"
+         PKeyIsCaseless "0"
+         SCDPurpose "0"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "ACCT_ATTR_CD"
+         Description =+=+=+=
+<none>
+Searchable? N 
+=+=+=+=
+         SqlType "12"
+         Precision "8"
+         Scale "0"
+         Nullable "1"
+         KeyPosition "0"
+         DisplaySize "8"
+         Derivation "DSLink3.ACCT_ATTR_CD"
+         Group "0"
+         ParsedDerivation "DSLink3.ACCT_ATTR_CD"
+         SourceColumn "DSLink3.ACCT_ATTR_CD"
+         SortKey "0"
+         SortType "0"
+         TableDef "ODBC\\VTC_94\\BIEZSLIB.F_AGT_CDEP_ACCT"
+         AllowCRLF "0"
+         LevelNo "0"
+         Occurs "0"
+         PadNulls "0"
+         SignOption "0"
+         SortingOrder "0"
+         ArrayHandling "0"
+         SyncIndicator "0"
+         PadChar ""
+         ColumnReference "ACCT_ATTR_CD"
+         APTFieldProp "null_field=''"
+         ExtendedPrecision "0"
+         TaggedSubrec "0"
+         OccursVarying "0"
+         PKeyIsCaseless "0"
+         SCDPurpose "0"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "ACCT_STATUS_CD"
+         Description =+=+=+=
+<none>
+Searchable? N 
+=+=+=+=
+         SqlType "12"
+         Precision "6"
+         Scale "0"
+         Nullable "1"
+         KeyPosition "0"
+         DisplaySize "6"
+         Derivation "DSLink3.ACCT_STATUS_CD"
+         Group "0"
+         ParsedDerivation "DSLink3.ACCT_STATUS_CD"
+         SourceColumn "DSLink3.ACCT_STATUS_CD"
+         SortKey "0"
+         SortType "0"
+         TableDef "ODBC\\VTC_94\\BIEZSLIB.F_AGT_CDEP_ACCT"
+         AllowCRLF "0"
+         LevelNo "0"
+         Occurs "0"
+         PadNulls "0"
+         SignOption "0"
+         SortingOrder "0"
+         ArrayHandling "0"
+         SyncIndicator "0"
+         PadChar ""
+         ColumnReference "ACCT_STATUS_CD"
+         APTFieldProp "null_field=''"
+         ExtendedPrecision "0"
+         TaggedSubrec "0"
+         OccursVarying "0"
+         PKeyIsCaseless "0"
+         SCDPurpose "0"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "RLOSS_STATUS_CDS"
+         Description =+=+=+=
+<none>
+Searchable? N 
+=+=+=+=
+         SqlType "12"
+         Precision "20"
+         Scale "0"
+         Nullable "1"
+         KeyPosition "0"
+         DisplaySize "20"
+         Derivation "DSLink3.RLOSS_STATUS_CDS"
+         Group "0"
+         ParsedDerivation "DSLink3.RLOSS_STATUS_CDS"
+         SourceColumn "DSLink3.RLOSS_STATUS_CDS"
+         SortKey "0"
+         SortType "0"
+         TableDef "ODBC\\VTC_94\\BIEZSLIB.F_AGT_CDEP_ACCT"
+         AllowCRLF "0"
+         LevelNo "0"
+         Occurs "0"
+         PadNulls "0"
+         SignOption "0"
+         SortingOrder "0"
+         ArrayHandling "0"
+         SyncIndicator "0"
+         PadChar ""
+         ColumnReference "RLOSS_STATUS_CDS"
+         APTFieldProp "null_field=''"
+         ExtendedPrecision "0"
+         TaggedSubrec "0"
+         OccursVarying "0"
+         PKeyIsCaseless "0"
+         SCDPurpose "0"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "AUTH_MODE_CD"
+         Description =+=+=+=
+<none>
+Searchable? N 
+=+=+=+=
+         SqlType "12"
+         Precision "4"
+         Scale "0"
+         Nullable "1"
+         KeyPosition "0"
+         DisplaySize "4"
+         Derivation "DSLink3.AUTH_MODE_CD"
+         Group "0"
+         ParsedDerivation "DSLink3.AUTH_MODE_CD"
+         SourceColumn "DSLink3.AUTH_MODE_CD"
+         SortKey "0"
+         SortType "0"
+         TableDef "ODBC\\VTC_94\\BIEZSLIB.F_AGT_CDEP_ACCT"
+         AllowCRLF "0"
+         LevelNo "0"
+         Occurs "0"
+         PadNulls "0"
+         SignOption "0"
+         SortingOrder "0"
+         ArrayHandling "0"
+         SyncIndicator "0"
+         PadChar ""
+         ColumnReference "AUTH_MODE_CD"
+         APTFieldProp "null_field=''"
+         ExtendedPrecision "0"
+         TaggedSubrec "0"
+         OccursVarying "0"
+         PKeyIsCaseless "0"
+         SCDPurpose "0"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "DRAW_MODE_CDS"
+         Description =+=+=+=
+<none>
+Searchable? N 
+=+=+=+=
+         SqlType "12"
+         Precision "32"
+         Scale "0"
+         Nullable "1"
+         KeyPosition "0"
+         DisplaySize "32"
+         Derivation "DSLink3.DRAW_MODE_CDS"
+         Group "0"
+         ParsedDerivation "DSLink3.DRAW_MODE_CDS"
+         SourceColumn "DSLink3.DRAW_MODE_CDS"
+         SortKey "0"
+         SortType "0"
+         TableDef "ODBC\\VTC_94\\BIEZSLIB.F_AGT_CDEP_ACCT"
+         AllowCRLF "0"
+         LevelNo "0"
+         Occurs "0"
+         PadNulls "0"
+         SignOption "0"
+         SortingOrder "0"
+         ArrayHandling "0"
+         SyncIndicator "0"
+         PadChar ""
+         ColumnReference "DRAW_MODE_CDS"
+         APTFieldProp "null_field=''"
+         ExtendedPrecision "0"
+         TaggedSubrec "0"
+         OccursVarying "0"
+         PKeyIsCaseless "0"
+         SCDPurpose "0"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "DRAW_CERT_TYPE_CD"
+         Description =+=+=+=
+<none>
+Searchable? N 
+=+=+=+=
+         SqlType "12"
+         Precision "6"
+         Scale "0"
+         Nullable "1"
+         KeyPosition "0"
+         DisplaySize "6"
+         Derivation "DSLink3.DRAW_CERT_TYPE_CD"
+         Group "0"
+         ParsedDerivation "DSLink3.DRAW_CERT_TYPE_CD"
+         SourceColumn "DSLink3.DRAW_CERT_TYPE_CD"
+         SortKey "0"
+         SortType "0"
+         TableDef "ODBC\\VTC_94\\BIEZSLIB.F_AGT_CDEP_ACCT"
+         AllowCRLF "0"
+         LevelNo "0"
+         Occurs "0"
+         PadNulls "0"
+         SignOption "0"
+         SortingOrder "0"
+         ArrayHandling "0"
+         SyncIndicator "0"
+         PadChar ""
+         ColumnReference "DRAW_CERT_TYPE_CD"
+         APTFieldProp "null_field=''"
+         ExtendedPrecision "0"
+         TaggedSubrec "0"
+         OccursVarying "0"
+         PKeyIsCaseless "0"
+         SCDPurpose "0"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "DRAW_CERT_NO"
+         Description =+=+=+=
+<none>
+Searchable? N 
+=+=+=+=
+         SqlType "12"
+         Precision "60"
+         Scale "0"
+         Nullable "1"
+         KeyPosition "0"
+         DisplaySize "60"
+         Derivation "DSLink3.DRAW_CERT_NO"
+         Group "0"
+         ParsedDerivation "DSLink3.DRAW_CERT_NO"
+         SourceColumn "DSLink3.DRAW_CERT_NO"
+         SortKey "0"
+         SortType "0"
+         TableDef "ODBC\\VTC_94\\BIEZSLIB.F_AGT_CDEP_ACCT"
+         AllowCRLF "0"
+         LevelNo "0"
+         Occurs "0"
+         PadNulls "0"
+         SignOption "0"
+         SortingOrder "0"
+         ArrayHandling "0"
+         SyncIndicator "0"
+         PadChar ""
+         ColumnReference "DRAW_CERT_NO"
+         APTFieldProp "null_field=''"
+         ExtendedPrecision "0"
+         TaggedSubrec "0"
+         OccursVarying "0"
+         PKeyIsCaseless "0"
+         SCDPurpose "0"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "EXCHANGE_RANGE_CD"
+         Description =+=+=+=
+<none>
+Searchable? N 
+=+=+=+=
+         SqlType "12"
+         Precision "2"
+         Scale "0"
+         Nullable "1"
+         KeyPosition "0"
+         DisplaySize "2"
+         Derivation "DSLink3.EXCHANGE_RANGE_CD"
+         Group "0"
+         ParsedDerivation "DSLink3.EXCHANGE_RANGE_CD"
+         SourceColumn "DSLink3.EXCHANGE_RANGE_CD"
+         SortKey "0"
+         SortType "0"
+         TableDef "ODBC\\VTC_94\\BIEZSLIB.F_AGT_CDEP_ACCT"
+         AllowCRLF "0"
+         LevelNo "0"
+         Occurs "0"
+         PadNulls "0"
+         SignOption "0"
+         SortingOrder "0"
+         ArrayHandling "0"
+         SyncIndicator "0"
+         PadChar ""
+         ColumnReference "EXCHANGE_RANGE_CD"
+         APTFieldProp "null_field=''"
+         ExtendedPrecision "0"
+         TaggedSubrec "0"
+         OccursVarying "0"
+         PKeyIsCaseless "0"
+         SCDPurpose "0"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "DEPOSIT_RANGE_CD"
+         Description =+=+=+=
+<none>
+Searchable? N 
+=+=+=+=
+         SqlType "12"
+         Precision "2"
+         Scale "0"
+         Nullable "1"
+         KeyPosition "0"
+         DisplaySize "2"
+         Derivation "DSLink3.DEPOSIT_RANGE_CD"
+         Group "0"
+         ParsedDerivation "DSLink3.DEPOSIT_RANGE_CD"
+         SourceColumn "DSLink3.DEPOSIT_RANGE_CD"
+         SortKey "0"
+         SortType "0"
+         TableDef "ODBC\\VTC_94\\BIEZSLIB.F_AGT_CDEP_ACCT"
+         AllowCRLF "0"
+         LevelNo "0"
+         Occurs "0"
+         PadNulls "0"
+         SignOption "0"
+         SortingOrder "0"
+         ArrayHandling "0"
+         SyncIndicator "0"
+         PadChar ""
+         ColumnReference "DEPOSIT_RANGE_CD"
+         APTFieldProp "null_field=''"
+         ExtendedPrecision "0"
+         TaggedSubrec "0"
+         OccursVarying "0"
+         PKeyIsCaseless "0"
+         SCDPurpose "0"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "BELONG_ORG_ID"
+         Description =+=+=+=
+<none>
+Searchable? N 
+=+=+=+=
+         SqlType "12"
+         Precision "12"
+         Scale "0"
+         Nullable "1"
+         KeyPosition "0"
+         DisplaySize "12"
+         Derivation "DSLink3.BELONG_ORG_ID"
+         Group "0"
+         ParsedDerivation "DSLink3.BELONG_ORG_ID"
+         SourceColumn "DSLink3.BELONG_ORG_ID"
+         SortKey "0"
+         SortType "0"
+         TableDef "ODBC\\VTC_94\\BIEZSLIB.F_AGT_CDEP_ACCT"
+         AllowCRLF "0"
+         LevelNo "0"
+         Occurs "0"
+         PadNulls "0"
+         SignOption "0"
+         SortingOrder "0"
+         ArrayHandling "0"
+         SyncIndicator "0"
+         PadChar ""
+         ColumnReference "BELONG_ORG_ID"
+         APTFieldProp "null_field=''"
+         ExtendedPrecision "0"
+         TaggedSubrec "0"
+         OccursVarying "0"
+         PKeyIsCaseless "0"
+         SCDPurpose "0"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "OPEN_DATE"
+         Description =+=+=+=
+<none>
+Searchable? N 
+=+=+=+=
+         SqlType "9"
+         Precision "10"
+         Scale "0"
+         Nullable "1"
+         KeyPosition "0"
+         DisplaySize "10"
+         Derivation "DSLink3.OPEN_DATE"
+         Group "0"
+         ParsedDerivation "DSLink3.OPEN_DATE"
+         SourceColumn "DSLink3.OPEN_DATE"
+         SortKey "0"
+         SortType "0"
+         TableDef "ODBC\\VTC_94\\BIEZSLIB.F_AGT_CDEP_ACCT"
+         AllowCRLF "0"
+         LevelNo "0"
+         Occurs "0"
+         PadNulls "0"
+         SignOption "0"
+         SortingOrder "0"
+         ArrayHandling "0"
+         SyncIndicator "0"
+         PadChar ""
+         ColumnReference "OPEN_DATE"
+         APTFieldProp "null_field=''"
+         ExtendedPrecision "0"
+         TaggedSubrec "0"
+         OccursVarying "0"
+         PKeyIsCaseless "0"
+         SCDPurpose "0"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "OPEN_ORG_ID"
+         Description =+=+=+=
+<none>
+Searchable? N 
+=+=+=+=
+         SqlType "12"
+         Precision "12"
+         Scale "0"
+         Nullable "1"
+         KeyPosition "0"
+         DisplaySize "12"
+         Derivation "DSLink3.OPEN_ORG_ID"
+         Group "0"
+         ParsedDerivation "DSLink3.OPEN_ORG_ID"
+         SourceColumn "DSLink3.OPEN_ORG_ID"
+         SortKey "0"
+         SortType "0"
+         TableDef "ODBC\\VTC_94\\BIEZSLIB.F_AGT_CDEP_ACCT"
+         AllowCRLF "0"
+         LevelNo "0"
+         Occurs "0"
+         PadNulls "0"
+         SignOption "0"
+         SortingOrder "0"
+         ArrayHandling "0"
+         SyncIndicator "0"
+         PadChar ""
+         ColumnReference "OPEN_ORG_ID"
+         APTFieldProp "null_field=''"
+         ExtendedPrecision "0"
+         TaggedSubrec "0"
+         OccursVarying "0"
+         PKeyIsCaseless "0"
+         SCDPurpose "0"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "OPEN_CHK_BOOK_NO"
+         Description =+=+=+=
+<none>
+Searchable? N 
+=+=+=+=
+         SqlType "12"
+         Precision "40"
+         Scale "0"
+         Nullable "1"
+         KeyPosition "0"
+         DisplaySize "40"
+         Derivation "DSLink3.OPEN_CHK_BOOK_NO"
+         Group "0"
+         ParsedDerivation "DSLink3.OPEN_CHK_BOOK_NO"
+         SourceColumn "DSLink3.OPEN_CHK_BOOK_NO"
+         SortKey "0"
+         SortType "0"
+         TableDef "ODBC\\VTC_94\\BIEZSLIB.F_AGT_CDEP_ACCT"
+         AllowCRLF "0"
+         LevelNo "0"
+         Occurs "0"
+         PadNulls "0"
+         SignOption "0"
+         SortingOrder "0"
+         ArrayHandling "0"
+         SyncIndicator "0"
+         PadChar ""
+         ColumnReference "OPEN_CHK_BOOK_NO"
+         APTFieldProp "null_field=''"
+         ExtendedPrecision "0"
+         TaggedSubrec "0"
+         OccursVarying "0"
+         PKeyIsCaseless "0"
+         SCDPurpose "0"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "OPEN_CERT_TYPE_CD"
+         Description =+=+=+=
+<none>
+Searchable? N 
+=+=+=+=
+         SqlType "12"
+         Precision "6"
+         Scale "0"
+         Nullable "1"
+         KeyPosition "0"
+         DisplaySize "6"
+         Derivation "DSLink3.OPEN_CERT_TYPE_CD"
+         Group "0"
+         ParsedDerivation "DSLink3.OPEN_CERT_TYPE_CD"
+         SourceColumn "DSLink3.OPEN_CERT_TYPE_CD"
+         SortKey "0"
+         SortType "0"
+         TableDef "ODBC\\VTC_94\\BIEZSLIB.F_AGT_CDEP_ACCT"
+         AllowCRLF "0"
+         LevelNo "0"
+         Occurs "0"
+         PadNulls "0"
+         SignOption "0"
+         SortingOrder "0"
+         ArrayHandling "0"
+         SyncIndicator "0"
+         PadChar ""
+         ColumnReference "OPEN_CERT_TYPE_CD"
+         APTFieldProp "null_field=''"
+         ExtendedPrecision "0"
+         TaggedSubrec "0"
+         OccursVarying "0"
+         PKeyIsCaseless "0"
+         SCDPurpose "0"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "OPEN_CERT_NO"
+         Description =+=+=+=
+<none>
+Searchable? N 
+=+=+=+=
+         SqlType "12"
+         Precision "60"
+         Scale "0"
+         Nullable "1"
+         KeyPosition "0"
+         DisplaySize "60"
+         Derivation "DSLink3.OPEN_CERT_NO"
+         Group "0"
+         ParsedDerivation "DSLink3.OPEN_CERT_NO"
+         SourceColumn "DSLink3.OPEN_CERT_NO"
+         SortKey "0"
+         SortType "0"
+         TableDef "ODBC\\VTC_94\\BIEZSLIB.F_AGT_CDEP_ACCT"
+         AllowCRLF "0"
+         LevelNo "0"
+         Occurs "0"
+         PadNulls "0"
+         SignOption "0"
+         SortingOrder "0"
+         ArrayHandling "0"
+         SyncIndicator "0"
+         PadChar ""
+         ColumnReference "OPEN_CERT_NO"
+         APTFieldProp "null_field=''"
+         ExtendedPrecision "0"
+         TaggedSubrec "0"
+         OccursVarying "0"
+         PKeyIsCaseless "0"
+         SCDPurpose "0"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "CLOSE_DATE"
+         Description =+=+=+=
+<none>
+Searchable? N 
+=+=+=+=
+         SqlType "9"
+         Precision "10"
+         Scale "0"
+         Nullable "1"
+         KeyPosition "0"
+         DisplaySize "10"
+         Derivation "DSLink3.CLOSE_DATE"
+         Group "0"
+         ParsedDerivation "DSLink3.CLOSE_DATE"
+         SourceColumn "DSLink3.CLOSE_DATE"
+         SortKey "0"
+         SortType "0"
+         TableDef "ODBC\\VTC_94\\BIEZSLIB.F_AGT_CDEP_ACCT"
+         AllowCRLF "0"
+         LevelNo "0"
+         Occurs "0"
+         PadNulls "0"
+         SignOption "0"
+         SortingOrder "0"
+         ArrayHandling "0"
+         SyncIndicator "0"
+         PadChar ""
+         ColumnReference "CLOSE_DATE"
+         APTFieldProp "null_field=''"
+         ExtendedPrecision "0"
+         TaggedSubrec "0"
+         OccursVarying "0"
+         PKeyIsCaseless "0"
+         SCDPurpose "0"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "CLOSE_ORG_ID"
+         Description =+=+=+=
+<none>
+Searchable? N 
+=+=+=+=
+         SqlType "12"
+         Precision "12"
+         Scale "0"
+         Nullable "1"
+         KeyPosition "0"
+         DisplaySize "12"
+         Derivation "DSLink3.CLOSE_ORG_ID"
+         Group "0"
+         ParsedDerivation "DSLink3.CLOSE_ORG_ID"
+         SourceColumn "DSLink3.CLOSE_ORG_ID"
+         SortKey "0"
+         SortType "0"
+         TableDef "ODBC\\VTC_94\\BIEZSLIB.F_AGT_CDEP_ACCT"
+         AllowCRLF "0"
+         LevelNo "0"
+         Occurs "0"
+         PadNulls "0"
+         SignOption "0"
+         SortingOrder "0"
+         ArrayHandling "0"
+         SyncIndicator "0"
+         PadChar ""
+         ColumnReference "CLOSE_ORG_ID"
+         APTFieldProp "null_field=''"
+         ExtendedPrecision "0"
+         TaggedSubrec "0"
+         OccursVarying "0"
+         PKeyIsCaseless "0"
+         SCDPurpose "0"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "LAST_NO_ACCT_DATE"
+         Description =+=+=+=
+<none>
+Searchable? N 
+=+=+=+=
+         SqlType "9"
+         Precision "10"
+         Scale "0"
+         Nullable "1"
+         KeyPosition "0"
+         DisplaySize "10"
+         Derivation "DSLink3.LAST_NO_ACCT_DATE"
+         Group "0"
+         ParsedDerivation "DSLink3.LAST_NO_ACCT_DATE"
+         SourceColumn "DSLink3.LAST_NO_ACCT_DATE"
+         SortKey "0"
+         SortType "0"
+         TableDef "ODBC\\VTC_94\\BIEZSLIB.F_AGT_CDEP_ACCT"
+         AllowCRLF "0"
+         LevelNo "0"
+         Occurs "0"
+         PadNulls "0"
+         SignOption "0"
+         SortingOrder "0"
+         ArrayHandling "0"
+         SyncIndicator "0"
+         PadChar ""
+         ColumnReference "LAST_NO_ACCT_DATE"
+         APTFieldProp "null_field=''"
+         ExtendedPrecision "0"
+         TaggedSubrec "0"
+         OccursVarying "0"
+         PKeyIsCaseless "0"
+         SCDPurpose "0"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "ZERO_BAL_ACCT_FLG"
+         Description =+=+=+=
+<none>
+Searchable? N 
+=+=+=+=
+         SqlType "12"
+         Precision "2"
+         Scale "0"
+         Nullable "1"
+         KeyPosition "0"
+         DisplaySize "2"
+         Derivation "DSLink3.ZERO_BAL_ACCT_FLG"
+         Group "0"
+         ParsedDerivation "DSLink3.ZERO_BAL_ACCT_FLG"
+         SourceColumn "DSLink3.ZERO_BAL_ACCT_FLG"
+         SortKey "0"
+         SortType "0"
+         TableDef "ODBC\\VTC_94\\BIEZSLIB.F_AGT_CDEP_ACCT"
+         AllowCRLF "0"
+         LevelNo "0"
+         Occurs "0"
+         PadNulls "0"
+         SignOption "0"
+         SortingOrder "0"
+         ArrayHandling "0"
+         SyncIndicator "0"
+         PadChar ""
+         ColumnReference "ZERO_BAL_ACCT_FLG"
+         APTFieldProp "null_field=''"
+         ExtendedPrecision "0"
+         TaggedSubrec "0"
+         OccursVarying "0"
+         PKeyIsCaseless "0"
+         SCDPurpose "0"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "ETL_JOB"
+         Description =+=+=+=
+<none>
+Searchable? N 
+=+=+=+=
+         SqlType "12"
+         Precision "100"
+         Scale "0"
+         Nullable "1"
+         KeyPosition "0"
+         DisplaySize "100"
+         Derivation "DSLink3.ETL_JOB"
+         Group "0"
+         ParsedDerivation "DSLink3.ETL_JOB"
+         SourceColumn "DSLink3.ETL_JOB"
+         SortKey "0"
+         SortType "0"
+         TableDef "ODBC\\VTC_94\\BIEZSLIB.F_AGT_CDEP_ACCT"
+         AllowCRLF "0"
+         LevelNo "0"
+         Occurs "0"
+         PadNulls "0"
+         SignOption "0"
+         SortingOrder "0"
+         ArrayHandling "0"
+         SyncIndicator "0"
+         PadChar ""
+         ColumnReference "ETL_JOB"
+         APTFieldProp "null_field=''"
+         ExtendedPrecision "0"
+         TaggedSubrec "0"
+         OccursVarying "0"
+         PKeyIsCaseless "0"
+         SCDPurpose "0"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "ETL_SRC_TABLE"
+         Description =+=+=+=
+<none>
+Searchable? N 
+=+=+=+=
+         SqlType "12"
+         Precision "100"
+         Scale "0"
+         Nullable "1"
+         KeyPosition "0"
+         DisplaySize "100"
+         Derivation "DSLink3.ETL_SRC_TABLE"
+         Group "0"
+         ParsedDerivation "DSLink3.ETL_SRC_TABLE"
+         SourceColumn "DSLink3.ETL_SRC_TABLE"
+         SortKey "0"
+         SortType "0"
+         TableDef "ODBC\\VTC_94\\BIEZSLIB.F_AGT_CDEP_ACCT"
+         AllowCRLF "0"
+         LevelNo "0"
+         Occurs "0"
+         PadNulls "0"
+         SignOption "0"
+         SortingOrder "0"
+         ArrayHandling "0"
+         SyncIndicator "0"
+         PadChar ""
+         ColumnReference "ETL_SRC_TABLE"
+         APTFieldProp "null_field=''"
+         ExtendedPrecision "0"
+         TaggedSubrec "0"
+         OccursVarying "0"
+         PKeyIsCaseless "0"
+         SCDPurpose "0"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "ETL_FIRST_DATE"
+         Description =+=+=+=
+<none>
+Searchable? N 
+=+=+=+=
+         SqlType "9"
+         Precision "10"
+         Scale "0"
+         Nullable "1"
+         KeyPosition "0"
+         DisplaySize "10"
+         Derivation "DSLink3.ETL_FIRST_DATE"
+         Group "0"
+         ParsedDerivation "DSLink3.ETL_FIRST_DATE"
+         SourceColumn "DSLink3.ETL_FIRST_DATE"
+         SortKey "0"
+         SortType "0"
+         TableDef "ODBC\\VTC_94\\BIEZSLIB.F_AGT_CDEP_ACCT"
+         AllowCRLF "0"
+         LevelNo "0"
+         Occurs "0"
+         PadNulls "0"
+         SignOption "0"
+         SortingOrder "0"
+         ArrayHandling "0"
+         SyncIndicator "0"
+         PadChar ""
+         ColumnReference "ETL_FIRST_DATE"
+         APTFieldProp "null_field=''"
+         ExtendedPrecision "0"
+         TaggedSubrec "0"
+         OccursVarying "0"
+         PKeyIsCaseless "0"
+         SCDPurpose "0"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "ETL_TX_DATE"
+         Description =+=+=+=
+<none>
+Searchable? N 
+=+=+=+=
+         SqlType "9"
+         Precision "10"
+         Scale "0"
+         Nullable "1"
+         KeyPosition "0"
+         DisplaySize "10"
+         Derivation "DSLink3.ETL_TX_DATE"
+         Group "0"
+         ParsedDerivation "DSLink3.ETL_TX_DATE"
+         SourceColumn "DSLink3.ETL_TX_DATE"
+         SortKey "0"
+         SortType "0"
+         TableDef "ODBC\\VTC_94\\BIEZSLIB.F_AGT_CDEP_ACCT"
+         AllowCRLF "0"
+         LevelNo "0"
+         Occurs "0"
+         PadNulls "0"
+         SignOption "0"
+         SortingOrder "0"
+         ArrayHandling "0"
+         SyncIndicator "0"
+         PadChar ""
+         ColumnReference "ETL_TX_DATE"
+         APTFieldProp "null_field=''"
+         ExtendedPrecision "0"
+         TaggedSubrec "0"
+         OccursVarying "0"
+         PKeyIsCaseless "0"
+         SCDPurpose "0"
+      END DSSUBRECORD
+      MetaBag "CMetaProperty"
+      BEGIN DSSUBRECORD
+         Owner "APT"
+         Name "DiskWriteInc"
+         Value "1048576"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Owner "APT"
+         Name "BufFreeRun"
+         Value "50"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Owner "APT"
+         Name "MaxMemBufSize"
+         Value "3145728"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Owner "APT"
+         Name "QueueUpperSize"
+         Value "0"
+      END DSSUBRECORD
+      LeftTextPos "400"
+      TopTextPos "209"
+      LinkMinimised "0"
+   END DSRECORD
+   BEGIN DSRECORD
+      Identifier "V1S0"
+      OLEType "CCustomStage"
+      Readonly "0"
+      Name "vertica"
+      NextID "2"
+      InputPins "V1S0P1"
+      StageType "ODBCConnectorPX"
+      AllowColumnMapping "0"
+      Properties "CCustomProperty"
+      BEGIN DSSUBRECORD
+         Name "VariantName"
+         Value "3.5"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "VariantLibrary"
+         Value "ccodbc"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "VariantVersion"
+         Value "1.0"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "SupportedVariants"
+         Value "V1;3.5::ccodbc"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "SupportedVariantsLibraries"
+         Value "ccodbc"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "SupportedVariantsVersions"
+         Value "1.0"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "Orientation"
+         Value "link"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "RejectFromLink"
+         Value "-1"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "RejectThreshold"
+         Value "0"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "RejectNumber"
+         Value "0"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "RejectUsesPercentage"
+         Value "false"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "ConnectorName"
+         Value "ODBCConnector"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "Engine"
+         Value "EE"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "Context"
+         Value "target"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "ConnectionString"
+         Value "/Connection/DataSource"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "Username"
+         Value "/Connection/Username"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "Password"
+         Value "/Connection/Password"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "XMLProperties"
+         Value "<?xml version='1.0' encoding='UTF-16'?><Properties version='1.1'><Common><Context type='int'>2</Context><Variant type='string'>3.5</Variant><DescriptorVersion type='string'>1.0</DescriptorVersion><PartitionType type='int'>-1</PartitionType><RCP type='int'>0</RCP></Common><Connection><DataSource modified='1' type='string'><![CDATA[#dba_vertica_param.v_data#]]></DataSource><Username modified='1' type='string'><![CDATA[#dba_vertica_param.v_name#]]></Username><Password modified='1' type='string'><![CDATA[#dba_vertica_param.v_pwd#]]></Password></Connection><Usage><WriteMode type='int'><![CDATA[0]]></WriteMode><GenerateSQL modified='1' type='bool'><![CDATA[1]]></GenerateSQL><TableName modified='1' type='string'><![CDATA[BIEZSLIB.F_AGT_CDEP_ACCT]]></TableName><EnableQuotedIDs type='bool'><![CDATA[0]]></EnableQuotedIDs><SQL collapsed='1'></SQL><TableAction modified='1' type='int'><![CDATA[3]]><GenerateTruncateStatement type='bool'><![CDATA[1]]><FailOnError type='bool'><![CDATA[1]]></FailOnError></GenerateTruncateStatement></TableAction><Transaction><RecordCount modified='1' type='int'><![CDATA[20000]]></RecordCount></Transaction><Session><IsolationLevel type='int'><![CDATA[1]]></IsolationLevel><AutocommitMode modified='1' type='int'><![CDATA[1]]></AutocommitMode><ArraySize modified='1' type='int'><![CDATA[20000]]></ArraySize><SchemaReconciliation><FailOnSizeMismatch type='bool'><![CDATA[1]]></FailOnSizeMismatch><FailOnTypeMismatch type='bool'><![CDATA[1]]></FailOnTypeMismatch><FailOnCodePageMismatch type='bool'><![CDATA[0]]></FailOnCodePageMismatch><DropUnmatchedFields type='bool'><![CDATA[1]]></DropUnmatchedFields></SchemaReconciliation><CodePage collapsed='1' type='int'><![CDATA[0]]></CodePage><FailOnRowErrorPX type='bool'><![CDATA[1]]></FailOnRowErrorPX></Session><Logging><LogColumnValues collapsed='1' type='bool'><![CDATA[0]]></LogColumnValues></Logging><BeforeAfter collapsed='1' type='bool'><![CDATA[0]]></BeforeAfter></Usage></Properties >"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "supportedTransactionModel"
+         Value "local"
+      END DSSUBRECORD
+      NextRecordID "0"
+   END DSRECORD
+   BEGIN DSRECORD
+      Identifier "V1S0P1"
+      OLEType "CCustomInput"
+      Readonly "0"
+      Name "DSLink4"
+      Partner "V0S2|V0S2P2"
+      LinkType "1"
+      Properties "CCustomProperty"
+      BEGIN DSSUBRECORD
+         Name "VariantName"
+         Value "3.5"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "VariantLibrary"
+         Value "ccodbc"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "VariantVersion"
+         Value "1.0"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "RejectFromLink"
+         Value "-1"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "RejectThreshold"
+         Value "0"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "RejectNumber"
+         Value "0"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "RejectUsesPercentage"
+         Value "false"
+      END DSSUBRECORD
+      BEGIN DSSUBRECORD
+         Name "ConnectorName"
+         Value "ODBCConnector"
+      END DSSUBRECORD
+      MetaBag "CMetaProperty"
+      BEGIN DSSUBRECORD
+         Owner "APT"
+         Name "RTColumnProp"
+         Value "0"
+      END DSSUBRECORD
+      TransactionSize "0"
+      TXNBehaviour "0"
+      EnableTxGroup "0"
+      LinkMinimised "0"
+   END DSRECORD
+END DSJOB
