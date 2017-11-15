@@ -96,11 +96,11 @@ def run_training():
     images_placeholder, labels_placeholder = placeholder_inputs(FLAGS.batch_size)
     #推测模型
     logits = mnist.inference(images_placeholder, FLAGS.hidden1, FLAGS.hidden2)
-    #输出丢失计算
+    #预测误差
     loss = mnist.loss(logits, labels_placeholder)
-    #输出应用梯度
+    #梯度下降
     train_op = mnist.training(loss, FLAGS.learning_rate)
-    #输出对比罗杰斯和label(在评估中)
+    #评估y的正确率
     eval_correct = mnist.evaluation(logits, labels_placeholder)
     #保存训练的checkpoint
     saver = tf.train.Saver()

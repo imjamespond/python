@@ -22,7 +22,7 @@ b = tf.Variable(tf.zeros([1]))
 y = W * x_data + b
 
 '''
-通过梯度优化,试找出W和b满足以上等式
+通过梯度优化
 '''
 # Minimize the mean squared errors.
 loss = tf.reduce_mean(tf.square(y - y_data))
@@ -30,16 +30,16 @@ optimizer = tf.train.GradientDescentOptimizer(0.5)
 train = optimizer.minimize(loss)
 
 # Before starting, initialize the variables.  We will 'run' this first.
-init = tf.initialize_all_variables()
+init = tf.global_variables_initializer()
 
 # Launch the graph.
 sess = tf.Session()
 sess.run(init)
 
 # Fit the line.
-for step in range(201):
+for step in range(201): 
     sess.run(train)
     if step % 20 == 0:
-        print(step, sess.run(W), sess.run(b))
+        print(step, sess.run(loss), sess.run(W), sess.run(b))
 
 # Learns best fit is W: [0.1], b: [0.3]   
