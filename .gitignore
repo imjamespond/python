@@ -2,5 +2,6 @@
 .project
 .pydevproject
 .settings
+.vscode
 img
 py3
