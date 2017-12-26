@@ -1,3 +1,4 @@
 {
-  "python.pythonPath": "${workspaceFolder}/py3/bin/python"
+  "python.pythonPath": "${workspaceFolder}/py3/bin/python",
+  "editor.tabSize": 2
 }
