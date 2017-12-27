@@ -42,9 +42,11 @@ sess.run(init)
 print('embedding_lookup', sess.run(embedded_word_ids))
 print('embed_sequence', sess.run(word_vectors))
 
-state = mGRUCell.zero_state(batch_size, tf.float32)
-num_steps=6
-for i in range(num_steps) :
-  output, state = mGRUCell(embedded_word_ids[:, i, :], state)
-  print (output, state)
+initial_state = mGRUCell.zero_state(batch_size, tf.float32)
+state = sess.run(initial_state)
+print(state)
+# num_steps=6
+# for i in range(num_steps) :
+#   output, state = mGRUCell(embedded_word_ids[:, i, :], state)
+#   print (output, state)
  
