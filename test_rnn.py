@@ -16,13 +16,28 @@ and consist of 5 integers.
   To map these word ids to vectors, we need to create the embedding variable 
 and use the tf.nn.embedding_lookup
 '''
-# [word_ids] batch_size is 1
-ids = [word_ids]
+'''
+For example:
+ t=0  t=1    t=2  t=3     t=4
+[The, brown, fox, is,     quick]
+[The, red,   fox, jumped, high]
+
+words_in_dataset[0] = [The, The]
+words_in_dataset[1] = [brown, red]
+words_in_dataset[2] = [fox, fox]
+words_in_dataset[3] = [is, jumped]
+words_in_dataset[4] = [quick, high]
+batch_size = 2, time_steps = 5
+'''
+# batch_size is 2
+ids = [word_ids,[0,1,2,3,4,5]]
 batch_size = len(ids)
 embedded_word_ids = tf.nn.embedding_lookup(word_embeddings, ids) 
+embedded_word_ids_list = tf.unstack(embedded_word_ids, axis=1)
 
+#Use static RNN way
 WORDS_FEATURE="foobar"
-x_features={WORDS_FEATURE: word_ids}
+x_features={WORDS_FEATURE: ids}
 # Convert indexes of words into embeddings.
 # This creates embeddings matrix of [n_words, EMBEDDING_SIZE] and then
 # maps word indexes of the sequence into [batch_size, sequence_length,
@@ -34,19 +49,23 @@ x_features[WORDS_FEATURE], vocab_size=vocabulary_size, embed_dim=embedding_size)
 word_list = tf.unstack(word_vectors, axis=1)
 # Create a Gated Recurrent Unit cell with hidden size of EMBEDDING_SIZE.
 mGRUCell = tf.nn.rnn_cell.GRUCell(embedding_size)
+# Create an unrolled Recurrent Neural Networks to length of
+# MAX_DOCUMENT_LENGTH and passes word_list as inputs for each unit.
+_, encoding = tf.nn.static_rnn(mGRUCell, word_list, dtype=tf.float32)
 
 init = tf.global_variables_initializer()
 sess = tf.Session()
 sess.run(init)
 
-print('embedding_lookup', sess.run(embedded_word_ids))
-print('embed_sequence', sess.run(word_vectors))
+print('embedding_lookup', sess.run(embedded_word_ids_list))
+print('embed_sequence', sess.run(word_list))
 
+# Use native RNN build way
 initial_state = mGRUCell.zero_state(batch_size, tf.float32)
-state = sess.run(initial_state)
-print(state)
-# num_steps=6
-# for i in range(num_steps) :
-#   output, state = mGRUCell(embedded_word_ids[:, i, :], state)
-#   print (output, state)
+state = initial_state#sess.run(initial_state)
+num_steps=6
+outputs = []
+for i in range(num_steps) :
+  output, state = mGRUCell(embedded_word_ids_list[i], state)
+  outputs.append(output)
  
