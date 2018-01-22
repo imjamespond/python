@@ -59,13 +59,3 @@ sess.run(init)
 
 print('embedding_lookup', sess.run(embedded_word_ids_list))
 print('embed_sequence', sess.run(word_list))
-
-# Use native RNN build way
-initial_state = mGRUCell.zero_state(batch_size, tf.float32)
-state = initial_state#sess.run(initial_state)
-num_steps=6
-outputs = []
-for i in range(num_steps) :
-  output, state = mGRUCell(embedded_word_ids_list[i], state)
-  outputs.append(output)
- 
