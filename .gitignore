@@ -3,5 +3,6 @@
 .pydevproject
 .settings
 .vscode
+output
 img
 py3

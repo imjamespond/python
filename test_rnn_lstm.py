@@ -1,10 +1,14 @@
 import tensorflow as tf
 import collections
+import time
+import numpy as np
 
 # https://www.tensorflow.org/tutorials/recurrent
 # https://github.com/tensorflow/models/tree/master/tutorials/rnn/ptb
 
 flags = tf.flags
+flags.DEFINE_string("save_path", "./output",
+                    "Model output directory.")
 flags.DEFINE_bool("use_fp16", False,
                   "Train using 16-bit floats instead of 32bit floats")
 FLAGS = flags.FLAGS
@@ -81,49 +85,105 @@ def _build_data(word_ids, batch_size, num_steps, name=None):
 
 inputX, inputY = _build_data(word_ids, batch_size, num_steps) 
 
-#data = tf.reshape(raw_data[0 : batch_size * batch_len], [batch_size, batch_len])
+with tf.device("/cpu:0"):
+    embedding = tf.get_variable( "embedding", 
+      [vocab_size, embedding_size], dtype=data_type())
+    inputs = tf.nn.embedding_lookup(embedding, inputX) 
 
+num_layers = 2
+def _build_rnn_graph_lstm(inputs):
+    def make_cell():
+        # need Dropout?
+        return tf.contrib.rnn.BasicLSTMCell(hidden_size)
 
-# word_embeddings = tf.get_variable("word_embeddings", [vocab_size, embedding_size])
-# embedded_word_ids = tf.nn.embedding_lookup(word_embeddings, word_ids) 
-# embedded_word_ids_list = tf.unstack(embedded_word_ids, num=num_steps, axis=1)
+    cell = tf.contrib.rnn.MultiRNNCell(
+        [make_cell() for _ in range(num_layers)], state_is_tuple=True)
 
+    initial_state = cell.zero_state(batch_size, data_type())
+    state = initial_state
 
+    inputs = tf.unstack(inputs, num=num_steps, axis=1)
+    outputs, state = tf.contrib.rnn.static_rnn(cell, inputs,
+                               initial_state=initial_state)
+    output = tf.reshape(tf.concat(outputs, 1), [-1, hidden_size])
+    return output, state, initial_state
 
-# words_in_dataset = tf.placeholder(tf.float32, [num_steps, batch_size, num_features])
+output, state, initial_state = _build_rnn_graph_lstm(inputs)
 
-# # Placeholder for the inputs in a given iteration.
-# words = tf.placeholder(tf.int32, [batch_size, num_steps])
+softmax_w = tf.get_variable(
+    "softmax_w", [hidden_size, vocab_size], dtype=data_type())
+softmax_b = tf.get_variable("softmax_b", [vocab_size], dtype=data_type())
+logits = tf.nn.xw_plus_b(output, softmax_w, softmax_b)
+    # Reshape logits to be a 3-D tensor for sequence loss
+logits = tf.reshape(logits, [batch_size, num_steps, vocab_size])
 
-# lstmCell = tf.contrib.rnn.BasicLSTMCell(hidden_size)
-# # Initial state of the LSTM memory.
-# initial_state = state = tf.zeros([batch_size, lstmCell.state_size])
-
-# #output, state = self._build_rnn_graph(inputs, config, is_training) 
-# inputs = embedded_word_ids_list
-# outputs, state = tf.contrib.rnn.static_rnn(lstmCell, inputs,
-#                             initial_state=initial_state)
-# output = tf.reshape(tf.concat(outputs, 1), [-1, hidden_size])
-
-# softmax_w = tf.get_variable(
-#     "softmax_w", [embedding_size, vocab_size], dtype=data_type())
-# softmax_b = tf.get_variable(
-#     "softmax_b", [vocab_size], dtype=data_type())
-# logits = tf.nn.xw_plus_b(output, softmax_w, softmax_b)
-#     # Reshape logits to be a 3-D tensor for sequence loss
-# logits = tf.reshape(logits, [batch_size, num_steps, vocab_size])
-
-# # Use the contrib sequence loss and average over the batches
-# loss = tf.contrib.seq2seq.sequence_loss(
-#     logits,
-#     input_.targets,
-#     tf.ones([batch_size, num_steps], dtype=data_type()),
-#     average_across_timesteps=False,
-#     average_across_batch=True)
+# Use the contrib sequence loss and average over the batches
+loss = tf.contrib.seq2seq.sequence_loss(
+    logits,
+    inputY,
+    tf.ones([batch_size, num_steps], dtype=data_type()),
+    average_across_timesteps=False,
+    average_across_batch=True)
+ 
 
 # # Update the cost
-# _cost = tf.reduce_sum(loss)
-# _final_state = state
+_cost = tf.reduce_sum(loss)
+_final_state = state
+
+max_grad_norm = 1
+_lr = tf.Variable(0.0, trainable=False)
+tvars = tf.trainable_variables()
+grads, _ = tf.clip_by_global_norm(tf.gradients(_cost, tvars), max_grad_norm)
+optimizer = tf.train.GradientDescentOptimizer(_lr)
+_train_op = optimizer.apply_gradients(
+    zip(grads, tvars),
+    global_step=tf.train.get_or_create_global_step())
+
+_new_lr = tf.placeholder(
+    tf.float32, shape=[], name="new_learning_rate")
+_lr_update = tf.assign(_lr, _new_lr)
+
+  
+def run_epoch(session, eval_op=None, verbose=False):
+  """Runs the model on the given data."""
+  start_time = time.time()
+  costs = 0.0
+  iters = 0
+  state = session.run(initial_state)
+
+  fetches = {
+      "cost": _cost,
+      "final_state": _final_state,
+  }
+  if eval_op is not None:
+    fetches["eval_op"] = eval_op
+
+  for step in range( epoch_size):
+    feed_dict = {}
+    for i, (c, h) in enumerate(initial_state):
+      feed_dict[c] = state[i].c
+      feed_dict[h] = state[i].h
+
+    vals = session.run(fetches, feed_dict)
+    cost = vals["cost"]
+    state = vals["final_state"]
+
+    costs += cost
+    iters += num_steps
+
+    #if 1 and step % (epoch_size // 10) == 10:
+    print("%.3f perplexity: %.3f time: %.0f " %
+          (step * 1.0 / epoch_size, np.exp(costs / iters), 
+            (time.time() - start_time)))
+
+
+epoch_size = ((len(words) // batch_size) - 1) // num_steps
+ 
+sv = tf.train.Supervisor(logdir=FLAGS.save_path)
+config_proto = tf.ConfigProto(allow_soft_placement=False)
+with sv.managed_session(config=config_proto) as session:
+  session.run(_lr_update, feed_dict={_new_lr: 1.0})
+  run_epoch(session, eval_op=_train_op)
 
 class LSTM_Test(tf.test.TestCase):
   def testPtbProducer(self):  
@@ -132,7 +192,8 @@ class LSTM_Test(tf.test.TestCase):
       coord = tf.train.Coordinator()
       tf.train.start_queue_runners(session, coord=coord)
       try:
-        print( session.run([inputX, inputY]) )
+        for time_step in range(num_steps):
+          print( session.run([inputX, inputY]) )
       finally:
         coord.request_stop()
         coord.join()
