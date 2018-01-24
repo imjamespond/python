@@ -3,6 +3,8 @@
 .pydevproject
 .settings
 .vscode
+.DS_Store
+dbpedia_data
 output
 img
 py3

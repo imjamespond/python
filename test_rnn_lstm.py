@@ -178,12 +178,14 @@ def run_epoch(session, eval_op=None, verbose=False):
 
 
 epoch_size = ((len(words) // batch_size) - 1) // num_steps
+max_max_epoch = 20
  
 sv = tf.train.Supervisor(logdir=FLAGS.save_path)
 config_proto = tf.ConfigProto(allow_soft_placement=False)
 with sv.managed_session(config=config_proto) as session:
-  session.run(_lr_update, feed_dict={_new_lr: 1.0})
-  run_epoch(session, eval_op=_train_op)
+  for i in range(max_max_epoch):
+    session.run(_lr_update, feed_dict={_new_lr: 1.0})
+    run_epoch(session, eval_op=_train_op)
 
 class LSTM_Test(tf.test.TestCase):
   def testPtbProducer(self):  
