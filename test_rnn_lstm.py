@@ -18,7 +18,6 @@ def data_type():
   return tf.float16 if FLAGS.use_fp16 else tf.float32
 
 words = ['The', 'brown', 'fox', 'is','quick','The', 'red',   'fox', 'jumped', 'high']
-vocab_size = 10
 batch_size = 2
 embedding_size = 15
 num_steps = 2
@@ -50,6 +49,7 @@ def _build_vocab(data):
   return word_to_id
 
 word_to_id = _build_vocab(words)
+vocab_size = len(word_to_id)
 # print(word_to_id)
 # {'The': 0, 'fox': 1, 'brown': 2, 'high': 3, 'is': 4, 'jumped': 5, 'quick': 6, 'red': 7}
 
@@ -84,6 +84,7 @@ def _build_data(word_ids, batch_size, num_steps, name=None):
     return x,y
 
 inputX, inputY = _build_data(word_ids, batch_size, num_steps) 
+# TODO generate more x,y to train
 
 with tf.device("/cpu:0"):
     embedding = tf.get_variable( "embedding", 
@@ -108,7 +109,7 @@ def _build_rnn_graph_lstm(inputs):
     output = tf.reshape(tf.concat(outputs, 1), [-1, hidden_size])
     return output, state, initial_state
 
-output, state, initial_state = _build_rnn_graph_lstm(inputs)
+output, _final_state, _initial_state = _build_rnn_graph_lstm(inputs)
 
 softmax_w = tf.get_variable(
     "softmax_w", [hidden_size, vocab_size], dtype=data_type())
@@ -118,6 +119,7 @@ logits = tf.nn.xw_plus_b(output, softmax_w, softmax_b)
 logits = tf.reshape(logits, [batch_size, num_steps, vocab_size])
 
 # Use the contrib sequence loss and average over the batches
+# https://www.tensorflow.org/versions/r1.5/api_docs/python/tf/contrib/seq2seq/sequence_loss
 loss = tf.contrib.seq2seq.sequence_loss(
     logits,
     inputY,
@@ -127,8 +129,7 @@ loss = tf.contrib.seq2seq.sequence_loss(
  
 
 # # Update the cost
-_cost = tf.reduce_sum(loss)
-_final_state = state
+_cost = tf.reduce_sum(loss) 
 
 max_grad_norm = 1
 _lr = tf.Variable(0.0, trainable=False)
@@ -149,7 +150,7 @@ def run_epoch(session, eval_op=None, verbose=False):
   start_time = time.time()
   costs = 0.0
   iters = 0
-  state = session.run(initial_state)
+  state = session.run(_initial_state)
 
   fetches = {
       "cost": _cost,
@@ -160,7 +161,7 @@ def run_epoch(session, eval_op=None, verbose=False):
 
   for step in range( epoch_size):
     feed_dict = {}
-    for i, (c, h) in enumerate(initial_state):
+    for i, (c, h) in enumerate(_initial_state):
       feed_dict[c] = state[i].c
       feed_dict[h] = state[i].h
 
@@ -171,21 +172,30 @@ def run_epoch(session, eval_op=None, verbose=False):
     costs += cost
     iters += num_steps
 
-    #if 1 and step % (epoch_size // 10) == 10:
-    print("%.3f perplexity: %.3f time: %.0f " %
-          (step * 1.0 / epoch_size, np.exp(costs / iters), 
-            (time.time() - start_time)))
+    if verbose:# and step % (epoch_size // 10) == 10:
+      print("%.3f perplexity: %.3f time: %.0f " %
+        (step * 1.0 / epoch_size, np.exp(costs / iters), (time.time() - start_time)))
 
+  return np.exp(costs / iters)
 
 epoch_size = ((len(words) // batch_size) - 1) // num_steps
-max_max_epoch = 20
+max_max_epoch = 13
  
 sv = tf.train.Supervisor(logdir=FLAGS.save_path)
 config_proto = tf.ConfigProto(allow_soft_placement=False)
 with sv.managed_session(config=config_proto) as session:
   for i in range(max_max_epoch):
-    session.run(_lr_update, feed_dict={_new_lr: 1.0})
-    run_epoch(session, eval_op=_train_op)
+    lr_decay = 0.5 ** max(i + 1 - 4, 0.0) 
+    session.run(_lr_update, feed_dict={_new_lr: lr_decay})
+    print("Epoch: %d Learning rate: %.3f" % (i + 1, session.run(_lr)))
+    
+    train_perplexity = run_epoch(session, eval_op=_train_op, verbose=True)
+    print("Epoch: %d Train Perplexity: %.3f" % (i + 1, train_perplexity))
+    valid_perplexity = run_epoch(session)
+    print("Epoch: %d Valid Perplexity: %.3f" % (i + 1, valid_perplexity))
+
+  #prediction
+  print(session.run(logits) )
 
 class LSTM_Test(tf.test.TestCase):
   def testPtbProducer(self):  
