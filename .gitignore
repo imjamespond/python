@@ -1,0 +1,10 @@
+env
+.vscode
+
+**.h5
+**.zip
+**.DS_Store
+cmn-eng.zip
+
+fra-eng
+cmn-eng
