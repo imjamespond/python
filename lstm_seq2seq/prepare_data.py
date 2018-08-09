@@ -60,11 +60,15 @@ decoder_target_data = np.zeros(
     (len(input_texts), max_decoder_seq_length, num_decoder_tokens),
     dtype='float32')
 
+# 同时遍历两个语言数组
 for i, (input_text, target_text) in enumerate(zip(input_texts, target_texts)):
+    # 遍历一句话的字符
     for t, char in enumerate(input_text):
+        # one-hot 编码
         encoder_input_data[i, t, input_token_index[char]] = 1.
     for t, char in enumerate(target_text):
         # decoder_target_data is ahead of decoder_input_data by one timestep
+        # 解码目标数据 领先 解码输入数据 一步
         decoder_input_data[i, t, target_token_index[char]] = 1.
         if t > 0:
             # decoder_target_data will be ahead by one timestep

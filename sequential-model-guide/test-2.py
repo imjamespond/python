@@ -18,7 +18,7 @@ data = np.random.random((1000, 100))
 # 生成1000份标签每分对应10个类之一
 labels = np.random.randint(10, size=(1000, 1))
 
-# Convert labels to categorical one-hot encoding
+# Convert labels to categorical one-hot encoding, 超过两个分类要用one-hot来表示lable
 one_hot_labels = keras.utils.to_categorical(labels, num_classes=10)
 
 # Train the model, iterating on the data in batches of 32 samples
