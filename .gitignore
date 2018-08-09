@@ -4,6 +4,7 @@ env
 **.h5
 **.zip
 **.DS_Store
+**.pyc
 cmn-eng.zip
 
 fra-eng
