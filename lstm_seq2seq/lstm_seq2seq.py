@@ -67,7 +67,7 @@ from keras.models import Model
 from keras.layers import Input, LSTM, Dense
 import numpy as np
 
-batch_size = 64  # Batch size for training.
+batch_size = 64  # Batch size for training. 一次训练的 样本数, 一步从64个样本中同一位置取一个字符
 epochs = 500  # Number of epochs to train for.
 latent_dim = 256  # Latent dimensionality of the encoding space.
 

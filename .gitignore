@@ -1,4 +1,5 @@
 env
+venv
 .vscode
 
 **.h5
@@ -9,3 +10,5 @@ cmn-eng.zip
 
 fra-eng
 cmn-eng
+
+ocr/image_ocr
