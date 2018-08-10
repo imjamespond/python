@@ -129,7 +129,7 @@ def decode_sequence(input_seq):
     return decoded_sentence
 
 
-for seq_index in range(10):
+for seq_index in range(len(input_texts)):
     # Take one sequence (part of the training set)
     # for trying out decoding.
     input_seq = encoder_input_data[seq_index: seq_index + 1]

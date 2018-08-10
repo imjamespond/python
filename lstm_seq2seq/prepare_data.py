@@ -1,6 +1,6 @@
 import numpy as np
 
-num_samples = 30000  # Number of samples to train on.
+num_samples = 7300  # Number of samples to train on.
 
 # Path to the data txt file on disk.
 data_path = 'cmn-eng/cmn.txt'

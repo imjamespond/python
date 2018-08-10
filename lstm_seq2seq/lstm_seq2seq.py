@@ -12,25 +12,38 @@ models are more common in this domain.
 - We start with input sequences from a domain (e.g. English sentences)
     and correspding target sequences from another domain
     (e.g. French sentences).
+  
 - An encoder LSTM turns input sequences to 2 state vectors
     (we keep the last LSTM state and discard the outputs).
+  编码LSTM 将 输入 序列 变成 2 状态矢量
 - A decoder LSTM is trained to turn the target sequences into
     the same sequence but offset by one timestep in the future,
     a training process called "teacher forcing" in this context.
     Is uses as initial state the state vectors from the encoder.
     Effectively, the decoder learns to generate `targets[t+1...]`
     given `targets[...t]`, conditioned on the input sequence.
+  解码LSTM 将被训练 把目标序列变成相同序列, 但将来偏移一步, 一个训练过程被称为 强制学习, 
+  从编码器的状态作为其初始状态
+  有效的, 解码器 学习生成 下个目标 
+
 - In inference mode, when we want to decode unknown input sequences, we:
+  在干涉模式中, 当我们想 解码未知 输入序列时
     - Encode the input sequence into state vectors
+      首先 编码 输入 序列 成 状态矢量
     - Start with a target sequence of size 1
         (just the start-of-sequence character)
+      用一个 目标序列的长度一 开始(就是 序列的开头 字符)
     - Feed the state vectors and 1-char target sequence
         to the decoder to produce predictions for the next character
+      把 状态矢量 和 目标一字符 喂给 解码器 来 产生 对下个字符 的预测
     - Sample the next character using these predictions
         (we simply use argmax).
+      用预测 采样 下个 字符
     - Append the sampled character to the target sequence
+      将字符 加入 字串
     - Repeat until we generate the end-of-sequence character or we
         hit the character limit.
+      重复
 
 # Data download
 
@@ -55,7 +68,7 @@ from keras.layers import Input, LSTM, Dense
 import numpy as np
 
 batch_size = 64  # Batch size for training.
-epochs = 2 #100  # Number of epochs to train for.
+epochs = 500  # Number of epochs to train for.
 latent_dim = 256  # Latent dimensionality of the encoding space.
 
 # import prepare_data
@@ -68,29 +81,31 @@ encoder_outputs, state_h, state_c = encoder(encoder_inputs)
 # We discard `encoder_outputs` and only keep the states.
 encoder_states = [state_h, state_c]
 
-# Set up the decoder, using `encoder_states` as initial state.
+# Set up the decoder, using `encoder_states` as initial state. 用编码器的输出状态作为解码器的初始状态
 decoder_inputs = Input(shape=(None, num_decoder_tokens))
-# We set up our decoder to return full output sequences,
-# and to return internal states as well. We don't use the
-# return states in the training model, but we will use them in inference.
+# We set up our decoder to return full output sequences, 设置编码器 返回 完整 输出序列
+# and to return internal states as well. We don't use the 并 亦返回内部状态, 但我们并不用 返回的状态
+# return states in the training model, but we will use them in inference. 训练, 而将 在干涉中 使用
 decoder_lstm = LSTM(latent_dim, return_sequences=True, return_state=True)
 decoder_outputs, _, _ = decoder_lstm(decoder_inputs,
                                      initial_state=encoder_states)
-decoder_dense = Dense(num_decoder_tokens, activation='softmax')
+decoder_dense = Dense(num_decoder_tokens, activation='softmax') # 最后一层用softmax连接 y
 decoder_outputs = decoder_dense(decoder_outputs)
 
 # Define the model that will turn
 # `encoder_input_data` & `decoder_input_data` into `decoder_target_data`
 model = Model([encoder_inputs, decoder_inputs], decoder_outputs)
+# summary: encoder (states)-> decoder_lstm (outputs)-> decoder_dense (outputs)->
+
 
 # Run training
 model.compile(optimizer='rmsprop', loss='categorical_crossentropy')
 model.fit([encoder_input_data, decoder_input_data], decoder_target_data,
           batch_size=batch_size,
           epochs=epochs,
-          validation_split=0.2)
+          validation_split=0.2) # 验证数据 比率(不将其用来训练), 从提供的x,y的最后取出
 # Save model
-model.save('s2s.h5')
+model.save('./lstm_seq2seq/s2s.h5')
 
 # Next: inference mode (sampling).
 # Here's the drill:
@@ -160,7 +175,7 @@ def decode_sequence(input_seq):
     return decoded_sentence
 
 
-for seq_index in range(100):
+for seq_index in range(10):
     # Take one sequence (part of the training set)
     # for trying out decoding.
     input_seq = encoder_input_data[seq_index: seq_index + 1]
