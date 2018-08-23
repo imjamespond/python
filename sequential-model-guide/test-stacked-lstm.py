@@ -34,3 +34,8 @@ model.fit(x_train, y_train,
           batch_size=64, # 每次梯度 更新的样本数
           epochs=25, # 训练样本的次数, 和initial_epoch放一起可认为是最后一次的次数
           validation_data=(x_val, y_val))
+
+classes = model.predict(x_train, batch_size=128)
+from numpy import argmax
+for clz in classes:
+  print(argmax(clz))

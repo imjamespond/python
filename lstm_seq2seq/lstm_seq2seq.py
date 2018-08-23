@@ -78,10 +78,10 @@ from prepare_data import *
 encoder_inputs = Input(shape=(None, num_encoder_tokens))
 encoder = LSTM(latent_dim, return_state=True)
 encoder_outputs, state_h, state_c = encoder(encoder_inputs)
-# We discard `encoder_outputs` and only keep the states.
+# We discard `encoder_outputs` and only keep the states. 放弃 编码器的输出 而 保留其状态
 encoder_states = [state_h, state_c]
 
-# Set up the decoder, using `encoder_states` as initial state. 用编码器的输出状态作为解码器的初始状态
+# Set up the decoder, using `encoder_states` as initial state. 用 编码器的状态 作为 解码器的初始状态
 decoder_inputs = Input(shape=(None, num_decoder_tokens))
 # We set up our decoder to return full output sequences, 设置编码器 返回 完整 输出序列
 # and to return internal states as well. We don't use the 并 亦返回内部状态, 但我们并不用 返回的状态
