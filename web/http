@@ -1,0 +1,16 @@
+WEB_ROOT=${2:-'.'}
+ACTION=${1:-'run'}
+
+case $# in
+  0) ;;
+  2) WEB_ROOT=$2
+     ;;
+  *) echo "Usage: $0 run <WEB ROOT>"
+     ;;
+esac
+
+if [ "$ACTION" = "setup" ]; then    
+  cnpm install http-server 
+elif [ "$ACTION" = "run" ]; then  
+  ./node_modules/http-server/bin/http-server $WEB_ROOT -S -K key.pem -C cert.pem -c-1 -g
+fi

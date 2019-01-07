@@ -1,0 +1,27 @@
+--
+RuntimeError: Python is not installed as a framework.
+The Mac OS X backend will not be able to function correctly if Python is not installed 
+as a framework. See the Python documentation for more information on installing Python 
+as a framework on Mac OS X. Please either reinstall Python as a framework,
+or try one of the other backends.
+==
+If the problem is only matplotlib, is worth try to change the backend:
+
+import matplotlib
+matplotlib.use('TkAgg')
+import matplotlib.pyplot as plt
+
+plt.plot([1, 2, 3], [4, 5, 6])
+plt.show()
+
+or
+
+pip install matplotlib==1.4.3
+
+--
+libpng warning: Application built with libpng-1.4.12 but running with 1.6.34
+==
+/Users/zyy/torch/pkg/image/build/CMakeCache.txt
+    //Path to a file.
+    PNG_PNG_INCLUDE_DIR:PATH=/Library/Frameworks/Mono.framework/Headers
+    replace with /usr/local/Cellar/libpng/1.6.34/include/

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8" />
+	<title></title>
+	<script type="text/javascript" src="./commons.js"></script>
+	<style>
+	.pull-left{ float: left;}
+	.clearfix{clear: both;}
+	</style>
+</head>
+
+<body> 
+	<video id="videoel" class="pull-left" width="400" height="300"
+		preload="auto" loop></video>
+	<div id="detectedFaces" class="pull-left"></div>
+	<div class="clearfix">
+		<button id='stop' onclick="onAct(event)">stop</button>
+		<input id="person" value="noone">
+		<button onclick="action=2">train</button>
+		<button onclick="action=4">track faces</button>
+	</div>
+	<div id="people"></div>
+	<div id="result">no result</div>
+
+	<script type="text/javascript">
+		var action = 1
+		function onAct(e){
+			if(action==2){
+				var msg = {type:'Train'}
+				socket.send(JSON.stringify(msg)); 
+			}
+			action=action?0:1
+			if(action) e.target.innerHTML = 'stop'
+			else e.target.innerHTML = 'start'
+		} 
+		function getPerson(){
+			return document.getElementById('person').value||'noone' 
+		} 
+		function setResult(rs){
+			var div = document.getElementById("result")
+			div.innerHTML = rs
+		}
+
+		var vid = document.getElementById('videoel')
+
+		navigator.mediaDevices.getUserMedia({ audio: false, video: true })
+		.then(function(stream) {
+			/* use the stream */
+			console.log("stream is ready")
+			if (vid.mozCaptureStream) {
+				vid.mozSrcObject = stream;
+			} else {
+				//creates a DOMString containing a URL representing the object given in the parameter
+				vid.src = (window.URL && window.URL.createObjectURL(stream)) || stream;
+			}
+		})
+		.catch(function(err) {
+			/* handle the error */
+			console.log(err)
+		});
+
+    vid.play(); 
+
+		var canvas = document.createElement('canvas');
+		canvas.width = vid.width;
+		canvas.height = vid.height;
+		var ctx = canvas.getContext('2d');
+
+		function drawImage(){
+			ctx.drawImage(vid, 0, 0, vid.width, vid.height);
+			//pixel array, the largest information about image
+			//var apx = ctx.getImageData(0, 0, vid.width, vid.height);
+			//imageData compressed to JPG or PNG, then converted to string,
+			var dataURL = canvas.toDataURL('image/jpeg', 0.6)
+			var msg = {type:'FaceBoundingBox', dataURL: dataURL}
+			socket.send(JSON.stringify(msg));
+			//console.log(dataURL)
+		}
+		function trainData(){
+			ctx.drawImage(vid, 0, 0, vid.width, vid.height); 
+			var dataURL = canvas.toDataURL('image/jpeg', 0.6)
+			var msg = {type:'TrainData', dataURL: dataURL, person: getPerson()}
+			socket.send(JSON.stringify(msg)); 
+		}
+		function trackFaces(){
+			ctx.drawImage(vid, 0, 0, vid.width, vid.height); 
+			var dataURL = canvas.toDataURL('image/jpeg', 0.6)
+			var msg = {type:'TrackFaces', dataURL: dataURL, person: getPerson()}
+			socket.send(JSON.stringify(msg)); 
+		}
+		window.setInterval(function(){
+			var stopBtn = document.getElementById('stop')
+
+			if(action){
+				stopBtn.innerHTML = 'stop'
+
+				if(action==1)
+					drawImage()
+				else if(action==2)
+					trainData()
+				else if(action==4)
+					trackFaces()
+			}else{
+				stopBtn.innerHTML = 'start'
+			}
+		}, 1000) 
+
+		createSocket("wss://" + window.location.hostname + ":9000", "Local");
+	</script>
+</body>
+
+</html>
