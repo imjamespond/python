@@ -1,0 +1,6 @@
+.vscode
+venv
+darknet
+mysite/static
+**.sqlite3
+**/__pycache__
