@@ -1,183 +1,68 @@
-import React, { Component } from 'react'; 
+import React, { Component } from 'react';
 
-import jquery from 'jquery';
-// window.jQuery = jquery;
 import 'bootstrap';
+import 'admin-lte';
 
 import 'bootstrap/dist/css/bootstrap.css';
 import 'font-awesome/css/font-awesome.min.css';
-import 'ionicons/dist/css/ionicons.min.css'; 
+import 'ionicons/dist/css/ionicons.min.css';
 import 'admin-lte/dist/css/AdminLTE.min.css';
-import 'admin-lte/dist/css/skins/skin-blue.min.css';
+import 'admin-lte/dist/css/skins/skin-blue.css';
 import './App.css';
+
+import CCTV from './cctv';
 
 class App extends Component {
   render() {
     return (
-      <div className="wrapper">
+      <div className="wrapper skin-blue sidebar-mini">
 
 
         <header className="main-header">
 
 
           <a href="index2.html" className="logo">
-
             <span className="logo-mini"><b>A</b>LT</span>
-
             <span className="logo-lg"><b>Admin</b>LTE</span>
           </a>
 
 
           <nav className="navbar navbar-static-top" role="navigation">
-
-            <a href="#" className="sidebar-toggle" data-toggle="push-menu" role="button">
+            <a href="javascript:;" className="sidebar-toggle" data-toggle="push-menu" role="button">
               <span className="sr-only">Toggle navigation</span>
             </a>
-
             <div className="navbar-custom-menu">
               <ul className="nav navbar-nav">
-
                 <li className="dropdown messages-menu">
-
                   <a href="#" className="dropdown-toggle" data-toggle="dropdown">
                     <i className="fa fa-envelope-o"></i>
                     <span className="label label-success">4</span>
                   </a>
                   <ul className="dropdown-menu">
-                    <li className="header">You have 4 messages</li>
-                    <li>
-
-                      <ul className="menu">
-                        <li>
-                          <a href="#">
-                            <div className="pull-left">
-
-                              <img src="dist/img/user2-160x160.jpg" className="img-circle" alt="User Image" />
-                            </div>
-
-                            <h4>
-                              Support Team
-                        <small><i className="fa fa-clock-o"></i> 5 mins</small>
-                            </h4>
-
-                            <p>Why not buy a new awesome theme?</p>
-                          </a>
-                        </li>
-
-                      </ul>
-
-                    </li>
-                    <li className="footer"><a href="#">See All Messages</a></li>
                   </ul>
                 </li>
-
-
-
                 <li className="dropdown notifications-menu">
-
                   <a href="#" className="dropdown-toggle" data-toggle="dropdown">
                     <i className="fa fa-bell-o"></i>
                     <span className="label label-warning">10</span>
                   </a>
                   <ul className="dropdown-menu">
-                    <li className="header">You have 10 notifications</li>
-                    <li>
-
-                      <ul className="menu">
-                        <li>
-                          <a href="#">
-                            <i className="fa fa-users text-aqua"></i> 5 new members joined today
-                    </a>
-                        </li>
-
-                      </ul>
-                    </li>
-                    <li className="footer"><a href="#">View all</a></li>
                   </ul>
                 </li>
-
                 <li className="dropdown tasks-menu">
-
                   <a href="#" className="dropdown-toggle" data-toggle="dropdown">
                     <i className="fa fa-flag-o"></i>
                     <span className="label label-danger">9</span>
                   </a>
-                  <ul className="dropdown-menu">
-                    <li className="header">You have 9 tasks</li>
-                    <li>
-
-                      <ul className="menu">
-                        <li>
-                          <a href="#">
-
-                            <h3>
-                              Design some buttons
-                        <small className="pull-right">20%</small>
-                            </h3>
-
-                            <div className="progress xs">
-
-                              <div className="progress-bar progress-bar-aqua" style={{width: '20%'}} role="progressbar"
-                                aria-valuenow="20" aria-valuemin="0" aria-valuemax="100">
-                                <span className="sr-only">20% Complete</span>
-                              </div>
-                            </div>
-                          </a>
-                        </li>
-
-                      </ul>
-                    </li>
-                    <li className="footer">
-                      <a href="#">View all tasks</a>
-                    </li>
-                  </ul>
                 </li>
 
                 <li className="dropdown user user-menu">
-
                   <a href="#" className="dropdown-toggle" data-toggle="dropdown">
-
-                    <img src="dist/img/user2-160x160.jpg" className="user-image" alt="User Image" />
+                    {/* <img src="dist/img/user2-160x160.jpg" className="user-image" alt="User Image" /> */}
 
                     <span className="hidden-xs">Alexander Pierce</span>
                   </a>
-                  <ul className="dropdown-menu">
-
-                    <li className="user-header">
-                      <img src="dist/img/user2-160x160.jpg" className="img-circle" alt="User Image" />
-
-                      <p>
-                        Alexander Pierce - Web Developer
-                  <small>Member since Nov. 2012</small>
-                      </p>
-                    </li>
-
-                    <li className="user-body">
-                      <div className="row">
-                        <div className="col-xs-4 text-center">
-                          <a href="#">Followers</a>
-                        </div>
-                        <div className="col-xs-4 text-center">
-                          <a href="#">Sales</a>
-                        </div>
-                        <div className="col-xs-4 text-center">
-                          <a href="#">Friends</a>
-                        </div>
-                      </div>
-
-                    </li>
-
-                    <li className="user-footer">
-                      <div className="pull-left">
-                        <a href="#" className="btn btn-default btn-flat">Profile</a>
-                      </div>
-                      <div className="pull-right">
-                        <a href="#" className="btn btn-default btn-flat">Sign out</a>
-                      </div>
-                    </li>
-                  </ul>
                 </li>
-
                 <li>
                   <a href="#" data-toggle="control-sidebar"><i className="fa fa-gears"></i></a>
                 </li>
@@ -187,21 +72,18 @@ class App extends Component {
         </header>
 
         <aside className="main-sidebar">
-
-
           <section className="sidebar">
 
 
-            <div className="user-panel">
+            {/* <div className="user-panel">
               <div className="pull-left image">
                 <img src="dist/img/user2-160x160.jpg" className="img-circle" alt="User Image" />
               </div>
               <div className="pull-left info">
                 <p>Alexander Pierce</p>
-
                 <a href="#"><i className="fa fa-circle text-success"></i> Online</a>
               </div>
-            </div>
+            </div> */}
 
 
             <form action="#" method="get" className="sidebar-form">
@@ -218,7 +100,6 @@ class App extends Component {
 
             <ul className="sidebar-menu" data-widget="tree">
               <li className="header">HEADER</li>
-
               <li className="active"><a href="#"><i className="fa fa-link"></i> <span>Link</span></a></li>
               <li><a href="#"><i className="fa fa-link"></i> <span>Another Link</span></a></li>
               <li className="treeview">
@@ -233,18 +114,15 @@ class App extends Component {
                 </ul>
               </li>
             </ul>
-
           </section>
-
         </aside>
 
 
         <div className="content-wrapper">
-
           <section className="content-header">
             <h1>
               Page Header
-        <small>Optional description</small>
+            <small>Optional description</small>
             </h1>
             <ol className="breadcrumb">
               <li><a href="#"><i className="fa fa-dashboard"></i> Level</a></li>
@@ -254,99 +132,34 @@ class App extends Component {
 
 
           <section className="content container-fluid">
-
-            {/* <!--------------------------
-        | Your Page Content Here |
-        --------------------------> */}
-
+            {/*  | Your Page Content Here | */}
+            <CCTV />
           </section>
-
         </div>
 
 
 
         <footer className="main-footer">
-
           <div className="pull-right hidden-xs">
             Anything you want
-    </div>
-
+          </div>
           <strong>Copyright &copy; 2016 <a href="#">Company</a>.</strong> All rights reserved.
-  </footer>
+        </footer>
 
 
         <aside className="control-sidebar control-sidebar-dark">
-
           <ul className="nav nav-tabs nav-justified control-sidebar-tabs">
             <li className="active"><a href="#control-sidebar-home-tab" data-toggle="tab"><i className="fa fa-home"></i></a></li>
             <li><a href="#control-sidebar-settings-tab" data-toggle="tab"><i className="fa fa-gears"></i></a></li>
           </ul>
-
           <div className="tab-content">
-
-            <div className="tab-pane active" id="control-sidebar-home-tab">
-              <h3 className="control-sidebar-heading">Recent Activity</h3>
-              <ul className="control-sidebar-menu">
-                <li>
-                  <a href="javascript:;">
-                    <i className="menu-icon fa fa-birthday-cake bg-red"></i>
-
-                    <div className="menu-info">
-                      <h4 className="control-sidebar-subheading">Langdon's Birthday</h4>
-
-                      <p>Will be 23 on April 24th</p>
-                    </div>
-                  </a>
-                </li>
-              </ul>
-
-
-              <h3 className="control-sidebar-heading">Tasks Progress</h3>
-              <ul className="control-sidebar-menu">
-                <li>
-                  <a href="javascript:;">
-                    <h4 className="control-sidebar-subheading">
-                      Custom Template Design
-                <span className="pull-right-container">
-                        <span className="label label-danger pull-right">70%</span>
-                      </span>
-                    </h4>
-
-                    <div className="progress progress-xxs">
-                      <div className="progress-bar progress-bar-danger" style={{width: '70%'}}></div>
-                    </div>
-                  </a>
-                </li>
-              </ul>
-
-
+            <div className="tab-pane active" id="control-sidebar-home-tab">  
             </div>
-
-
             <div className="tab-pane" id="control-sidebar-stats-tab">Stats Tab Content</div>
-
-
             <div className="tab-pane" id="control-sidebar-settings-tab">
-              <form method="post">
-                <h3 className="control-sidebar-heading">General Settings</h3>
-
-                <div className="form-group">
-                  <label className="control-sidebar-subheading">
-                    Report panel usage
-              <input type="checkbox" className="pull-right" checked />
-                  </label>
-
-                  <p>
-                    Some information about this general settings option
-            </p>
-                </div>
-
-              </form>
             </div>
-
           </div>
         </aside>
-
         {/* <!-- Add the sidebar's background. This div must be placed
   immediately after the control sidebar --> */}
         <div className="control-sidebar-bg"></div>

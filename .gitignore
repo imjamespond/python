@@ -8,6 +8,7 @@ mysite/static
 *.json
 **.sqlite3
 **/yarn.lock
+**/yarn-error.log
 **/build
 **/__pycache__
 **/node_modules
