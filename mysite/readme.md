@@ -4,6 +4,10 @@ By running makemigrations, you’re telling Django that you’ve made some chang
 Now, run migrate again to create those model tables in your database:  
 ``python manage.py migrate``  
 
+# Setting  
+TEMPLATES->DIR 改为 ``os.path.join(BASE_DIR, "static")``  
+views中return ``render(request, 'dist/index.html')``  
+STATICFILES_DIRS 加上 上面的  
 
 # Darknet  
 yolov3 CUDA Error: out of memory darknet: ./src/cuda.c:36: check_error: Assertion `0' failed.  

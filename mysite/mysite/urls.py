@@ -16,7 +16,10 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import include, path
 
+from cctv.views import index as cctv_index
+
 urlpatterns = [
-    path('cctv/', include('cctv.urls')),
+    path('cctv/', cctv_index),
+    path('api/cctv/', include('cctv.urls')),
     path('admin/', admin.site.urls),
 ]

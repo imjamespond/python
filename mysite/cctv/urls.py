@@ -1,9 +1,8 @@
 from django.urls import path
 
-from . import views
+from . import controllers
 
-urlpatterns = [
-    path('', views.index, name='index'),
-    path('frame-list', views.frame_list, name='frame_list'),
-    path('frame-test', views.frame_test, name='frame_test'),
+urlpatterns = [ 
+    path('frame-list', controllers.frame_list, name='frame_list'),
+    path('frame-test', controllers.frame_test, name='frame_test'),
 ]
