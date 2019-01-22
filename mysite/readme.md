@@ -12,6 +12,7 @@ STATICFILES_DIRS 加上 上面的
 # Darknet  
 yolov3 CUDA Error: out of memory darknet: ./src/cuda.c:36: check_error: Assertion `0' failed.  
 ``get the line batch=64 changed to 32 in yolov3.cfg``  
-create a folder named 'darknet' at root directory which is the same dir as mysite, then copy data, cfg into it  
+**create a folder named 'darknet' at root directory** which is the same dir as mysite, then copy data, cfg into it  
 get this line changed  
 ``names = darknet/data/coco.names``  
+and **make sure django cmd is excuted at this root dir** 

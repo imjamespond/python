@@ -150,6 +150,8 @@ def test():
     net = load_net((DARKNET_DIR + "cfg/yolov3-tiny.cfg").encode('utf-8'), (DARKNET_DIR + "yolov3-tiny.weights").encode('utf-8'), 0)
     meta = load_meta((DARKNET_DIR + "cfg/coco.data").encode('utf-8'))
     r = detect(net, meta, (DARKNET_DIR + "data/dog.jpg").encode('utf-8'))
-    print(r)
     
+    # for x in r:
+    #     print(x[0].decode('utf-8'), x[1])
 
+    return r

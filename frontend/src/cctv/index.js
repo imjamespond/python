@@ -1,17 +1,39 @@
 import React, { Component } from 'react';
-import $ from 'jquery';
+// import $ from 'jquery';
 import Chart from 'chart.js';
 
 import { GetJSON } from '../utils/ajax';
+import { GetRandomColor } from '../utils/commons'
 
 class CCTV extends Component {
 
   componentDidMount() {
-    GetJSON('/cctv/frame-list', null, data => {
-      console.log(data)
+    GetJSON('/cctv/frame-count', null, data => {
+      // console.log(data) 
+      var dateMap = {}, dateList = [], countMap = {};
+      data.map(frame => {
+        if (!dateMap[frame.frame_date]) {
+          dateList.push(frame.frame_date);
+          dateMap[frame.frame_date] = {};
+        }
+
+        dateMap[frame.frame_date][frame.object_type] = frame.count;
+      });
+      dateList.map(date => {
+        const objs = dateMap[date];
+
+        for (var k in objs) {
+          var countList = countMap[k] || [];
+          countList.push(objs[k] ? objs[k] : 0);
+          countMap[k] = countList;
+        }
+
+      });
+      var chartData = getData(dateList, countMap);
+      new Chart(this.canvas.getContext('2d'), { data: chartData, type: 'line', options })
     });
 
-    new Chart(this.canvas.getContext('2d'), { data: chartData, type: 'line', options})
+
   }
 
   render() {
@@ -44,32 +66,50 @@ class CCTV extends Component {
   }
 }
 
-
-var chartData = {
-  labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-  datasets: [
-    {
-      label: 'Electronics',
-      backgroundColor: 'rgba(210, 214, 222, .5)',
-      borderColor: 'rgba(210, 214, 222, 1)',
-      // pointColor: 'rgba(210, 214, 222, 1)',
-      // pointStrokeColor: '#c1c7d1',
-      // pointHighlightFill: '#fff',
-      // pointHighlightStroke: 'rgba(220,220,220,1)',
-      data: [65, 59, 80, 81, 56, 55, 40]
-    },
-    {
-      label: 'Digital Goods',
-      backgroundColor: 'rgba(60,141,188, 0.5)',
-      borderColor: 'rgba(60,141,188,0.8)',
-      // pointColor: '#3b8bba',
-      // pointStrokeColor: 'rgba(60,141,188,1)',
-      // pointHighlightFill: '#fff',
-      // pointHighlightStroke: 'rgba(60,141,188,1)',
-      data: [28, 48, 40, 19, 86, 27, 90]
+function getData(labels, objs, getData) {
+  var datasets = [];
+  for (var k in objs) {
+    const data = getData ? getData(objs[k]) : objs[k];
+    const color = GetRandomColor();
+    var dataset = {
+      label: k,
+      backgroundColor: color + '88',
+      borderColor: color,
+      data
     }
-  ]
+    datasets.push(dataset);
+  }
+  return {
+    labels,
+    datasets
+  }
 }
+
+// var chartData = {
+//   labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+//   datasets: [
+//     {
+//       label: 'Electronics',
+//       backgroundColor: 'rgba(210, 214, 222, .5)',
+//       borderColor: 'rgba(210, 214, 222, 1)',
+//       // pointColor: 'rgba(210, 214, 222, 1)',
+//       // pointStrokeColor: '#c1c7d1',
+//       // pointHighlightFill: '#fff',
+//       // pointHighlightStroke: 'rgba(220,220,220,1)',
+//       data: [65, 59, 80, 81, 56, 55, 40]
+//     },
+//     {
+//       label: 'Digital Goods',
+//       backgroundColor: 'rgba(60,141,188, 0.5)',
+//       borderColor: 'rgba(60,141,188,0.8)',
+//       // pointColor: '#3b8bba',
+//       // pointStrokeColor: 'rgba(60,141,188,1)',
+//       // pointHighlightFill: '#fff',
+//       // pointHighlightStroke: 'rgba(60,141,188,1)',
+//       data: [28, 48, 40, 19, 86, 27, 90]
+//     }
+//   ]
+// }
 
 
 var options = {
@@ -91,14 +131,17 @@ var options = {
       display: true,
       scaleLabel: {
         display: true,
-        labelString: 'Month'
+        labelString: 'Frame date'
       }
     }],
     yAxes: [{
       display: true,
       scaleLabel: {
         display: true,
-        labelString: 'Value'
+        labelString: 'Object count'
+      },
+      ticks: {
+        beginAtZero: true
       }
     }]
   },
