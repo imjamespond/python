@@ -5,7 +5,7 @@ venv
 darknet
 mysite/static
 
-*.json
+package.json
 **.sqlite3
 **/yarn.lock
 **/yarn-error.log
