@@ -124,8 +124,8 @@ def classify(net, meta, im):
     res = sorted(res, key=lambda x: -x[1])
     return res
 
-def detect(net, meta, image, thresh=.5, hier_thresh=.5, nms=.45):
-    im = load_image(image, 0, 0)
+def detect(net, meta, im, thresh=.5, hier_thresh=.5, nms=.45):
+    # im = load_image(image, 0, 0)
     num = c_int(0)
     pnum = pointer(num)
     predict_image(net, im)
@@ -143,15 +143,19 @@ def detect(net, meta, image, thresh=.5, hier_thresh=.5, nms=.45):
     free_image(im)
     free_detections(dets, num)
     return res
-    
+
+net = load_net((DARKNET_DIR + "cfg/yolov3.cfg").encode('utf-8'),
+                (DARKNET_DIR + "yolov3.weights").encode('utf-8'), 0)
+meta = load_meta((DARKNET_DIR + "cfg/coco.data").encode('utf-8'))
 # if __name__ == "__main__":
-def test(): 
-     
-    net = load_net((DARKNET_DIR + "cfg/yolov3-tiny.cfg").encode('utf-8'), (DARKNET_DIR + "yolov3-tiny.weights").encode('utf-8'), 0)
-    meta = load_meta((DARKNET_DIR + "cfg/coco.data").encode('utf-8'))
-    r = detect(net, meta, (DARKNET_DIR + "data/dog.jpg").encode('utf-8'))
+def test(image=None):
+    # image = image if image is not None else load_image((DARKNET_DIR + "data/dog.jpg").encode('utf-8'), 0, 0)
+    im = load_image(image.encode('utf-8'), 0, 0)
+    # print(im)
+
+    r = detect(net, meta, im)
     
     # for x in r:
-    #     print(x[0].decode('utf-8'), x[1])
+    #     print(x[0].decode('utf-8'), x[1], x[2])
 
     return r
