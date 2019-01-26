@@ -1,7 +1,9 @@
 #https://opencv-python-tutroals.readthedocs.io/en/latest/py_tutorials/py_gui/py_video_display/py_video_display.html?highlight=videocapture
 import cv2
 
-cap = cv2.VideoCapture(0)
+# cap = cv2.VideoCapture(0)
+cap = cv2.VideoCapture()
+cap.open("rtsp://10.0.0.2:8080/video/h264")
 
 while(True):
     # Capture frame-by-frame
