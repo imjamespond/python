@@ -1,13 +1,34 @@
 #ifndef PYTEST_H
 #define PYTEST_H
 
+#include <opencv2/opencv.hpp>
+#include <opencv2/tracking.hpp>
+#include <darknet.h>
+
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
-typedef void (*callback_func)(detection *, int); 
-detection *predict_image(callback_func, network *, image, int , int , float , float , int *, int , int *); 
-void test(callback_func, network *, const char *, float , float , int *, int); 
+    // #include <opencv2/opencv.hpp> // wrong
+    typedef cv::Ptr<cv::Tracker> TrackerPtr;
+
+    // namespace cv
+    // {
+    //     class Mat;
+    // }
+    image mat_to_image(cv::Mat m);
+    cv::Mat image_to_mat(image im);
+
+    typedef void (*callback_func)(detection *, int);
+    detection *predict_image(callback_func, network *, image, int, int, float, float, int *, int, int *);
+    void test(callback_func, network *, metadata *, const char *, float, float, int *, int);
+
+    typedef struct
+    {
+        TrackerPtr ptr; 
+        cv::Rect2d roi;
+    } DarknetTracker;
 
 #ifdef __cplusplus
 }

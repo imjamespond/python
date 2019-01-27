@@ -1,4 +1,5 @@
 import os
+import time
 from ctypes import *
 import cv2
 
@@ -61,13 +62,13 @@ predict_image.argtypes = [DETETC_FUNC, c_void_p, IMAGE, c_int, c_int, c_float, c
 predict_image.restype = POINTER(DETECTION)
 
 test = libcodechiev.test
-test.argtypes = [DETETC_FUNC, c_void_p, c_char_p, c_float, c_float, POINTER(c_int), c_int] 
+test.argtypes = [DETETC_FUNC, c_void_p, POINTER(METADATA), c_char_p, c_float, c_float, POINTER(c_int), c_int] 
 
 # test_callback = libcodechiev.test_callback
 # test_callback.argtypes = [CFUNCTYPE(c_void_p, c_char_p)]
 
-net = load_net((DARKNET_DIR + "/darknet/cfg/yolov3-tiny.cfg").encode('utf-8'),
-                (DARKNET_DIR + "/darknet/yolov3-tiny.weights").encode('utf-8'), 0)
+net = load_net((DARKNET_DIR + "/darknet/cfg/yolov3.cfg").encode('utf-8'),
+                (DARKNET_DIR + "/darknet/yolov3.weights").encode('utf-8'), 0)
 meta = load_meta((DARKNET_DIR + "/darknet/cfg/coco-1.data").encode('utf-8'))
 
 def predict(im, thresh=.5, hier_thresh=.5):
@@ -94,13 +95,15 @@ def detect(dets, num, nms=.45):
     for x in res:
         print(x[0].decode('utf-8'), x[1], x[2])
 
+    time.sleep(.5)
+
 
 # img = load_image((DARKNET_DIR + "/darknet/data/dog.jpg").encode('utf-8'), 0, 0)
 # r = predict(img)
 # free_image(img)
 
 # test("rtsp://10.0.0.2:8080/video/h264".encode('utf-8'))
-test(DETETC_FUNC(detect), net, "/home/james/Downloads/tf_traffic_cut.mp4".encode('utf-8'), c_float(.5), c_float(.5), None, 0)
+test(DETETC_FUNC(detect), net, meta,"/home/james/Downloads/tf_traffic_cut.mp4".encode('utf-8'), c_float(.5), c_float(.5), None, 0)
 
 # world = "world"
 # def hello(hello):
