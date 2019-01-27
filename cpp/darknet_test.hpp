@@ -4,6 +4,7 @@
 #include <opencv2/opencv.hpp>
 #include <opencv2/tracking.hpp>
 #include <darknet.h>
+#include <string>
 
 #ifdef __cplusplus
 extern "C"
@@ -26,8 +27,12 @@ extern "C"
 
     typedef struct
     {
+        std::string id;
+        int overlapped;// 0 for new, 1 for checking, 2 for overlapped
+
         TrackerPtr ptr; 
         cv::Rect2d roi;
+
     } DarknetTracker;
 
 #ifdef __cplusplus
