@@ -66,6 +66,7 @@ void test(callback_func detect, network *net, metadata *meta, const char *url, f
             DarknetTracker &tracker = *it;
             if (tracker.overlapped > 1) 
             {
+                tracker.trackable = false;
                 continue;
             }
 
@@ -141,40 +142,39 @@ bool __check_overlapped__(Trackers &trackers, box &bbox, Mat &frame, int &count)
     {
         DarknetTracker &tracker = *it;
 
-        double w2 = tracker.roi.width, h2 = tracker.roi.height;
-        double x2 = (tracker.roi.x), x2_ = (tracker.roi.x + tracker.roi.width);
-        x = x2 > x1 ? x2 : x1;
-        x_ = x2_ > x1_ ? x1_ : x2_;
-        w = x_ - x;
-        double y2 = (tracker.roi.y), y2_ = (tracker.roi.y + tracker.roi.height);
-        y = y2 > y1 ? y2 : y1;
-        y_ = y2_ > y1_ ? y1_ : y2_;
-        h = y_ - y;
-
-        if (w/w1>.8 && w/w2>.8 && h/h1>.4 && h/h2>.4)
+        if (tracker.trackable)
         {
-            //tracker and detection of darknet overlapped
-            printf("%f, %f\n", w, h);
-            overlapped = true;
-            tracker.overlapped = 0;
+            double w2 = tracker.roi.width, h2 = tracker.roi.height;
+            double x2 = (tracker.roi.x), x2_ = (tracker.roi.x + tracker.roi.width);
+            x = x2 > x1 ? x2 : x1;
+            x_ = x2_ > x1_ ? x1_ : x2_;
+            w = x_ - x;
+            double y2 = (tracker.roi.y), y2_ = (tracker.roi.y + tracker.roi.height);
+            y = y2 > y1 ? y2 : y1;
+            y_ = y2_ > y1_ ? y1_ : y2_;
+            h = y_ - y;
 
-            tracker.roi.x = x1;
-            tracker.roi.y = y1;
-            tracker.roi.width = w1;
-            tracker.roi.height = h1;
-
-            if (!tracker.trackable)
+            if (w/w1>.8 && w/w2>.8 && h/h1>.4 && h/h2>.4)
             {
+                //tracker and detection of darknet overlapped
+                printf("%f, %f\n", w, h);
+                overlapped = true;
+                tracker.overlapped = 0;
+
+                tracker.roi.x = x1;
+                tracker.roi.y = y1;
+                tracker.roi.width = w1;
+                tracker.roi.height = h1;
+
                 // create a tracker object
                 tracker.ptr = cv::TrackerKCF::create();
                 // initialize the tracker
                 tracker.ptr->init(frame, tracker.roi);
                 // update the tracking result
                 tracker.ptr->update(frame, tracker.roi);
+
+                break;
             }
-
-
-            break;
         }
     }
 
@@ -198,7 +198,7 @@ bool __check_overlapped__(Trackers &trackers, box &bbox, Mat &frame, int &count)
 
         trackers.push_back(tracker);
 
-	printf("count: %d\n",count);
+	    printf("count: %d\n",count);
     }
   
 }
