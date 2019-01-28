@@ -15,7 +15,7 @@ using cv::VideoCapture;
 
 typedef std::vector<DarknetTracker> Trackers;
 
-bool __check_overlap__(Trackers &, box &, Mat &, int &);
+bool __check_overlapped__(Trackers &, box &, Mat &, int &);
 void __clean_trackers__(Trackers &);
 
 detection *predict_image(callback_func detect, network *net, image im, int w, int h, float thresh, float hier, int *map, int relative, int *num)
@@ -61,6 +61,27 @@ void test(callback_func detect, network *net, metadata *meta, const char *url, f
 
         cv::resize(frame, frame, cv::Size(frame.cols * 0.75, frame.rows * 0.75), 0, 0, CV_INTER_LINEAR);
 
+        for (Trackers::iterator it = trackers.begin(); it != trackers.end(); it++)
+        {
+            DarknetTracker &tracker = *it;
+            if (tracker.overlapped > 1) 
+            {
+                continue;
+            }
+
+            // update the tracking result
+            tracker.trackable = tracker.ptr->update(frame, tracker.roi);
+            // draw the tracked object
+            cv::rectangle(frame, tracker.roi, Scalar(255, 0, 0), 2, 1);
+            cv::putText(frame,
+                        tracker.id,
+                        Point(tracker.roi.x, tracker.roi.y), // Coordinates
+                        cv::FONT_HERSHEY_COMPLEX_SMALL,      // Font
+                        1.0,                                 // Scale. 2.0 = 2x bigger
+                        Scalar(255, 255, 255)                // BGR Color
+            );
+        }
+
         if (iframe % 15 == 0)
         {
             // trackers.clear();
@@ -88,31 +109,17 @@ void test(callback_func detect, network *net, metadata *meta, const char *url, f
 
                 box &bbox = dets[i].bbox;
                 cv::circle(frame, Point((int)bbox.x, (int)bbox.y), 10.0, Scalar(0, 0, 255), 1, 8);
-                __check_overlap__(trackers, bbox, frame, count);
+                __check_overlapped__(trackers, bbox, frame, count);
             }
             __clean_trackers__(trackers);
 
+            free_image(img);
             free_detections(dets, nboxes);
         }
         else
         {
-            for (Trackers::iterator it = trackers.begin(); it != trackers.end(); it++)
-            {
-                DarknetTracker &tracker = *it;
-                // update the tracking result
-                tracker.ptr->update(frame, tracker.roi);
-                // draw the tracked object
-                cv::rectangle(frame, tracker.roi, Scalar(255, 0, 0), 2, 1);
-                cv::putText(frame,
-                            tracker.id,
-                            Point(tracker.roi.x, tracker.roi.y), // Coordinates
-                            cv::FONT_HERSHEY_COMPLEX_SMALL,      // Font
-                            1.0,                                 // Scale. 2.0 = 2x bigger
-                            Scalar(255, 255, 255)                // BGR Color
-                );
-            }
 
-            codechiev::base::Time::SleepMillis(100);
+            codechiev::base::Time::SleepMillis(300);
         }
 
         cv::imshow("Live", frame);
@@ -120,7 +127,7 @@ void test(callback_func detect, network *net, metadata *meta, const char *url, f
     }
 }
 
-bool __check_overlap__(Trackers &trackers, box &bbox, Mat &frame, int &count)
+bool __check_overlapped__(Trackers &trackers, box &bbox, Mat &frame, int &count)
 {
     double w1 = bbox.w, h1 = bbox.h;
     double x1 = bbox.x - (bbox.w * .5), x1_ = x1 + w1;
@@ -149,33 +156,33 @@ bool __check_overlap__(Trackers &trackers, box &bbox, Mat &frame, int &count)
             //tracker and detection of darknet overlapped
             printf("%f, %f\n", w, h);
             overlapped = true;
-            tracker.overlapped = 2;
+            tracker.overlapped = 0;
 
             tracker.roi.x = x1;
             tracker.roi.y = y1;
             tracker.roi.width = w1;
             tracker.roi.height = h1;
 
-            // create a tracker object
-            tracker.ptr = cv::TrackerKCF::create();
-            // initialize the tracker
-            tracker.ptr->init(frame, tracker.roi);
-            // update the tracking result
-            tracker.ptr->update(frame, tracker.roi);
+            if (!tracker.trackable)
+            {
+                // create a tracker object
+                tracker.ptr = cv::TrackerKCF::create();
+                // initialize the tracker
+                tracker.ptr->init(frame, tracker.roi);
+                // update the tracking result
+                tracker.ptr->update(frame, tracker.roi);
+            }
+
 
             break;
         }
-        else
-        {
-            // tracker.overlapped = 1;
-        } 
     }
 
     if (!overlapped)
     {
         DarknetTracker tracker;
         tracker.id = boost::lexical_cast<std::string>(++count);
-        tracker.overlapped = 0;
+        tracker.overlapped = 0; 
 
         tracker.roi.x = x1;
         tracker.roi.y = y1;
@@ -187,9 +194,11 @@ bool __check_overlap__(Trackers &trackers, box &bbox, Mat &frame, int &count)
         // initialize the tracker
         tracker.ptr->init(frame, tracker.roi);
         // update the tracking result
-        tracker.ptr->update(frame, tracker.roi);
+        tracker.trackable = tracker.ptr->update(frame, tracker.roi);
 
         trackers.push_back(tracker);
+
+	printf("count: %d\n",count);
     }
   
 }
@@ -200,13 +209,13 @@ void __clean_trackers__(Trackers &trackers)
     {
         DarknetTracker &tracker = *it;
 
-        if (tracker.overlapped == 1)
+        if (tracker.overlapped > 3)
         {
             it = trackers.erase(it);
         }
         else
         {
-            tracker.overlapped = 1; // deletable in next round
+            tracker.overlapped += 1; // deletable in next round
             it++;
         }
         

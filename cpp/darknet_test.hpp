@@ -28,7 +28,8 @@ extern "C"
     typedef struct
     {
         std::string id;
-        int overlapped;// 0 for new, 1 for checking, 2 for overlapped
+        int overlapped;// 0 for new, 2... for not overlapped
+        bool trackable;
 
         TrackerPtr ptr; 
         cv::Rect2d roi;
