@@ -1,7 +1,3 @@
-# Python is not installed as a framework
-# https://stackoverflow.com/questions/21784641/installation-issue-with-matplotlib-python
-# Create a file ~/.matplotlib/matplotlibrc there and add the following code: backend: TkAgg
-
 # import the necessary packages
 from imutils.video import VideoStream
 from imutils.video import FPS
