@@ -10,6 +10,9 @@ while(True):
     # Capture frame-by-frame
     ret, frame = cap.read()
 
+    frame = cv2.resize(frame, (640, 360),
+                           interpolation=cv2.INTER_CUBIC)
+
     # Display the resulting frame
     cv2.imshow('frame', frame)
     if cv2.waitKey(1) & 0xFF == ord('q'):
@@ -37,6 +40,9 @@ term_crit = (cv2.TERM_CRITERIA_EPS | cv2.TERM_CRITERIA_COUNT, 10, 1)
 
 while(1):
     ret, frame = cap.read()
+
+    frame = cv2.resize(frame, (640, 360),
+                       interpolation=cv2.INTER_CUBIC)
 
     if ret == True:
         hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
