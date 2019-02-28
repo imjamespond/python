@@ -125,3 +125,4 @@ STATICFILES_DIRS = [
     '/var/www/static/',
 ]
 
+CSRF_USE_SESSIONS = True

@@ -13,3 +13,4 @@ package-lock.json
 **/build
 **/__pycache__
 **/node_modules
+**/migrations

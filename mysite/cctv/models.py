@@ -12,7 +12,7 @@ class Frame(models.Model):
 
     idx_frame_date = models.Index(fields=['-frame_date'])
 
-class Cam(models.Model):
+class WebCam(models.Model):
     name = models.CharField(max_length=200)
-    ip_addr = models.CharField('ip address of cam', max_length=200)
+    address = models.CharField('address of cam', max_length=200, default='')
 

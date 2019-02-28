@@ -1,4 +1,9 @@
 import React, { Component } from 'react';
+import {
+  BrowserRouter as Router,
+  Route,
+  Link
+} from 'react-router-dom';
 
 import 'bootstrap';
 import 'admin-lte';
@@ -11,19 +16,27 @@ import 'admin-lte/dist/css/skins/skin-blue.css';
 import './App.css';
 
 import CCTV from './cctv';
+import { Store } from './utils/commons';
 
 class App extends Component {
+  constructor() {
+    super();
+    Store.app = this;
+    this.state = {pageHeader: ''};
+  }
+
   render() {
     return (
+      <Router> 
       <div className="wrapper skin-blue sidebar-mini">
 
 
         <header className="main-header">
 
 
-          <a href="index2.html" className="logo">
-            <span className="logo-mini"><b>A</b>LT</span>
-            <span className="logo-lg"><b>Admin</b>LTE</span>
+          <a href="/" className="logo">
+            {/* <span className="logo-mini"><b>A</b>LT</span> */}
+            <span className="logo-lg"><b>Admin</b>CCTV</span>
           </a>
 
 
@@ -100,7 +113,10 @@ class App extends Component {
 
             <ul className="sidebar-menu" data-widget="tree">
               <li className="header">HEADER</li>
-              <li className="active"><a href="#"><i className="fa fa-link"></i> <span>Link</span></a></li>
+              <li className="active">
+                  <Link className="" to="/cctv"><i className="fa fa-link"></i> <span>report</span></Link> 
+                  <Link className="" to="/cctv/config"><i className="fa fa-link"></i> <span>config</span></Link> 
+              </li>
               <li><a href="#"><i className="fa fa-link"></i> <span>Another Link</span></a></li>
               <li className="treeview">
                 <a href="#"><i className="fa fa-link"></i> <span>Multilevel</span>
@@ -121,7 +137,7 @@ class App extends Component {
         <div className="content-wrapper">
           <section className="content-header">
             <h1>
-              Page Header
+                {this.state.pageHeader}
             <small>Optional description</small>
             </h1>
             <ol className="breadcrumb">
@@ -133,7 +149,8 @@ class App extends Component {
 
           <section className="content container-fluid">
             {/*  | Your Page Content Here | */}
-            <CCTV />
+            
+              <Route path="/cctv" component={CCTV} />
           </section>
         </div>
 
@@ -164,6 +181,7 @@ class App extends Component {
   immediately after the control sidebar --> */}
         <div className="control-sidebar-bg"></div>
       </div>
+      </Router> 
     );
   }
 }

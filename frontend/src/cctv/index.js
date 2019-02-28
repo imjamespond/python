@@ -1,46 +1,50 @@
 import React, { Component } from 'react';
+import { Link, Route, Switch } from 'react-router-dom';
 // import $ from 'jquery';
 import Chart from 'chart.js';
 
 import { GetJSON } from '../utils/ajax';
-import { GetRandomColor } from '../utils/commons'
+import { GetRandomColor } from '../utils/commons';
+
+import Config from './config';
 
 class CCTV extends Component {
 
   componentDidMount() {
-    GetJSON('/cctv/frame-count', null, data => {
-      // console.log(data) 
-      var dateMap = {}, dateList = [], countMap = {};
-      data.map(frame => {
-        if (!dateMap[frame.frame_date]) {
-          dateList.push(frame.frame_date);
-          dateMap[frame.frame_date] = {};
-        }
+    // GetJSON('/cctv/frame-count', null, data => {
+    //   // console.log(data) 
+    //   var dateMap = {}, dateList = [], countMap = {};
+    //   data.map(frame => {
+    //     if (!dateMap[frame.frame_date]) {
+    //       dateList.push(frame.frame_date);
+    //       dateMap[frame.frame_date] = {};
+    //     }
 
-        dateMap[frame.frame_date][frame.object_type] = frame.count;
-      });
-      dateList.map(date => {
-        const objs = dateMap[date];
+    //     dateMap[frame.frame_date][frame.object_type] = frame.count;
+    //   });
+    //   dateList.map(date => {
+    //     const objs = dateMap[date];
 
-        for (var k in objs) {
-          var countList = countMap[k] || [];
-          countList.push(objs[k] ? objs[k] : 0);
-          countMap[k] = countList;
-        }
+    //     for (var k in objs) {
+    //       var countList = countMap[k] || [];
+    //       countList.push(objs[k] ? objs[k] : 0);
+    //       countMap[k] = countList;
+    //     }
 
-      });
-      var chartData = getData(dateList, countMap);
-      new Chart(this.canvas.getContext('2d'), { data: chartData, type: 'line', options })
-    });
+    //   });
+    //   var chartData = getData(dateList, countMap);
+    //   this.canvas && new Chart(this.canvas.getContext('2d'), { data: chartData, type: 'line', options })
+    // });
 
 
   }
 
   render() {
+    const {match} = this.props;
     return <div className="container-fluid">
       <div className="row">
         <div className="col-xs-12">
-          <div className="box box-info">
+          {/* <div className="box box-info">
             <div className="box-header with-border">
               <h3 className="box-title">Line Chart</h3>
 
@@ -57,8 +61,11 @@ class CCTV extends Component {
                   style={{ height: 250 }}></canvas>
               </div>
             </div>
-          </div>
-
+          </div> */}
+          <Switch>
+            <Route path={`${match.url}/`} exact component={() => "index"} />
+            <Route path={`${match.url}/config/`} exact component={Config} />
+          </Switch>
         </div>
       </div>
 

@@ -16,6 +16,9 @@ def queryset_to_json_response(data):
     return HttpResponse(_json, content_type='application/json')
 
 
+def response(str):
+    return HttpResponse(str)
+
 def success():
     return HttpResponse('success')
 

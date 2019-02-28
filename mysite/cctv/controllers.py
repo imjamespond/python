@@ -1,11 +1,29 @@
-from utils.http import queryset_to_json_response, json_response, success, failed
-from .models import Frame
+from utils.http import queryset_to_json_response, json_response, success, failed, response
+from .models import Frame, WebCam
 
 from django.db import transaction, models
+from django.middleware.csrf import get_token
 import json
 
-# Create your views here.
 
+def get_csrf_token(request):
+    return response(get_token(request))
+
+def webcam_list(request):
+    print(request.session)
+    list = WebCam.objects.all()
+    return queryset_to_json_response(list)
+
+def webcam_add(request):
+    
+    model = WebCam(name=request.POST.get('name'),
+                   address=request.POST.get('addr'))
+    model.save()
+    return success()
+
+def webcam_del(request):
+    list = WebCam.objects.filter(id=request.GET.get('id')).delete()
+    return queryset_to_json_response(list)
 
 def frame_list(request):
     # frame_list = Frame.objects.all()
