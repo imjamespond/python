@@ -15,4 +15,9 @@ class Frame(models.Model):
 class WebCam(models.Model):
     name = models.CharField(max_length=200)
     address = models.CharField('address of cam', max_length=200, default='')
+    left = models.IntegerField(default=0)
+    top = models.IntegerField(default=0)
+    width = models.IntegerField(default=0)
+    height = models.IntegerField(default=0)
+
 

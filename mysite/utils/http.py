@@ -19,6 +19,10 @@ def queryset_to_json_response(data):
 def response(str):
     return HttpResponse(str)
 
+
+def image(image_data):
+    return HttpResponse(image_data, content_type="image/png")
+
 def success():
     return HttpResponse('success')
 

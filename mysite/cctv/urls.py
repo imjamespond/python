@@ -10,6 +10,9 @@ urlpatterns = [
     path('webcam-list', controllers.webcam_list, name='webcam-list'),
     path('webcam-add', controllers.webcam_add, name='webcam-add'),
     path('webcam-del', controllers.webcam_del, name='webcam-del'),
+    path('webcam-update', controllers.webcam_update, name='webcam-update'),
+
+    path('webcam-capture', controllers.webcam_capture, name='webcam-capture'),
 
     path('csrf-token', controllers.get_csrf_token, name='csrf-token'),
 ]

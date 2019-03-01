@@ -1,30 +1,63 @@
 import React, { Component } from 'react';
 // import { Link, Route, Switch } from 'react-router-dom';
 
-
-import { GetJSON,Get, Post } from '../utils/ajax'; 
+import { GetJSON, Get, Post } from '../utils/ajax'; 
 import Modal from '../utils/Modal';
-import { Store, GetCookie } from '../utils/commons';
+import { Store } from '../utils/commons';
+
+import DetectionArea from './detectionArea';
 
 class Config extends Component {
   constructor(){
     super()
-    this.state = {formdata:{}, camlist: null};
+    this.state = { formdata: {}, camlist: null, cam: null, timestamp: 0};
   }
 
   componentDidMount() {
     Store.app.setState({ pageHeader: 'Web camera list'});
+    this.getWebCamList();
+  }
+
+  getWebCamList() {
     this.setState({ camlist: null }, () => {
       GetJSON('/cctv/webcam-list', null, camlist => {
-        this.setState({ camlist});
+        this.setState({ camlist });
       });
     });
-
-    console.log(GetCookie('csrftoken'));
+  }
+  addWebCam() {
+    const { formdata } = this.state;
+    Get('/cctv/csrf-token', null, csrfmiddlewaretoken =>
+      Post('/cctv/webcam-add', { csrfmiddlewaretoken, ...formdata }, rs => {
+        alert("添加成功");
+        this.getWebCamList();
+      }))
+  }
+  removeWebCam(pk){
+    Get('/cctv/csrf-token', null, csrfmiddlewaretoken =>
+      Post('/cctv/webcam-del', { csrfmiddlewaretoken, pk }, rs => {
+        alert("删除成功");
+        this.getWebCamList();
+      }))
+  }
+  configDetectionArea(){
+    const { cam } = this.state;
+    const pos = this.detectionArea.getPosition();
+    console.log(cam, pos);
+    Get('/cctv/csrf-token', null, csrfmiddlewaretoken =>
+      Post('/cctv/webcam-update', { csrfmiddlewaretoken, pk: cam.pk, ...cam.fields, ...pos }, 
+        rs => {
+          if (rs) {
+            alert("配置成功");
+            this.getWebCamList();
+          }
+        }))
   }
 
   render() {
-    const { formdata, camlist} = this.state;
+    // console.log(this.props.location);
+
+    const { formdata, camlist, cam} = this.state;
     return <div style={{backgroundColor: 'white'}}>
       <div className="row" style={{padding: 10}}>
         <h4 className="col-md-6">webcam list</h4>
@@ -48,10 +81,15 @@ class Config extends Component {
             <td>{cam.pk}</td>
             <td>{cam.fields.name}</td>
             <td>{cam.fields.address}</td>
-            <td><a className="btn glyphicon glyphicon-cog" href="javascript:;"
-              onClick={() => {
-                this.modal.show();
-              }} />
+            <td>
+              <a className=" glyphicon glyphicon-cog" href="javascript:;"
+                onClick={() => {
+                  this.setState({ cam: null }, () =>
+                    this.setState({ cam, timestamp: new Date().getTime() }));
+                  this.modal.show();
+                }} />
+              <a className=" glyphicon glyphicon-remove" href="javascript:;"
+                onClick={this.removeWebCam.bind(this, cam.pk)} />
             </td>
             </tr>
           )}
@@ -60,15 +98,15 @@ class Config extends Component {
       </table>
 
       <Modal ref={ref => this.modal = ref} 
-        title="hehe"
-        body="haha"/>
+        onConfirm={this.configDetectionArea.bind(this)}
+        lg={true}
+        title={'Configure detection area - ' + (cam ? cam.fields.name : '')}
+        body={<div>
+          {cam && <DetectionArea ref={ref => this.detectionArea = ref} cam={cam} />}
+        </div>
+        }/>
       <Modal ref={ref => this.modal_add = ref}
-        onConfirm={e => {
-          Get('/cctv/csrf-token', null, csrfmiddlewaretoken => 
-            Post('/cctv/webcam-add', { csrfmiddlewaretoken, ...formdata}, rs => {
-              alert("添加成功");
-            }))
-        }}
+        onConfirm={this.addWebCam.bind(this)}
         title="add"
         body={
           <div className="form-horizontal">
