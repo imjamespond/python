@@ -1,5 +1,5 @@
 from utils.http import queryset_to_json_response, json_response, success, failed, response, image
-from .models import Frame, WebCam
+from .models import Frame, WebCam, Track
 
 from django.db import transaction, models
 from django.middleware.csrf import get_token
@@ -7,6 +7,7 @@ import json
 import cv2
 import base64
 
+from . import darknet, track
 
 def get_csrf_token(request):
     return response(get_token(request))
@@ -31,7 +32,9 @@ def webcam_update(request):
     num = cam.update(left=int(float(request.POST.get('left')))
                , top=int(float(request.POST.get('top')))
                , width=int(float(request.POST.get('width')))
-               , height=int(float(request.POST.get('height'))))
+               , height=int(float(request.POST.get('height')))
+               , cam_width=int(float(request.POST.get('camWidth')))
+               , cam_height=int(float(request.POST.get('camHeight'))))
 
     return response(num)
 
@@ -39,6 +42,17 @@ def webcam_update(request):
 def webcam_del(request):
     num = WebCam.objects.filter(id=request.POST.get('pk')).delete()
     return response(num)
+
+def webcam_detect(request):
+    webCam = WebCam.objects.filter(id=request.GET.get('pk'))[0]
+    onTrack = lambda t,b,l,r: track.onTrack(t,b,l,r, webCam.id) 
+    darknet.detect(webCam.address
+        , x1=webCam.left/(webCam.cam_width or 1)
+        , y1=webCam.top/(webCam.cam_height or 1)
+        , x2=(webCam.left+webCam.width)/(webCam.cam_width or 1)
+        , y2=(webCam.top+webCam.height)/(webCam.cam_height or 1)
+        , on_track = onTrack)
+    return success()
 
 
 def webcam_capture(request):
@@ -56,6 +70,9 @@ def webcam_capture(request):
         return response(image_data)
     return response("empty")
 
+def track_list(request): 
+    track_list = Track.objects.order_by('-track_date')[0:10]
+    return queryset_to_json_response(track_list)
 
 def frame_list(request):
     # frame_list = Frame.objects.all()

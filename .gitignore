@@ -2,10 +2,9 @@
 .DS_Store
 
 venv
-darknet
+darknet/build
 mysite/static
 
-package.json
 package-lock.json
 **.sqlite3
 **/yarn.lock

@@ -8,6 +8,31 @@ import { GetRandomColor } from '../utils/commons';
 
 import Config from './config';
 
+
+class Index extends Component {
+  constructor(props){
+    super(props)
+
+    this.state = {data: null}
+  }
+
+  componentDidMount() {
+    GetJSON('/cctv/track-list', null, data => {
+      console.log(data) 
+      this.setState({data})
+    })
+  }
+
+  render(){
+    const {data} = this.state;
+    return data? <div>
+      {data.map((o,i)=>{
+        return <div key={i}>{JSON.stringify(o.fields)}</div>
+      })}
+    </div> :"index"
+  }
+}
+
 class CCTV extends Component {
 
   componentDidMount() {
@@ -63,7 +88,8 @@ class CCTV extends Component {
             </div>
           </div> */}
           <Switch>
-            <Route path={`${match.url}/`} exact component={() => "index"} />
+            {/* <Route path={`${match.url}/`} exact component={() => "index"} /> */}
+            <Route path={`${match.url}/`} exact component={Index} />
             <Route path={`${match.url}/config/`} exact component={Config} />
           </Switch>
         </div>

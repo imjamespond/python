@@ -40,6 +40,11 @@ class Config extends Component {
         this.getWebCamList();
       }))
   }
+  detectWebCam(pk){
+    Get('/cctv/webcam-detect', { pk }, rs => {
+      alert("成功"); 
+    })
+  }
   configDetectionArea(){
     const { cam } = this.state;
     const pos = this.detectionArea.getPosition();
@@ -90,6 +95,8 @@ class Config extends Component {
                 }} />
               <a className=" glyphicon glyphicon-remove" href="javascript:;"
                 onClick={this.removeWebCam.bind(this, cam.pk)} />
+              <a className=" glyphicon glyphicon-play" href="javascript:;"
+                onClick={this.detectWebCam.bind(this, cam.pk)} />
             </td>
             </tr>
           )}

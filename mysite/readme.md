@@ -16,3 +16,8 @@ yolov3 CUDA Error: out of memory darknet: ./src/cuda.c:36: check_error: Assertio
 get this line changed  
 ``names = darknet/data/coco.names``  
 and **make sure django cmd is excuted at this root dir** 
+
+
+# pip install  
+pip freeze > requirements.txt  
+pip install -r requirements.txt
