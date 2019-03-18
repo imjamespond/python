@@ -3,6 +3,7 @@ from .models import Frame, WebCam, Track
 
 from django.db import transaction, models
 from django.middleware.csrf import get_token
+from django.forms.models import model_to_dict
 import json
 import cv2
 import base64
@@ -13,19 +14,31 @@ def get_csrf_token(request):
     return response(get_token(request))
 
 
-def webcam_list(request):
-    print(request.session)
-    list = WebCam.objects.all()
-    return queryset_to_json_response(list)
+def webcam_list(request): 
+    li = WebCam.objects.all()
+    _li = []
+    for cam in li:
+        _cam = model_to_dict(cam)
+        if cam.name in darknet.threads:
+            t = darknet.threads[cam.name]
+            _cam['running'] = t['running']
+        _li.append(_cam)
+    return json_response(_li)
 
+def webcam_stop(request): 
+    name = request.GET.get('name')
+    if name in darknet.threads:
+        t = darknet.threads[name]
+        t['running'] = False
+        t['thread'].join()
+        del darknet.threads[name]
+    return success()
 
 def webcam_add(request):
-
     model = WebCam(name=request.POST.get('name'),
                    address=request.POST.get('addr'))
     model.save()
     return success()
-
 
 def webcam_update(request):
     cam = WebCam.objects.filter(id=request.POST.get('pk'))
@@ -46,7 +59,7 @@ def webcam_del(request):
 def webcam_detect(request):
     webCam = WebCam.objects.filter(id=request.GET.get('pk'))[0]
     onTrack = lambda t,b,l,r: track.onTrack(t,b,l,r, webCam.id) 
-    darknet.detect(webCam.address
+    darknet.detect(webCam.name, webCam.address
         , x1=webCam.left/(webCam.cam_width or 1)
         , y1=webCam.top/(webCam.cam_height or 1)
         , x2=(webCam.left+webCam.width)/(webCam.cam_width or 1)
@@ -71,8 +84,29 @@ def webcam_capture(request):
     return response("empty")
 
 def track_list(request): 
-    track_list = Track.objects.order_by('-track_date')[0:10]
+    track_list = Track.objects.filter(cam_id=request.GET.get('id')).order_by('-track_date')[0:20]
     return queryset_to_json_response(track_list)
+
+def track_delete(request): 
+    Track.objects.filter(cam_id=request.GET.get('pk')).delete()
+    return success()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 def frame_list(request):
     # frame_list = Frame.objects.all()

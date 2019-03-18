@@ -17,6 +17,7 @@ extern "C"
     struct count_args {
         network* network;
         metadata *metadata; 
+        const char * name;
         const char * url;
         float thresh;
         float hier;
@@ -47,9 +48,9 @@ extern "C"
     image mat_to_image(cv::Mat m);
     cv::Mat image_to_mat(image im);
 
-    typedef void (*on_detect_func)(detection *, int);
+    typedef bool (*on_detect_func)(detection *, int);
     typedef void (*on_track_func)(int,int,int,int);
-    void count(on_detect_func, on_track_func, count_args *);
+    void detect(on_detect_func, on_track_func, count_args *);
     void countTest(DarknetTracker&, float ,float,float,float, int *);
 
 

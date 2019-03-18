@@ -1,8 +1,13 @@
 #include <stdio.h>
 #include <vector>
+#include <string>
 #include <opencv2/highgui.hpp>
 #include <boost/lexical_cast.hpp>
+#include <boost/bind.hpp>
+#include <boost/shared_ptr.hpp>
+#include <boost/unordered_map.hpp>
 #include <codechiev/base/Time.hpp>
+#include <codechiev/base/Thread.hpp>
 
 #include "detect.hpp"
 
@@ -14,22 +19,40 @@ using cv::Tracker;
 using cv::VideoCapture;
 
 typedef std::vector<DarknetTracker> Trackers;
+typedef std::string str;
+typedef boost::shared_ptr<count_args> count_args_ptr;
+typedef boost::unordered_map<str, codechiev::base::thread_ptr> thread_map;
 
 bool __check_overlapped__( Trackers &, box &, Mat &, int &);
 void __clean_trackers__(Trackers &);
+void __detect__(str, str, on_detect_func, on_track_func, count_args_ptr);
 
-void count(on_detect_func onDetect, on_track_func onTrack, count_args *args)
+
+void detect(on_detect_func onDetect, on_track_func onTrack, count_args *args)
 {
 
-    network *net = args->network;
     // metadata *meta = args->metadata;
-    const char *url = args->url; 
+    str name(args->name);
+    str url(args->url); 
+
+
+    count_args_ptr pArgs(new count_args(*args));
+
+    codechiev::base::thread_func func = boost::bind(&__detect__, name, url, onDetect, onTrack, pArgs);
+    // codechiev::base::thread_ptr thread(new codechiev::base::Thread(name, func));
+    // thread->start();
+    // thread->join();
+    func();
+}
+
+void __detect__(str name, str url, on_detect_func onDetect, on_track_func onTrack, count_args_ptr args)
+{
+    network *net = args->network;
     float thresh = args->thresh;
     float hier = args->hier;
     int *map = args->map;
     int relative = args->relative;
 
-    
     Mat frame;
     VideoCapture vc;
     vc.open(url);
@@ -97,7 +120,8 @@ void count(on_detect_func onDetect, on_track_func onTrack, count_args *args)
             int nboxes;
             network_predict_image(net, img);
             detection *dets = get_network_boxes(net, img.w, img.h, thresh, hier, map, relative, &nboxes);
-            (*onDetect)(dets, nboxes);
+            if(!(*onDetect)(dets, nboxes))
+                return;
 
             for (int i = 0; i < nboxes; ++i)
             {
@@ -142,7 +166,7 @@ void count(on_detect_func onDetect, on_track_func onTrack, count_args *args)
         }
         else if (iframe % 15 == 1) 
         {
-            codechiev::base::Time::SleepMillis(3000);
+            // codechiev::base::Time::SleepMillis(1000);
         }
 
         if (iframe % 45 == 0)
@@ -183,10 +207,10 @@ bool __check_overlapped__(Trackers &trackers, box &bbox, Mat &frame, int &count)
             y_ = y2_ > y1_ ? y1_ : y2_;
             h = y_ - y;
 
-            if (w/w1>.8 && w/w2>.8 && h/h1>.4 && h/h2>.4)
+            if (w/w1>.7 && w/w2>.7 && h/h1>.6 && h/h2>.6)
             {
                 //tracker and detection of darknet overlapped
-                printf("%f, %f\n", w, h);
+                // printf("%f, %f\n", w, h);
                 overlapped = true;
                 tracker.lostCount = 0;
 

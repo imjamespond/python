@@ -7,7 +7,6 @@ urlpatterns = [
     path('frame-list', controllers.frame_list, name='frame_list'),
     path('frame-test', controllers.frame_test, name='frame_test'), 
 
-    path('track-list', controllers.track_list, name='track-list'),
 
     path('webcam-list', controllers.webcam_list, name='webcam-list'),
     path('webcam-add', controllers.webcam_add, name='webcam-add'),
@@ -16,6 +15,10 @@ urlpatterns = [
 
     path('webcam-capture', controllers.webcam_capture, name='webcam-capture'),
     path('webcam-detect', controllers.webcam_detect, name='webcam-detect'),
+    path('webcam-stop', controllers.webcam_stop, name='webcam-stop'),
+    
+    path('track-delete', controllers.track_delete, name='webcam-delete'),
+    path('track-list', controllers.track_list, name='track-list'),
 
     path('csrf-token', controllers.get_csrf_token, name='csrf-token'),
 ]

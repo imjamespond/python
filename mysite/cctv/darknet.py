@@ -2,6 +2,7 @@ import os
 import time
 from ctypes import *
 import cv2
+import threading
 
 class BOX(Structure):
     _fields_ = [("x", c_float),
@@ -30,6 +31,7 @@ class METADATA(Structure):
 class COUNT_ARGS(Structure):
     _fields_ = [("net", c_void_p),
                 ("metadata", POINTER(METADATA)),
+                ("name", c_char_p),
                 ("url", c_char_p),
                 ("thresh", c_float),
                 ("hier", c_float),
@@ -66,16 +68,17 @@ free_image.argtypes = [IMAGE]
 
 libcodechiev = CDLL(COMMAND_DIR + "/detector/build/libcodechiev.so", RTLD_GLOBAL)
 
-count = libcodechiev.count
-count.argtypes = [DETETC_FUNC, TRACK_FUNC, POINTER(COUNT_ARGS)] 
+c_detect = libcodechiev.detect
+c_detect.argtypes = [DETETC_FUNC, TRACK_FUNC, POINTER(COUNT_ARGS)] 
 
 
 net = load_net((COMMAND_DIR + "/darknet/cfg/yolov3.cfg").encode('utf-8'),
                 (COMMAND_DIR + "/darknet/yolov3.weights").encode('utf-8'), 0)
 meta = load_meta((COMMAND_DIR + "/darknet/cfg/coco-1.data").encode('utf-8'))
 
+threads = {}
 
-def _detect(dets, num, nms=.45):
+def _detect(cam, dets, num, nms=.45):
 
     if (nms): 
         do_nms_obj(dets, num, meta.classes, nms)
@@ -93,17 +96,47 @@ def _detect(dets, num, nms=.45):
     for x in res:
         print(x[0].decode('utf-8'), x[1], x[2])
 
-    # time.sleep(1.5)
+    # time.sleep(1.5) 
+    if cam in threads and threads[cam]['running']:
+        print(cam, 'is running')
+        return True
+    else:
+        print(cam, 'is not running')
+        return False
+
 
 def _track(t,b,l,r):
     print('on track t,b,l,r: ', t,b,l,r)
 
-def detect(url, x1, y1, x2, y2, on_track=_track):
+def detect(cam, url, x1, y1, x2, y2, on_track=_track):
     print("box: ", x1, y1, x2, y2)
-    args = COUNT_ARGS(net=net, meta=meta, url=url.encode('utf-8'),  thresh=c_float(.5), hier=c_float(.5), map=None, relative=0, x1=x1,y1=y1,x2=x2,y2=y2 )
-    count(DETETC_FUNC(_detect), TRACK_FUNC(on_track), args)
+
+    t = threading.Thread(target=__detect__, args = (cam, url, x1, y1, x2, y2, on_track))
+    t.start() 
+
+    threads[cam] = {'running': True, 'thread': t}
+
+def __detect__(cam, url, x1, y1, x2, y2, on_track):
+
+    on_detect = lambda dets, num, nms=.45: _detect(cam, dets, num, nms)
+
+    args = COUNT_ARGS(
+        net=net, 
+        meta=meta, 
+        name=cam.encode('utf-8'),
+        url=url.encode('utf-8'),  
+        thresh=c_float(.5), 
+        hier=c_float(.5), 
+        map=None, 
+        relative=0, 
+        x1=x1,y1=y1,x2=x2,y2=y2 )
+    c_detect(DETETC_FUNC(on_detect), TRACK_FUNC(on_track), args)
+
+    if cam in threads:
+        t = threads[cam]
+        del threads[cam]
 
 
 # detect("rtsp://10.0.0.2:8080/video/h264".encode('utf-8'), _track)
-# detect("/home/james/Downloads/tf_traffic_cut.mp4",.4,0,1,1)
+# detect("foobar","/home/james/Downloads/tf_traffic_cut.mp4",.4,0,1,1)
 

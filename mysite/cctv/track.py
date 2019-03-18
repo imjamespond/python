@@ -10,4 +10,5 @@ def onTrack(t,b,l,r, cam_id):
         top=t,
         bottom=b)
 
-    track.save()
+    if (l>0 or r>0 or t>0 or b>0):
+        track.save()

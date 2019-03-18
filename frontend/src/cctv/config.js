@@ -43,6 +43,18 @@ class Config extends Component {
   detectWebCam(pk){
     Get('/cctv/webcam-detect', { pk }, rs => {
       alert("成功"); 
+      this.getWebCamList();
+    })
+  }
+  stopWebCam(name){
+    Get('/cctv/webcam-stop', { name }, rs => {
+      alert("成功"); 
+      this.getWebCamList();
+    })
+  }
+  deleteTrackingData(pk){
+    Get('/cctv/track-delete', { pk }, rs => {
+      alert("成功"); 
     })
   }
   configDetectionArea(){
@@ -50,7 +62,7 @@ class Config extends Component {
     const pos = this.detectionArea.getPosition();
     console.log(cam, pos);
     Get('/cctv/csrf-token', null, csrfmiddlewaretoken =>
-      Post('/cctv/webcam-update', { csrfmiddlewaretoken, pk: cam.pk, ...cam.fields, ...pos }, 
+      Post('/cctv/webcam-update', { csrfmiddlewaretoken, pk: cam.id, ...cam, ...pos }, 
         rs => {
           if (rs) {
             alert("配置成功");
@@ -83,9 +95,9 @@ class Config extends Component {
         </thead>
         <tbody>
           {camlist && camlist.map((cam, i) => <tr key={i}>
-            <td>{cam.pk}</td>
-            <td>{cam.fields.name}</td>
-            <td>{cam.fields.address}</td>
+            <td>{cam.id}</td>
+            <td>{cam.name}</td>
+            <td>{cam.address}</td>
             <td>
               <a className=" glyphicon glyphicon-cog" href="javascript:;"
                 onClick={() => {
@@ -94,9 +106,14 @@ class Config extends Component {
                   this.modal.show();
                 }} />
               <a className=" glyphicon glyphicon-remove" href="javascript:;"
-                onClick={this.removeWebCam.bind(this, cam.pk)} />
-              <a className=" glyphicon glyphicon-play" href="javascript:;"
-                onClick={this.detectWebCam.bind(this, cam.pk)} />
+                onClick={this.removeWebCam.bind(this, cam.id)} />
+              {cam.running ?
+                <a className=" glyphicon glyphicon-stop" href="javascript:;"
+                onClick={this.stopWebCam.bind(this, cam.name)} />:
+                <a className=" glyphicon glyphicon-play" href="javascript:;"
+                onClick={this.detectWebCam.bind(this, cam.id)} />}
+              <a className=" glyphicon glyphicon-trash" href="javascript:;"
+                onClick={this.deleteTrackingData.bind(this, cam.id)} />
             </td>
             </tr>
           )}
@@ -107,7 +124,7 @@ class Config extends Component {
       <Modal ref={ref => this.modal = ref} 
         onConfirm={this.configDetectionArea.bind(this)}
         lg={true}
-        title={'Configure detection area - ' + (cam ? cam.fields.name : '')}
+        title={'Configure detection area - ' + (cam ? cam.name : '')}
         body={<div>
           {cam && <DetectionArea ref={ref => this.detectionArea = ref} cam={cam} />}
         </div>
