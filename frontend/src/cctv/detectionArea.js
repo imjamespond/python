@@ -10,7 +10,7 @@ class DetectionArea extends Component {
 
   componentDidMount(){
     const { cam } = this.props;
-    this.previewWebCam(cam.pk);
+    this.previewWebCam(cam.id);
   }
 
   previewWebCam(pk) {
@@ -23,7 +23,7 @@ class DetectionArea extends Component {
 
   onPreviewLoad({target:preview}){
     const { cam } = this.props;
-    const { left, top, width, height} = cam.fields;
+    const { left, top, width, height} = cam;
     const previewWidth = preview.offsetWidth, previewHeight = preview.offsetHeight;
     console.log(previewWidth, previewHeight);
 
