@@ -82,7 +82,7 @@ void __detect__(str name, str url, on_lock_func onLock, on_detect_func onDetect,
             break;
         }
 
-        cv::resize(frame, frame, cv::Size(640, (int)(640.0f/(float)frame.cols*(float)frame.rows)), 0, 0, CV_INTER_LINEAR);
+        // cv::resize(frame, frame, cv::Size(640, (int)(640.0f/(float)frame.cols*(float)frame.rows)), 0, 0, CV_INTER_LINEAR); //kcf tracing need high reslution
 
         float x1 = args->x1 * frame.cols;
         float y1 = args->y1 * frame.rows;
@@ -186,7 +186,7 @@ void __detect__(str name, str url, on_lock_func onLock, on_detect_func onDetect,
         }
         else if (debug)
         {
-            codechiev::base::Time::SleepMillis(100);
+            codechiev::base::Time::SleepMillis(50);
         }
         
 
@@ -210,7 +210,7 @@ void __detect__(str name, str url, on_lock_func onLock, on_detect_func onDetect,
 
 bool __check_overlapped__(Trackers &trackers, box &bbox, Mat &frame, int &count)
 {
-    double w1 = bbox.w, h1 = bbox.w * 1.2;
+    double w1 = bbox.w, h1 = bbox.w * 1.5;
     h1 = bbox.h > h1 ? h1 : bbox.h;// trace the top of someone
     double x1 = bbox.x - (bbox.w * .5), x1_ = x1 + w1;
     double y1 = bbox.y - (bbox.h * .5), y1_ = y1 + h1;

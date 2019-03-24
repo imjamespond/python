@@ -15,12 +15,12 @@ void count(DarknetTracker& tracker, float left,float top,float right,float botto
         count[1]++;
         tracker.disabled = true;
     }
-    if ((tracker.last.x + tracker.last.width * .5) > left && (tracker.roi.x + tracker.roi.width * .5) < left) 
+    if ((tracker.last.x) > left && (tracker.roi.x) < left) 
     {
         count[2]++;
         tracker.disabled = true;
     }
-    if ((tracker.last.x + tracker.last.width * .5) < right && (tracker.roi.x + tracker.roi.width * .5) > right) 
+    if ((tracker.last.x + tracker.last.width) < right && (tracker.roi.x + tracker.roi.width) > right) 
     {
         count[3]++;
         tracker.disabled = true;
