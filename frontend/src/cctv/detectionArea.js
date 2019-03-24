@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import ReactDOM from 'react-dom';
 import { fabric } from 'fabric';
 import { Get } from '../utils/ajax'; 
 
@@ -13,24 +14,34 @@ class DetectionArea extends Component {
     this.previewWebCam(cam.id);
   }
 
-  previewWebCam(pk) {
-    this.setState({ preview: null }, () => {
-      Get('/cctv/webcam-capture', { pk }, preview => {
-        this.setState({ preview });
-      });
-    });
+  previewWebCam(pk) { 
+      Get('/cctv/webcam-capture', { pk }, preview => { 
+        this.setState({preview});
+
+        // var _this = this;
+        // var img = document.createElement('img');
+        // img.src = 'data:image/png;base64, ' + preview;
+        // img.style.width = '100%';
+        // img.style.height = 'auto';
+        // img.onload = function(){
+        //   console.log(this.width, this.height);
+        //   // _this.onPreviewLoad(this.width, this.height);
+        // } 
+
+        // this.preview.innerHTML = "";
+        // this.preview.appendChild(img);
+        
+      }); 
   }
 
-  onPreviewLoad({target:preview}){
+  onPreviewLoad(previewWidth, previewHeight){
     const { cam } = this.props;
-    const { left, top, width, height} = cam;
-    const previewWidth = preview.offsetWidth, previewHeight = preview.offsetHeight;
-    console.log(previewWidth, previewHeight);
+    const { left, top, width, height} = cam; 
 
     // create a wrapper around native canvas element (with id="c")
     var canvas = new fabric.Canvas(this.canvas);
-    canvas.setHeight(previewHeight);
-    canvas.setWidth(previewWidth);
+    previewHeight && canvas.setHeight(previewHeight);
+    previewWidth && canvas.setWidth(previewWidth);
     this.camWidth = previewWidth;
     this.camHeight = previewHeight;
 
@@ -59,14 +70,18 @@ class DetectionArea extends Component {
   render(){
     const { cam} = this.props;
     const { preview} = this.state;
-    return <div>
-      <div style={{position: 'absolute' }}>
-        <canvas ref={ref => this.canvas = ref} />
+    return <div style={{position: 'relative'}} ref={el => this.outter = el}>
+      <div style={{position: 'absolute', top:0,bottom:0,left:0,right:0 }}>
+        <canvas ref={ref => this.canvas = ref} style={{width:'100%', height:'100%'}} />
       </div>
+      {/* <div ref={el => this.preview = el}></div> */}
       {preview && <img ref={ref => this.preview = ref } 
-        style={{ width: '100%', height: 'auto'}}
+        style={{ width: 870, height: 'auto'}}
         src={'data:image/png;base64, ' + preview} 
-        onLoad={this.onPreviewLoad.bind(this)}/>}
+        onLoad={()=>{
+          console.log(this.preview.width, this.preview.height, this.outter.getBoundingClientRect()); 
+          this.onPreviewLoad(870, 870/this.preview.width * this.preview.height)
+        }}/>}
       {/* <img src={"/api/cctv/webcam-capture?_=" + timestamp} style={{width: '100%'}} /> */}
     </div>
   }

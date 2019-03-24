@@ -125,9 +125,8 @@ class Config extends Component {
         onConfirm={this.configDetectionArea.bind(this)}
         lg={true}
         title={'Configure detection area - ' + (cam ? cam.name : '')}
-        body={<div>
-          {cam && <DetectionArea ref={ref => this.detectionArea = ref} cam={cam} />}
-        </div>
+        body={
+          cam ? <DetectionArea ref={ref => this.detectionArea = ref} cam={cam} /> : ''
         }/>
       <Modal ref={ref => this.modal_add = ref}
         onConfirm={this.addWebCam.bind(this)}

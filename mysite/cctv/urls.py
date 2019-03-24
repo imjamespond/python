@@ -19,6 +19,7 @@ urlpatterns = [
     
     path('track-delete', controllers.track_delete, name='webcam-delete'),
     path('track-list', controllers.track_list, name='track-list'),
+    path('track-list-by-hour', controllers.track_list_by_hour, name='track-list-by-hour'),
 
     path('csrf-token', controllers.get_csrf_token, name='csrf-token'),
 ]

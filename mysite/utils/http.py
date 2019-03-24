@@ -4,7 +4,7 @@ from django.http import HttpResponse
 import json
 
 
-def json_response(data):
+def json_response(data): 
     _json = json.dumps(data)
 
     return HttpResponse(_json, content_type='application/json')

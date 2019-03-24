@@ -23,6 +23,7 @@ extern "C"
         float hier;
         int *map;
         int relative;
+        bool debug;
         float x1;
         float y1;
         float x2;
@@ -48,10 +49,11 @@ extern "C"
     image mat_to_image(cv::Mat m);
     cv::Mat image_to_mat(image im);
 
+    typedef void (*on_lock_func)();
     typedef bool (*on_detect_func)(detection *, int);
     typedef void (*on_track_func)(int,int,int,int);
-    void detect(on_detect_func, on_track_func, count_args *);
-    void countTest(DarknetTracker&, float ,float,float,float, int *);
+    void detect(on_lock_func, on_detect_func, on_track_func, count_args *);
+    void count(DarknetTracker&, float ,float,float,float, int *);
 
 
 #ifdef __cplusplus

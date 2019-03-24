@@ -1,6 +1,6 @@
 #include "detect.hpp"
 
-void countTest(DarknetTracker& tracker, float left,float top,float right,float bottom, int* count)
+void count(DarknetTracker& tracker, float left,float top,float right,float bottom, int* count)
 {
     if (tracker.disabled)
         return;
@@ -15,12 +15,12 @@ void countTest(DarknetTracker& tracker, float left,float top,float right,float b
         count[1]++;
         tracker.disabled = true;
     }
-    if (tracker.last.x > left && tracker.roi.x < left) 
+    if ((tracker.last.x + tracker.last.width * .5) > left && (tracker.roi.x + tracker.roi.width * .5) < left) 
     {
         count[2]++;
         tracker.disabled = true;
     }
-    if (tracker.last.x < right && tracker.roi.x > right) 
+    if ((tracker.last.x + tracker.last.width * .5) < right && (tracker.roi.x + tracker.roi.width * .5) > right) 
     {
         count[3]++;
         tracker.disabled = true;

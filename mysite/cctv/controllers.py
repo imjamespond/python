@@ -4,6 +4,8 @@ from .models import Frame, WebCam, Track
 from django.db import transaction, models
 from django.middleware.csrf import get_token
 from django.forms.models import model_to_dict
+from django.db.models.functions import TruncHour
+from django.db.models import Sum
 import json
 import cv2
 import base64
@@ -27,11 +29,12 @@ def webcam_list(request):
 
 def webcam_stop(request): 
     name = request.GET.get('name')
+    darknet.maplock.acquire(True)
     if name in darknet.threads:
         t = darknet.threads[name]
+        darknet.maplock.release()
         t['running'] = False
-        t['thread'].join()
-        del darknet.threads[name]
+        t['thread'].join() 
     return success()
 
 def webcam_add(request):
@@ -84,8 +87,33 @@ def webcam_capture(request):
     return response("empty")
 
 def track_list(request): 
-    track_list = Track.objects.filter(cam_id=request.GET.get('id')).order_by('-track_date')[0:20]
-    return queryset_to_json_response(track_list)
+    track_list = Track.objects.filter(cam_id=request.GET.get('id'))\
+        .order_by('-track_date')[0:20]
+    _list = []
+    for track in track_list:
+        _track = {}
+        _track = model_to_dict(track)
+        _track['track_date'] = track.track_date.strftime("%Y-%m-%d %H:%M:%S")
+        _list.append(_track)
+    print(_list)
+    return json_response(_list)
+
+def track_list_by_hour(request): 
+    track_list = Track.objects.filter(cam_id=request.GET.get('id'))\
+        .annotate(hour=TruncHour('track_date'))\
+        .values('hour')\
+        .annotate(sum_left=Sum('left'), sum_right=Sum('right'))
+    # print(track_list)
+    _list = []
+    for track in track_list:
+        _track = {}
+        _track['left']=track['sum_left']
+        _track['right']=track['sum_right']
+        _track['track_date']=track['hour'].strftime("%Y-%m-%d %H")
+        _list.append(_track)
+    return json_response(_list)
+
+
 
 def track_delete(request): 
     Track.objects.filter(cam_id=request.GET.get('pk')).delete()

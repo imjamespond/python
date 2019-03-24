@@ -7,11 +7,11 @@ export function getData(data) {
 
     var labels = [], left = [], right = [], top = [], bottom = [];
     data.map((o,i) => {
-        labels.unshift(o.fields.track_date);
-        left.unshift(o.fields.left);
-        right.unshift(o.fields.right);
-        top.unshift(o.fields.top);
-        bottom.unshift(o.fields.bottom);
+        labels.unshift(o.track_date);
+        left.unshift(o.left);
+        right.unshift(o.right);
+        // top.unshift(o.fields.top);
+        // bottom.unshift(o.fields.bottom);
     })
 
     var lineChartData = {

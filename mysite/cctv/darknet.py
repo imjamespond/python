@@ -37,8 +37,10 @@ class COUNT_ARGS(Structure):
                 ("hier", c_float),
                 ("map", POINTER(c_int)),
                 ("relative", c_int),
+                ("debug", c_bool),
                 ("x1", c_float),("y1", c_float),("x2", c_float),("y2", c_float)]
 
+LOCK_FUNC = CFUNCTYPE(c_void_p)
 DETETC_FUNC = CFUNCTYPE(c_void_p, POINTER(DETECTION), c_int)
 TRACK_FUNC = CFUNCTYPE(c_void_p, c_int,c_int,c_int,c_int)
 
@@ -69,7 +71,7 @@ free_image.argtypes = [IMAGE]
 libcodechiev = CDLL(COMMAND_DIR + "/detector/build/libcodechiev.so", RTLD_GLOBAL)
 
 c_detect = libcodechiev.detect
-c_detect.argtypes = [DETETC_FUNC, TRACK_FUNC, POINTER(COUNT_ARGS)] 
+c_detect.argtypes = [LOCK_FUNC, DETETC_FUNC, TRACK_FUNC, POINTER(COUNT_ARGS)] 
 
 
 net = load_net((COMMAND_DIR + "/darknet/cfg/yolov3.cfg").encode('utf-8'),
@@ -77,6 +79,12 @@ net = load_net((COMMAND_DIR + "/darknet/cfg/yolov3.cfg").encode('utf-8'),
 meta = load_meta((COMMAND_DIR + "/darknet/cfg/coco-1.data").encode('utf-8'))
 
 threads = {}
+
+lock = threading.Lock()
+maplock = threading.Lock()
+
+def _lock():
+    lock.acquire(True, 60)
 
 def _detect(cam, dets, num, nms=.45):
 
@@ -93,30 +101,35 @@ def _detect(cam, dets, num, nms=.45):
     # free_image(im)
     # free_detections(dets, num)
 
-    for x in res:
-        print(x[0].decode('utf-8'), x[1], x[2])
+    # for x in res:
+    #     print(x[0].decode('utf-8'), x[1], x[2])
+    
+    lock.release()
 
+    maplock.acquire(True)
     # time.sleep(1.5) 
     if cam in threads and threads[cam]['running']:
-        print(cam, 'is running')
+        # print(cam, 'is running')
+        maplock.release()
         return True
     else:
         print(cam, 'is not running')
+        maplock.release()
         return False
 
 
 def _track(t,b,l,r):
     print('on track t,b,l,r: ', t,b,l,r)
 
-def detect(cam, url, x1, y1, x2, y2, on_track=_track):
+def detect(cam, url, x1, y1, x2, y2, on_track=_track, debug=False):
     print("box: ", x1, y1, x2, y2)
 
-    t = threading.Thread(target=__detect__, args = (cam, url, x1, y1, x2, y2, on_track))
+    t = threading.Thread(target=__detect__, args = (cam, url, x1, y1, x2, y2, on_track, debug))
     t.start() 
 
     threads[cam] = {'running': True, 'thread': t}
 
-def __detect__(cam, url, x1, y1, x2, y2, on_track):
+def __detect__(cam, url, x1, y1, x2, y2, on_track, debug):
 
     on_detect = lambda dets, num, nms=.45: _detect(cam, dets, num, nms)
 
@@ -129,12 +142,15 @@ def __detect__(cam, url, x1, y1, x2, y2, on_track):
         hier=c_float(.5), 
         map=None, 
         relative=0, 
+        debug=True,
         x1=x1,y1=y1,x2=x2,y2=y2 )
-    c_detect(DETETC_FUNC(on_detect), TRACK_FUNC(on_track), args)
+    c_detect(LOCK_FUNC(_lock), DETETC_FUNC(on_detect), TRACK_FUNC(on_track), args)
 
+    maplock.acquire(True)
     if cam in threads:
         t = threads[cam]
         del threads[cam]
+        maplock.release()
 
 
 # detect("rtsp://10.0.0.2:8080/video/h264".encode('utf-8'), _track)
