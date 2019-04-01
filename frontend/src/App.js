@@ -130,8 +130,8 @@ class App extends Component {
 
               <ul className="sidebar-menu" data-widget="tree">
                 <li className="header"></li>
-                <NavLink to="/cctv" text="report" />
-                <NavLink to="/cctv/config" text="config" />
+                <NavLink to="/cctv" text="Traffic report" />
+                <NavLink to="/cctv/config" text="Config" />
 
                 {/* <li><a href="#"><i className="fa fa-link"></i> <span>Another Link</span></a></li> */}
                 {/* <li className="treeview">

@@ -107,12 +107,14 @@ void __detect__(str name, str url, on_lock_func onLock, on_detect_func onDetect,
             {
                 // draw the tracked object
                 cv::rectangle(frame, tracker.roi, tracker.disabled? Scalar(100, 100, 100) : Scalar(0, 255, 0), 2, 1);
-                cv::putText(frame,
-                            tracker.id,
-                            Point(tracker.roi.x, tracker.roi.y), // Coordinates
-                            cv::FONT_HERSHEY_COMPLEX_SMALL,      // Font
-                            1.0,                                 // Scale. 2.0 = 2x bigger
-                            Scalar(255, 255, 255));              // BGR Color
+                // cv::putText(frame,
+                //             boost::lexical_cast<std::string>(tracker.roi.y) + ", " + \
+                //             boost::lexical_cast<std::string>(y1) + ", " + \
+                //             boost::lexical_cast<std::string>(tracker.distY),
+                //             Point(tracker.roi.x, tracker.roi.y), // Coordinates
+                //             cv::FONT_HERSHEY_COMPLEX_SMALL,      // Font
+                //             1.0,                                 // Scale. 2.0 = 2x bigger
+                //             Scalar(255, 255, 255));              // BGR Color
             }
 
             
@@ -167,8 +169,8 @@ void __detect__(str name, str url, on_lock_func onLock, on_detect_func onDetect,
 
 
                 double w = bbox.w, h = bbox.h;
-                double x = bbox.x - (bbox.w * .5), x_ = x + w;
-                double y = bbox.y - (bbox.h * .5), y_ = y + h;
+                double x = bbox.x;// - (bbox.w * .5), x_ = x + w;
+                double y = bbox.y;// - (bbox.h * .5), y_ = y + h;
                 if (x>x1 && x<x2 && y>y1 && y<y2 )
                 {
                     __check_overlapped__(trackers, bbox, frame, __count);
@@ -182,11 +184,11 @@ void __detect__(str name, str url, on_lock_func onLock, on_detect_func onDetect,
         }
         else if (debug && (iframe % 15 == 1)) 
         {
-            codechiev::base::Time::SleepMillis(500);
+            // codechiev::base::Time::SleepMillis(500);
         }
         else if (debug)
         {
-            codechiev::base::Time::SleepMillis(50);
+            // codechiev::base::Time::SleepMillis(50);
         }
         
 
@@ -248,6 +250,9 @@ bool __check_overlapped__(Trackers &trackers, box &bbox, Mat &frame, int &count)
                 tracker.roi.height = h1;
                 tracker.last = tracker.roi;
 
+                tracker.distX = 0.0f;
+                tracker.distY = 0.0f;
+
                 // create a tracker object
                 tracker.ptr = cv::TrackerKCF::create();
                 // initialize the tracker
@@ -273,6 +278,9 @@ bool __check_overlapped__(Trackers &trackers, box &bbox, Mat &frame, int &count)
         tracker.roi.height = h1;
         tracker.last = tracker.roi;
 
+        tracker.distX = 0.0f;
+        tracker.distY = 0.0f;
+
         // create a tracker object
         tracker.ptr = cv::TrackerKCF::create();
         // initialize the tracker
@@ -292,7 +300,7 @@ void __clean_trackers__(Trackers &trackers)
     {
         DarknetTracker &tracker = *it;
 
-        if (tracker.lostCount > 1)
+        if (tracker.lostCount > 0)
         {
             it = trackers.erase(it);
         }

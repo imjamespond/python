@@ -13,15 +13,18 @@ class Index extends Component {
   constructor(props) {
     super(props)
     this.canvasMap = {};
-    this.state = { data: null, camlist: null }
+    this.state = { camList: null, totalMap: null }
   }
 
   componentDidMount() {
-    this.setState({ camlist: null }, () => {
-      GetJSON('/cctv/webcam-list', null, camlist => {
-        this.setState({ camlist }, () => {
+    const {} = this.state;
+    this.setState({ camList: null }, () => {
+      GetJSON('/cctv/webcam-list', null, camList => {
+        this.setState({ camList }, () => {
 
-          camlist.map((o, i) => {
+          var totalMap = {};
+
+          camList.map((o, i) => {
             GetJSON('/cctv/track-list', { id: o.id }, data => {
 
               var chartData = getData(data);
@@ -34,7 +37,17 @@ class Index extends Component {
 
               var ctx = this.canvasMap[o.id].getContext('2d');
               var myChart = new Chart(ctx, chartData);
-
+              var totalLeft = 0, totalRight = 0, totalTop = 0, totalBottom = 0;
+              data.map((trace,i) => { 
+                totalLeft += trace.left;
+                totalRight += trace.right;
+                totalTop += trace.top;
+                totalBottom += trace.bottom;
+              });
+              
+              totalMap = Object.assign({}, totalMap);
+              totalMap[o.id] = {totalLeft, totalRight, totalTop, totalBottom};
+              this.setState({totalMap});
             })
           })
 
@@ -45,11 +58,17 @@ class Index extends Component {
 
   }
 
+
   render() {
-    const { camlist } = this.state;
+    const { camList,totalMap } = this.state;
     return <div>
-      {camlist && camlist.map((o, i) => <div className="chart">
-        <h4>{o.name}</h4>
+      {camList && camList.map((o, i) => <div className="chart" key={i}>
+        <h4>{o.name} {totalMap && totalMap[o.id] && 
+          <span style={{float: 'right'}}>
+            Total left: {totalMap[o.id].totalLeft}, 
+            right: {totalMap[o.id].totalRight},
+            top: {totalMap[o.id].totalTop},
+            bottom: {totalMap[o.id].totalBottom}</span>}</h4>
         <canvas
           ref={el => this.canvasMap[o.id] = el}
           style={{ height: 250 }}></canvas>

@@ -10,8 +10,8 @@ export function getData(data) {
         labels.unshift(o.track_date);
         left.unshift(o.left);
         right.unshift(o.right);
-        // top.unshift(o.fields.top);
-        // bottom.unshift(o.fields.bottom);
+        top.unshift(o.top);
+        bottom.unshift(o.bottom);
     })
 
     var lineChartData = {
@@ -21,13 +21,23 @@ export function getData(data) {
             datasets: [
                 {
                     label: "left", 
-                    borderColor:"rgb(75, 192, 192)",
+                    borderColor:"#ff0000",
                     data: left
                 },
                 {
                     label: "right", 
-                    borderColor:"rgb(255, 128, 0)",
+                    borderColor:"#0000ff",
                     data: right
+                },
+                {
+                    label: "top", 
+                    borderColor:"#ffff00",
+                    data: top
+                },
+                {
+                    label: "bottom", 
+                    borderColor:"#00ffff",
+                    data: bottom
                 }
             ]
         }

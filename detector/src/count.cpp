@@ -5,12 +5,16 @@ void count(DarknetTracker& tracker, float left,float top,float right,float botto
     if (tracker.disabled)
         return;
 
-    if (tracker.last.y > top && tracker.roi.y < top) 
+
+    tracker.distY += tracker.last.y - tracker.roi.y;
+    tracker.distX += tracker.last.x - tracker.roi.x;
+
+    if (tracker.roi.y < top && (tracker.last.y > top || tracker.distY > 25.0f) ) 
     {
         count[0]++;
         tracker.disabled = true;
     }
-    if (tracker.last.y < bottom && tracker.roi.y > bottom) 
+    if ((tracker.roi.y + tracker.roi.height) > bottom && (((tracker.last.y + tracker.last.height) < bottom) || tracker.distY < -25.0f)) 
     {
         count[1]++;
         tracker.disabled = true;

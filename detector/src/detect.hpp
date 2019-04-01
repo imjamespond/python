@@ -37,6 +37,9 @@ extern "C"
         bool trackable;
         bool disabled;
 
+        double distY;
+        double distX;
+
         TrackerPtr ptr; 
         cv::Rect2d roi;
         cv::Rect2d last;
