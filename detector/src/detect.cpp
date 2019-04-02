@@ -82,7 +82,7 @@ void __detect__(str name, str url, on_lock_func onLock, on_detect_func onDetect,
             break;
         }
 
-        // cv::resize(frame, frame, cv::Size(640, (int)(640.0f/(float)frame.cols*(float)frame.rows)), 0, 0, CV_INTER_LINEAR); //kcf tracing need high reslution
+        cv::resize(frame, frame, cv::Size(1280.0f, (int)(1280.0f/(float)frame.cols*(float)frame.rows)), 0, 0, CV_INTER_LINEAR); //kcf tracing need high reslution
 
         float x1 = args->x1 * frame.cols;
         float y1 = args->y1 * frame.rows;
