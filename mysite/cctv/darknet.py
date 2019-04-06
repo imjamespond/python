@@ -45,9 +45,12 @@ DETETC_FUNC = CFUNCTYPE(c_void_p, POINTER(DETECTION), c_int)
 TRACK_FUNC = CFUNCTYPE(c_void_p, c_int,c_int,c_int,c_int)
 
 
-COMMAND_DIR = os.getcwd()
+COMMAND_DIR = os.getcwd() 
 
-libdarknet = CDLL(COMMAND_DIR + "/darknet/libdarknet.so", RTLD_GLOBAL)
+if 'CCTVLIB' in os.environ:
+    libdarknet = CDLL(os.environ['CCTVLIB'] + "/libdarknet.so", RTLD_GLOBAL)
+else:
+    libdarknet = CDLL(COMMAND_DIR + "/darknet/libdarknet.so", RTLD_GLOBAL)
 
 load_net = libdarknet.load_network
 load_net.argtypes = [c_char_p, c_char_p, c_int]
@@ -67,8 +70,10 @@ do_nms_obj.argtypes = [POINTER(DETECTION), c_int, c_int, c_float]
 free_image = libdarknet.free_image
 free_image.argtypes = [IMAGE]
 
-
-libcodechiev = CDLL(COMMAND_DIR + "/detector/build/libcodechiev.so", RTLD_GLOBAL)
+if 'CCTVLIB' in os.environ:
+    libcodechiev = CDLL(os.environ['CCTVLIB'] + "/libcodechiev.so", RTLD_GLOBAL)
+else:
+    libcodechiev = CDLL(COMMAND_DIR + "/detector/build/libcodechiev.so", RTLD_GLOBAL)
 
 c_detect = libcodechiev.detect
 c_detect.argtypes = [LOCK_FUNC, DETETC_FUNC, TRACK_FUNC, POINTER(COUNT_ARGS)] 
