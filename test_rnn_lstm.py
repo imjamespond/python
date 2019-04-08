@@ -5,6 +5,7 @@ import numpy as np
 
 # https://www.tensorflow.org/tutorials/recurrent
 # https://github.com/tensorflow/models/tree/master/tutorials/rnn/ptb
+# probabilistic model, give a sentence and predictor probabilty of the senetence
 
 flags = tf.flags
 flags.DEFINE_string("save_path", "./output",
@@ -20,7 +21,7 @@ def data_type():
 words = ['The', 'brown', 'fox', 'is','quick','The', 'red',   'fox', 'jumped', 'high']
 batch_size = 2
 embedding_size = 15
-num_steps = 2
+num_steps = 4
 num_features = embedding_size
 hidden_size = embedding_size
 
@@ -111,11 +112,10 @@ def _build_rnn_graph_lstm(inputs):
 
 output, _final_state, _initial_state = _build_rnn_graph_lstm(inputs)
 
-softmax_w = tf.get_variable(
-    "softmax_w", [hidden_size, vocab_size], dtype=data_type())
-softmax_b = tf.get_variable("softmax_b", [vocab_size], dtype=data_type())
+softmax_w = tf.get_variable( "softmax_w", [hidden_size, vocab_size], dtype=data_type())
+softmax_b = tf.get_variable( "softmax_b", [vocab_size], dtype=data_type())
 logits = tf.nn.xw_plus_b(output, softmax_w, softmax_b)
-    # Reshape logits to be a 3-D tensor for sequence loss
+# Reshape logits to be a 3-D tensor for sequence loss, 罗杰斯概率[批尺寸, 步数, one-hot?]
 logits = tf.reshape(logits, [batch_size, num_steps, vocab_size])
 
 # Use the contrib sequence loss and average over the batches
@@ -179,7 +179,7 @@ def run_epoch(session, eval_op=None, verbose=False):
   return np.exp(costs / iters)
 
 epoch_size = ((len(words) // batch_size) - 1) // num_steps
-max_max_epoch = 13
+max_max_epoch = 20
  
 sv = tf.train.Supervisor(logdir=FLAGS.save_path)
 config_proto = tf.ConfigProto(allow_soft_placement=False)
@@ -194,8 +194,6 @@ with sv.managed_session(config=config_proto) as session:
     valid_perplexity = run_epoch(session)
     print("Epoch: %d Valid Perplexity: %.3f" % (i + 1, valid_perplexity))
 
-  #prediction
-  print(session.run(logits) )
 
 class LSTM_Test(tf.test.TestCase):
   def testPtbProducer(self):  
