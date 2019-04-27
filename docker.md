@@ -35,4 +35,16 @@ pip3 install --upgrade pip
 pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple/  
 pip install opencv-python -i https://pypi.tuna.tsinghua.edu.cn/simple/  
 
-CCTVLIB=/opt/lib python3 ./cctv/mysite/manage.py migrate  
+### 运行命令  
+CCTVLIB=/opt/libdarknet-path python3 ./cctv/mysite/manage.py migrate  
+
+
+### 相关模型  
+``ls ./darknet/``  
+coco.data  coco.names  yolov3.cfg  yolov3-openimages.cfg  yolov3-spp.cfg  yolov3-tiny.cfg  yolov3-tiny.weights  yolov3-voc.cfg  yolov3.weights  
+``cat coco1.data``  
+names = darknet/coco.names  
+
+### detector所需共享库    
+sudo echo "/opt/libdarknet-path" >> /etc/ld.so.conf   
+sudo ldconfig  
