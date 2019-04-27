@@ -20,5 +20,5 @@ coco.data  coco.names  yolov3.cfg  yolov3-openimages.cfg  yolov3-spp.cfg  yolov3
 names = darknet/coco.names  
 
 ###  
-sudo vim.basic /etc/ld.so.conf
+sudo vim.basic /etc/ld.so.conf  
 sudo ldconfig  
