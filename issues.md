@@ -13,12 +13,3 @@ gdb ./darknet
 ``./darknet detect cfg/yolov3-tiny.cfg yolov3-tiny.weights ./data/dog.jpg``
 ``-nogpu``测试无gpu
 
-### 
-``ls ./darknet/``  
-coco.data  coco.names  yolov3.cfg  yolov3-openimages.cfg  yolov3-spp.cfg  yolov3-tiny.cfg  yolov3-tiny.weights  yolov3-voc.cfg  yolov3.weights  
-``cat coco1.data``  
-names = darknet/coco.names  
-
-###  
-sudo vim.basic /etc/ld.so.conf  
-sudo ldconfig  
