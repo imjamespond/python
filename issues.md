@@ -13,3 +13,6 @@ gdb ./darknet
 ``./darknet detect cfg/yolov3-tiny.cfg yolov3-tiny.weights ./data/dog.jpg``
 ``-nogpu``测试无gpu
 
+### compile and install opencv3.4 then remove jetson nano opencv3.3  
+sudo mv /usr/lib/libopencv* /somewhere  
+sudo ldconfig  
