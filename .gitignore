@@ -4,6 +4,7 @@
 venv
 darknet/build
 mysite/static
+darknet
 
 package-lock.json
 **.sqlite3
