@@ -26,4 +26,8 @@ add
 ``sudo ldconfig``  
 
 ### OSError: /home/apollo/projects/libs/libcodechiev.so: undefined symbol: _ZN2cv7Tracker6updateERKNS_11_InputArrayERNS_5Rect_IdEE  
-具体原因不清, 重新完整编译opencv即可, 估计是opencv库拷过来时不全
+1, 具体原因不清, 重新完整编译opencv即可, 估计是opencv库拷过来时不全  
+2, 可能是link时没将.so加入target_link_libraries, 导致找不到定义 
+
+### /usr/bin/ld: cannot find -ldarknet
+注意link时用的是库也可以是 .so, 因此要将.so加入``link_directories``   

@@ -79,9 +79,9 @@ c_detect = libcodechiev.detect
 c_detect.argtypes = [LOCK_FUNC, DETETC_FUNC, TRACK_FUNC, POINTER(COUNT_ARGS)] 
 
 
-# net = load_net((COMMAND_DIR + "/darknet/cfg/yolov2.cfg").encode('utf-8'),
-#                 (COMMAND_DIR + "/darknet/yolov2.weights").encode('utf-8'), 0)
-# meta = load_meta((COMMAND_DIR + "/darknet/cfg/coco-1.data").encode('utf-8'))
+net = load_net((COMMAND_DIR + "/darknet/cfg/yolov2.cfg").encode('utf-8'),
+                (COMMAND_DIR + "/darknet/yolov2.weights").encode('utf-8'), 0)
+meta = load_meta((COMMAND_DIR + "/darknet/cfg/coco-1.data").encode('utf-8'))
 
 threads = {}
 
@@ -149,7 +149,7 @@ def __detect__(cam, url, x1, y1, x2, y2, on_track, debug):
         relative=0, 
         debug=True,
         x1=x1,y1=y1,x2=x2,y2=y2 )
-    # c_detect(LOCK_FUNC(_lock), DETETC_FUNC(on_detect), TRACK_FUNC(on_track), args)
+    c_detect(LOCK_FUNC(_lock), DETETC_FUNC(on_detect), TRACK_FUNC(on_track), args)
 
     maplock.acquire(True)
     if cam in threads:

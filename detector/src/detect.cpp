@@ -1,15 +1,16 @@
 #include <stdio.h>
-#include <vector>
-#include <string>
+// #include <vector>
+// #include <string>
 #include <opencv2/highgui.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/bind.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/unordered_map.hpp>
-#include <codechiev/base/Time.hpp>
-#include <codechiev/base/Thread.hpp>
+#include <base/Time.hpp>
+#include <base/Thread.hpp>
 
 #include "detect.hpp"
+#include "eco_detect.hpp"
 
 using cv::Mat;
 using cv::Point;
@@ -18,17 +19,17 @@ using cv::Scalar;
 using cv::Tracker;
 using cv::VideoCapture;
 
-typedef std::vector<DarknetTracker> Trackers;
-typedef std::string str;
-typedef boost::shared_ptr<count_args> count_args_ptr;
+// typedef std::vector<DarknetTracker> Trackers;
+// typedef std::string str;
+// typedef boost::shared_ptr<count_args> count_args_ptr;
 typedef boost::unordered_map<str, codechiev::base::thread_ptr> thread_map;
 
 bool __check_overlapped__( Trackers &, box &, Mat &, int &);
 void __clean_trackers__(Trackers &);
-void __detect__(str, str, on_lock_func, on_detect_func, on_track_func, count_args_ptr);
+void __detect__(str, str, lock_func_t, detect_func_t, track_func_t, count_args_ptr);
 
 
-void detect(on_lock_func onLock, on_detect_func onDetect, on_track_func onTrack, count_args *args)
+void detect(lock_func_t onLock, detect_func_t onDetect, track_func_t onTrack, count_args *args)
 {
 
     // metadata *meta = args->metadata;
@@ -38,14 +39,14 @@ void detect(on_lock_func onLock, on_detect_func onDetect, on_track_func onTrack,
 
     count_args_ptr pArgs(new count_args(*args));
 
-    codechiev::base::thread_func func = boost::bind(&__detect__, name, url, onLock, onDetect, onTrack, pArgs);
+    codechiev::base::thread_func func = boost::bind(&eco_detect, name, url, onLock, onDetect, onTrack, pArgs);
     // codechiev::base::thread_ptr thread(new codechiev::base::Thread(name, func));
     // thread->start();
     // thread->join();
     func();
 }
 
-void __detect__(str name, str url, on_lock_func onLock, on_detect_func onDetect, on_track_func onTrack, count_args_ptr args)
+void __detect__(str name, str url, lock_func_t onLock, detect_func_t onDetect, track_func_t onTrack, count_args_ptr args)
 {
     network *net = args->network;
     float thresh = args->thresh;
@@ -77,7 +78,7 @@ void __detect__(str name, str url, on_lock_func onLock, on_detect_func onDetect,
         }
         // show live and wait for a key with timeout long enough to show images
         // cv::imshow("Live", frame);
-        if (cv::waitKey(5) >= 0)
+        if (debug && cv::waitKey(5) >= 0)
         {
             break;
         }
@@ -120,7 +121,7 @@ void __detect__(str name, str url, on_lock_func onLock, on_detect_func onDetect,
             
             if(tracker.trackable)
             { 
-                count(tracker, x1, y1, x2, y2, _count);
+                // count(tracker, x1, y1, x2, y2, _count);
             }
         }
 
@@ -242,7 +243,7 @@ bool __check_overlapped__(Trackers &trackers, box &bbox, Mat &frame, int &count)
                 //tracker and detection of darknet overlapped
                 // printf("%f, %f\n", w, h);
                 overlapped = true;
-                tracker.lostCount = 0;
+                tracker.lost = 0;
 
                 tracker.roi.x = x1;
                 tracker.roi.y = y1; 
@@ -269,7 +270,7 @@ bool __check_overlapped__(Trackers &trackers, box &bbox, Mat &frame, int &count)
     {
         DarknetTracker tracker;
         tracker.id = boost::lexical_cast<std::string>(++count);
-        tracker.lostCount = 0; 
+        tracker.lost = 0; 
         tracker.disabled = false;
 
         tracker.roi.x = x1;
@@ -300,13 +301,13 @@ void __clean_trackers__(Trackers &trackers)
     {
         DarknetTracker &tracker = *it;
 
-        if (tracker.lostCount > 0)
+        if (tracker.lost > 0)
         {
             it = trackers.erase(it);
         }
         else
         {
-            tracker.lostCount += 1; // deletable in next round
+            tracker.lost += 1; // deletable in next round
             it++;
         }
         

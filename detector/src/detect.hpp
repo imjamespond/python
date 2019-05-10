@@ -1,15 +1,24 @@
-#ifndef PYTEST_H
-#define PYTEST_H
+#ifndef DETECT_H
+#define DETECT_H
 
 #include <opencv2/opencv.hpp>
 #include <opencv2/tracking.hpp>
 #include <darknet.h>
 #include <string>
 
+#include <boost/shared_ptr.hpp>
+
 #ifdef __cplusplus
 extern "C"
 {
 #endif
+
+    using cv::Mat;
+    using cv::Point;
+    using cv::Rect2d;
+    using cv::Scalar;
+    using cv::Tracker;
+    using cv::VideoCapture;
 
     // #include <opencv2/opencv.hpp> // wrong
     typedef cv::Ptr<cv::Tracker> TrackerPtr;
@@ -30,10 +39,12 @@ extern "C"
         float y2;
     };
 
+    typedef boost::shared_ptr<count_args> count_args_ptr;
+
     typedef struct
     {
         std::string id;
-        int lostCount;// 
+        int lost;// 
         bool trackable;
         bool disabled;
 
@@ -52,12 +63,14 @@ extern "C"
     image mat_to_image(cv::Mat m);
     cv::Mat image_to_mat(image im);
 
-    typedef void (*on_lock_func)();
-    typedef bool (*on_detect_func)(detection *, int);
-    typedef void (*on_track_func)(int,int,int,int);
-    void detect(on_lock_func, on_detect_func, on_track_func, count_args *);
+    typedef void (*lock_func_t)();
+    typedef bool (*detect_func_t)(detection *, int);
+    typedef void (*track_func_t)(int,int,int,int);
+    void detect(lock_func_t, detect_func_t, track_func_t, count_args *);
     void count(DarknetTracker&, float ,float,float,float, int *);
 
+    typedef std::vector<DarknetTracker> Trackers;
+    typedef std::string str;
 
 #ifdef __cplusplus
 }

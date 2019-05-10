@@ -1,6 +1,7 @@
 #include "detect.hpp"
 
-void count(DarknetTracker& tracker, float left,float top,float right,float bottom, int* count)
+template <typename TrackerType>
+void count(TrackerType &tracker, float left, float top, float right, float bottom, int *count)
 {
     if (tracker.disabled)
         return;
