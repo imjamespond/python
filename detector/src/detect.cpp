@@ -21,32 +21,44 @@ using cv::VideoCapture;
 
 // typedef std::vector<DarknetTracker> Trackers;
 // typedef std::string str;
-// typedef boost::shared_ptr<count_args> count_args_ptr;
+// typedef boost::shared_ptr<args_t> args_ptr;
 typedef boost::unordered_map<str, codechiev::base::thread_ptr> thread_map;
 
 bool __check_overlapped__( Trackers &, box &, Mat &, int &);
 void __clean_trackers__(Trackers &);
-void __detect__(str, str, lock_func_t, detect_func_t, track_func_t, count_args_ptr);
+void __detect__(str, str, lock_func_t, detect_func_t, track_func_t, args_ptr);
 
 
-void detect(lock_func_t onLock, detect_func_t onDetect, track_func_t onTrack, count_args *args)
+void detect(lock_func_t onLock, detect_func_t onDetect, track_func_t onTrack, args_t *args)
 {
 
     // metadata *meta = args->metadata;
-    str name(args->name);
-    str url(args->url); 
+    // str name(args->name);
+    // str url(args->url);
 
+    TrafficQueue queue;
 
-    count_args_ptr pArgs(new count_args(*args));
+    extra_args_t extra_args;
+    // extra_args.name = args->name;
+    // extra_args.url = args->url;
+    extra_args.lock_func = onLock;
+    extra_args.detect_func = onDetect;
+    extra_args.track_func = onTrack;
+    extra_args.queue = &queue;
 
-    codechiev::base::thread_func func = boost::bind(&eco_detect, name, url, onLock, onDetect, onTrack, pArgs);
+    // args_ptr pArgs(new args_t(*args));
+
+    // codechiev::base::thread_func func = boost::bind(&__detect__, name, url, onLock, onDetect, onTrack, pArgs);
     // codechiev::base::thread_ptr thread(new codechiev::base::Thread(name, func));
     // thread->start();
     // thread->join();
-    func();
+
+    collect_frame(1000, args->url, args, extra_args);
+
+    // func();
 }
 
-void __detect__(str name, str url, lock_func_t onLock, detect_func_t onDetect, track_func_t onTrack, count_args_ptr args)
+void __detect__(str name, str url, lock_func_t onLock, detect_func_t onDetect, track_func_t onTrack, args_ptr args)
 {
     network *net = args->network;
     float thresh = args->thresh;

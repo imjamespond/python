@@ -8,19 +8,22 @@
 #include <boost/unordered_map.hpp>
 #include <base/Time.hpp>
 #include <base/Thread.hpp>
+#include <base/Logger.hpp>
 
 #include "count.hpp"
 #include "eco_detect.hpp"
 
 void __clean_trackers__(EcoTrackers &);
 
-void eco_detect(str name,
-                str url,
-                lock_func_t lock_func,
-                detect_func_t detect_func,
-                track_func_t track_func,
-                count_args_ptr args)
+void eco_detect(args_t *args, extra_args_t extra_args, str frame_file, EcoTrackers *trackers_ptr, int iframe)
 {
+    LOG_INFO << "eco_detect: " << iframe;
+
+    lock_func_t lock_func = extra_args.lock_func;
+    detect_func_t detect_func = extra_args.detect_func;
+    track_func_t track_func = extra_args.track_func;
+
+
     network *net = args->network;
     float thresh = args->thresh;
     float hier = args->hier;
@@ -28,34 +31,34 @@ void eco_detect(str name,
     int relative = args->relative;
     bool debug = args->debug;
 
-    Mat frame;
-    VideoCapture vc;
-    vc.open(url);
+    Mat frame = cv::imread(frame_file);
+    // VideoCapture vc;
+    // vc.open(url);
 
-    EcoTrackers trackers;
+    EcoTrackers &trackers = *trackers_ptr;
 
-    int iframe(0);
+    // int iframe(0);
     int traffic[4];
     ::memset(traffic, 0, sizeof traffic);
-    for (;;)
+    // for (;;)
     {
         // wait for a new frame from camera and store it into 'frame'
-        vc >> frame;
+        // vc >> frame;
 
         // check if we succeeded
         if (frame.empty())
         {
             //perror("ERROR! blank frame grabbed\n");
-            break;
+            return;
         }
         // show live and wait for a key with timeout long enough to show images
         // cv::imshow("Live", frame);
         if (debug && cv::waitKey(5) >= 0)
         {
-            break;
+            return;
         }
 
-        cv::resize(frame, frame, cv::Size(640.0f, (int)(640.0f / (float)frame.cols * (float)frame.rows)), 0, 0, CV_INTER_LINEAR); //kcf tracing need high reslution
+        // cv::resize(frame, frame, cv::Size(640.0f, (int)(640.0f / (float)frame.cols * (float)frame.rows)), 0, 0, CV_INTER_LINEAR); //kcf tracing need high reslution
 
         float x1 = args->x1 * frame.cols;
         float y1 = args->y1 * frame.rows;
@@ -87,7 +90,7 @@ void eco_detect(str name,
             }
         }
 
-        if (iframe % 25 == 0)
+        if (iframe % 20 == 0)
         {
             // trackers.clear();
             (*lock_func)();
@@ -96,7 +99,10 @@ void eco_detect(str name,
             network_predict_image(net, img);
             detection *dets = get_network_boxes(net, img.w, img.h, thresh, hier, map, relative, &nboxes);
             if (!(*detect_func)(dets, nboxes))
+            {
+                extra_args.queue->stop();
                 return;
+            }
 
             for (int i = 0; i < nboxes; ++i)
             {

@@ -7,11 +7,16 @@
 #include <string>
 
 #include <boost/shared_ptr.hpp>
+#include <boost/function.hpp>
+
+#include <base/BlockedQueue.hpp>
 
 #ifdef __cplusplus
 extern "C"
 {
 #endif
+
+    namespace CB = codechiev::base;
 
     using cv::Mat;
     using cv::Point;
@@ -21,9 +26,11 @@ extern "C"
     using cv::VideoCapture;
 
     // #include <opencv2/opencv.hpp> // wrong
-    typedef cv::Ptr<cv::Tracker> TrackerPtr;
+    typedef cv::Ptr<Tracker> TrackerPtr;
+    // typedef boost::shared_ptr<Mat> mat_ptr;
+    typedef CB::BlockedQueue<1> TrafficQueue;
 
-    struct count_args {
+    struct args_t {
         network* network;
         metadata *metadata; 
         const char * name;
@@ -39,7 +46,7 @@ extern "C"
         float y2;
     };
 
-    typedef boost::shared_ptr<count_args> count_args_ptr;
+    typedef boost::shared_ptr<args_t> args_ptr;
 
     typedef struct
     {
@@ -66,11 +73,29 @@ extern "C"
     typedef void (*lock_func_t)();
     typedef bool (*detect_func_t)(detection *, int);
     typedef void (*track_func_t)(int,int,int,int);
-    void detect(lock_func_t, detect_func_t, track_func_t, count_args *);
+    void detect(lock_func_t, detect_func_t, track_func_t, args_t *);
     void count(DarknetTracker&, float ,float,float,float, int *);
 
     typedef std::vector<DarknetTracker> Trackers;
     typedef std::string str;
+
+    
+    struct extra_args_t
+    {
+        lock_func_t lock_func;
+        detect_func_t detect_func;
+        track_func_t track_func;
+
+        // str name;
+        // str url;
+
+        TrafficQueue* queue;
+    };
+    
+
+    typedef boost::function<void()> detect_functor_t;
+
+    void collect_frame(int, const char *, args_t *, extra_args_t&);
 
 #ifdef __cplusplus
 }

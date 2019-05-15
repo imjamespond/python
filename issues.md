@@ -27,7 +27,10 @@ add
 
 ### OSError: /home/apollo/projects/libs/libcodechiev.so: undefined symbol: _ZN2cv7Tracker6updateERKNS_11_InputArrayERNS_5Rect_IdEE  
 1, 具体原因不清, 重新完整编译opencv即可, 估计是opencv库拷过来时不全  
-2, 可能是link时没将.so加入target_link_libraries, 导致找不到定义 
+2, 可能是link时没将.so加入target_link_libraries, 导致找不到定义
+
+### ***libccv_base.a(Thread.cpp.o): relocation R_AARCH64_ADR_PREL_PG_HI21 against symbol `_ZTTN5boost10wrapexceptINS_17bad_function_callEEE' which may bind externally can not be used when making a shared object; recompile with -fPIC  
+codechiev项目加上 SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Wall ``-fPIC``")  
 
 ### /usr/bin/ld: cannot find -ldarknet
 注意link时用的是库也可以是 .so, 因此要将.so加入``link_directories``   

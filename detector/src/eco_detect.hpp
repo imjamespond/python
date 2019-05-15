@@ -10,6 +10,8 @@
 
 #include <boost/shared_ptr.hpp>
 
+#include "detect.hpp"
+
 #ifdef __cplusplus
 extern "C"
 {
@@ -35,13 +37,9 @@ extern "C"
 
     typedef std::vector<EcoTracker> EcoTrackers;
 
-    void eco_detect(str name,
-                    str url,
-                    lock_func_t lock_func,
-                    detect_func_t detect_func,
-                    track_func_t track_func,
-                    count_args_ptr args);
+    void eco_detect(args_t *, extra_args_t, str, EcoTrackers *, int);
     bool eco_track(EcoTrackers &, box &, Mat &);
+
 
 #ifdef __cplusplus
 }
