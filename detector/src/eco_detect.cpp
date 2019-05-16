@@ -17,7 +17,6 @@ void __clean_trackers__(EcoTrackers &);
 
 void eco_detect(args_t *args, extra_args_t extra_args, str frame_file, EcoTrackers *trackers_ptr, int iframe)
 {
-    LOG_INFO << "eco_detect: " << iframe;
 
     lock_func_t lock_func = extra_args.lock_func;
     detect_func_t detect_func = extra_args.detect_func;
@@ -30,6 +29,11 @@ void eco_detect(args_t *args, extra_args_t extra_args, str frame_file, EcoTracke
     int *map = args->map;
     int relative = args->relative;
     bool debug = args->debug;
+
+    if (debug && (iframe % 100 == 0))
+    {
+        LOG_DEBUG << "eco_detect: " << iframe;
+    }
 
     Mat frame = cv::imread(frame_file);
     // VideoCapture vc;
@@ -90,7 +94,7 @@ void eco_detect(args_t *args, extra_args_t extra_args, str frame_file, EcoTracke
             }
         }
 
-        if (iframe % 20 == 0)
+        if (iframe % 15 == 0)
         {
             // trackers.clear();
             (*lock_func)();
@@ -111,7 +115,7 @@ void eco_detect(args_t *args, extra_args_t extra_args, str frame_file, EcoTracke
                 // for (int j(0); j < meta->classes; ++j)
                 for (int j(0); j < 1; ++j) // detect people only
                 {
-                    if (dets[i].prob[j] > .3f)
+                    if (dets[i].prob[j] > .6f)
                     {
                         nothing = false;
                         prob = dets[i].prob[j];

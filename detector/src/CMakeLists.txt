@@ -14,8 +14,8 @@ set (LIB codechiev)
 add_library (${LIB} SHARED ${SOURCE})
 target_link_libraries (${LIB} darknet ecotracker ${OpenCV_LIBS} ccv_base pthread) 
 
-add_executable(test-ecotracker.bin ${SOURCE} "tests/test-ecotracker.cc")
-target_link_libraries (test-ecotracker.bin darknet ecotracker ${OpenCV_LIBS} ccv_base pthread) 
+# add_executable(test-ecotracker.bin ${SOURCE} "tests/test-ecotracker.cc")
+# target_link_libraries (test-ecotracker.bin darknet ecotracker ${OpenCV_LIBS} ccv_base pthread) 
 
-add_executable(test-collect-frame.bin ${SOURCE} "tests/test-collect-frame.cc")
-target_link_libraries (test-collect-frame.bin  darknet ecotracker ${OpenCV_LIBS} ccv_base pthread) 
+# add_executable(test-collect-frame.bin ${SOURCE} "tests/test-collect-frame.cc")
+# target_link_libraries (test-collect-frame.bin  darknet ecotracker ${OpenCV_LIBS} ccv_base pthread) 

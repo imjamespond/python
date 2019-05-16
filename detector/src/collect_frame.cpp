@@ -23,7 +23,7 @@ void collect_frame(int queue_max_size, const char * url, args_t * args, extra_ar
   vc.open(url);
 
   int num(0);
-  bool wait(false);
+  bool running(true);
 
   EcoTrackers trackers;
 
@@ -34,10 +34,20 @@ void collect_frame(int queue_max_size, const char * url, args_t * args, extra_ar
     // wait for a new frame from camera and store it into 'frame'
     vc >> frame;
 
-    // check if we succeeded
     if (frame.empty())
     {
-      //perror("ERROR! blank frame grabbed\n");
+      LOG_ERROR << "ERROR! blank frame grabbed";
+
+      vc.release();
+      vc.open(url);
+
+      // check if we succeeded
+      if (!vc.isOpened())
+      {
+        LOG_ERROR << "ERROR! camera is closed";
+      }
+
+      CB::Time::SleepMillis(500L);
       continue;
     }
 
@@ -61,17 +71,35 @@ void collect_frame(int queue_max_size, const char * url, args_t * args, extra_ar
     }
 
     int size = extra_args.queue->size();
-    if (size < queue_max_size)
+    if (size < queue_max_size && running)
     {
       detect_functor_t detect_functor = boost::bind(&eco_detect, args, extra_args, frameFile, &trackers, num);
       if (!extra_args.queue->add(detect_functor))
         break;
+
+      if (++num >= queue_max_size)
+      {
+        num = 0;
+      }
+    }
+    else
+    {
+      if (size < (queue_max_size >> 1))
+      {
+        running = true;
+      }
+      else
+      {
+        running = false;
+
+        LOG_DEBUG << "queue size reach limit: " << size;
+        CB::Time::SleepMillis(1000L);
+      }
+
+      continue;
     }
 
-    if (++num >= queue_max_size)
-    {
-      num = 0;
-    }
+    CB::Time::SleepMillis(25L);
   }
 
   extra_args.queue->join();

@@ -25,7 +25,7 @@ void count(TrackerType &tracker, float left, float top, float right, float botto
         count[2]++;
         tracker.disabled = true;
     }
-    if ((tracker.roi.x + tracker.roi.width) > right && tracker.distX > -20.0f /*(tracker.last.x + tracker.last.width) < right &&*/)
+    if ((tracker.roi.x + tracker.roi.width) > right && tracker.distX < -20.0f /*(tracker.last.x + tracker.last.width) < right &&*/)
     {
         count[3]++;
         tracker.disabled = true;

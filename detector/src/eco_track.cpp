@@ -8,7 +8,7 @@
 
 bool eco_track(EcoTrackers &trackers, box &bbox, Mat &frame)
 {
-    double w1 = bbox.w, h1 = bbox.w * 1.5;
+    double w1 = bbox.w, h1 = bbox.w * 1.65;
     h1 = bbox.h > h1 ? h1 : bbox.h;// trace the top of someone
     double x1 = bbox.x - (bbox.w * .5), x1_ = x1 + w1;
     double y1 = bbox.y - (bbox.h * .5), y1_ = y1 + h1;
@@ -38,7 +38,10 @@ bool eco_track(EcoTrackers &trackers, box &bbox, Mat &frame)
             y_ = y2_ > y1_ ? y1_ : y2_;
             h = y_ - y;
 
-            if (w/w1>.6 && w/w2>.6 && h/h1>.5 && h/h2>.5)
+            if (h > h1 * .4 && h > h2 * .4 &&
+                ((x2 > x1 && x2 < x1_ && x2_ > x1 && x2_ < x1_) || //one contains the other
+                 (x1 > x2 && x1 < x2_ && x1_ > x2 && x1_ < x2_) || //one contains the other
+                 (w > w1 * .7 && w > w2 * .7))) //partial overlapped
             {
                 overlapped = true;
 
@@ -68,7 +71,7 @@ bool eco_track(EcoTrackers &trackers, box &bbox, Mat &frame)
         }
     }
 
-    if (!overlapped && trackers.size() < 16)
+    if (!overlapped && trackers.size() < 8)
     {
         EcoTracker tracker;
         tracker.lost = 0; 
