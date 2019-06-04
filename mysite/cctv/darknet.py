@@ -1,8 +1,10 @@
 import os
 import time
 from ctypes import *
-# import cv2
+import cv2
 import threading
+
+print(cv2.getBuildInformation())
 
 class BOX(Structure):
     _fields_ = [("x", c_float),

@@ -10,6 +10,10 @@
 
 #define PATH "/tmp/traffic-cache/"
 
+void openvc(VideoCapture &vc, const char *url)
+{
+  vc.open(url, cv::CAP_GSTREAMER);
+}
 
 void collect_frame(int queue_max_size, const char * url, args_t * args, extra_args_t& extra_args)
 {
@@ -20,7 +24,7 @@ void collect_frame(int queue_max_size, const char * url, args_t * args, extra_ar
 
   // Mat frame;
   VideoCapture vc;
-  vc.open(url);
+  openvc(vc, url);
 
   int num(0);
   bool running(true);
@@ -39,7 +43,7 @@ void collect_frame(int queue_max_size, const char * url, args_t * args, extra_ar
       LOG_ERROR << "ERROR! blank frame grabbed";
 
       vc.release();
-      vc.open(url);
+      openvc(vc, url);
 
       // check if we succeeded
       if (!vc.isOpened())
@@ -99,10 +103,12 @@ void collect_frame(int queue_max_size, const char * url, args_t * args, extra_ar
       continue;
     }
 
-    CB::Time::SleepMillis(25L);
+    // CB::Time::SleepMillis(25L);
   }
 
   extra_args.queue->join();
+
+  vc.release();
 
   if (args->debug)
   {
