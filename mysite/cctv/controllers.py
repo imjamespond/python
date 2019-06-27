@@ -10,7 +10,7 @@ import json
 import cv2
 import base64
 
-from . import darknet, track
+from . import schedule_report, darknet, track
 
 def get_csrf_token(request):
     return response(get_token(request))
