@@ -39,21 +39,26 @@ scheduler = sched.scheduler(time.time, time.sleep)
 # appfile.close()
 
 
-def report(direction='Left', count=0, timestamp=int(round(time.time() * 1000))):
+def report(direction='Left', count=0, timestamp=int(round(time.time()))):
     obj = {}
     
     obj['StoreId'] = '22'
     obj['SourceId'] = hardware['serial']
     obj['Direction'] = direction
-    obj['Count'] = '2'
+    obj['Count'] = count
 
     data = {}
     data['data'] = json.dumps(obj)
     data['timestamp'] = str(timestamp)
-    data['type'] = '10'
-    data['level'] = '1' 
+    data['type'] = 10
+    data['level'] = 1
+    data['source'] = 1
     # print(json.dumps([data]))
-    req = request.Request(url, data=parse.quote_plus(json.dumps([data])).encode())
+    # req = request.Request(url, data=parse.quote_plus(json.dumps([data])).encode())
+    headers = {'Content-Type': 'application/json'}
+    req = request.Request(url, data=json.dumps([data]).encode(), headers=headers)
+    
+    
     response = urllib.request.urlopen(req)
 
     print(timestamp, direction, count, response.read())
