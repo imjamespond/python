@@ -102,19 +102,11 @@ main (int argc, char *argv[])
   pipeline = gst_pipeline_new ("dstest1-pipeline");
 
   /* Source element for reading from the file */
-  source = gst_element_factory_make ("nvarguscamerasrc", "cam-source");
-  // source = gst_element_factory_make("filesrc", "file-source");
-
-  /* Since the data format in the input file is elementary h264 stream,
-   * we need a h264parser */
-  h264parser = gst_element_factory_make ("h264parse", "h264-parser");
-
-  /* Use nvdec_h264 for hardware accelerated decode on GPU */
-  decoder = gst_element_factory_make ("nvv4l2decoder", "nvv4l2-decoder");
+  source = gst_element_factory_make ("nvarguscamerasrc", "cam-source"); 
 
 
-  if (!pipeline || !streammux) {
-    g_printerr ("One element could not be created. Exiting.\n");
+  if (!pipeline) {
+    g_printerr("pipeline element could not be created. Exiting.\n");
     return -1;
   }
 
@@ -135,8 +127,7 @@ main (int argc, char *argv[])
   filter1 = gst_element_factory_make("capsfilter", "filter1");
   filter2 = gst_element_factory_make("capsfilter", "filter2");
 
-  if (!source || !h264parser || !decoder //|| !pgie
-      || !nvvidconv || !nvosd || !sink) {
+  if (!source || !nvvidconv || !nvosd || !sink) {
     g_printerr ("One element could not be created. Exiting.\n");
     return -1;
   }
