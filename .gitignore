@@ -1,0 +1,8 @@
+# created by virtualenv automatically
+*.pptx
+*.docx
+bin
+lib
+pyvenv.cfg
+.Python
+.DS_*
