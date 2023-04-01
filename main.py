@@ -30,7 +30,14 @@ class Resquest(BaseHTTPRequestHandler):
             result = svc.clear_result()
         elif path == "/ip/total_result":
             result = svc.total()
-            
+        elif path == "/ip/total_by_ip":
+            result = svc.total_by_ip()
+        elif path == "/ip/group_by_ip":
+            result = svc.group_by_ip(query)
+        elif path == "/ip/total_by_user":
+            result = svc.total_by_user()
+        elif path == "/ip/group_by_user":
+            result = svc.group_by_user(query)
         self.wfile.write(json.dumps(result).encode())
 
     def do_POST(self):

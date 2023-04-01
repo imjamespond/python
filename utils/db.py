@@ -26,7 +26,10 @@ class Db(object):
     cur.execute(sql)
 
     sql = '''CREATE INDEX IF NOT EXISTS i_time on log (ut_timestamp);'''
-    # 执行sql语句
+    cur.execute(sql)
+    sql = '''CREATE INDEX IF NOT EXISTS i_host on log (ut_host);'''
+    cur.execute(sql)
+    sql = '''CREATE INDEX IF NOT EXISTS i_user on log (ut_user);'''
     cur.execute(sql)
 
     self.conn = conn
@@ -53,13 +56,29 @@ class Db(object):
     return rs
 
   def find(self):
-    return self.findWith(10,0)
+    return self.findWith(None, 10,0)
 
-  def findWith(self, limit: int, offset: int):
-    # 查询数学成绩大于90分的学生
-    sql = "SELECT * FROM " +self.tb+ " order by ut_timestamp desc limit ? offset ?"
-    self.cur.execute(sql, [limit, offset])
+  def findWith(self, fval:list, limit: int, offset: int):
+    where = "1"
+    params = [limit, offset]
+    if fval != None :
+      where = fval[0] + "=?"
+      params = [fval[1],limit, offset]
+    sql = "SELECT * FROM " +self.tb+ " WHERE "+where+" order by ut_timestamp desc limit ? offset ?"
+    self.cur.execute(sql, params)
     # 获取查询结果
+    list = self.cur.fetchall()
+    return list
+
+  def total_by(self, field: str):
+    sql = "SELECT "+field+", count(*) FROM " +self.tb+ " group by "+field
+    sql = "SELECT COUNT(*) FROM ("+sql+") as sub_query"
+    cur = self.cur.execute(sql)
+    total = cur.fetchone()
+    return total
+  def group_by(self, limit: int, offset: int, field: str):
+    sql = "SELECT "+field+", count(*) FROM " +self.tb+ " group by "+field+" limit ? offset ?"
+    self.cur.execute(sql, [limit, offset])
     list = self.cur.fetchall()
     return list
 
