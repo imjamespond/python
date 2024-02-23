@@ -4,7 +4,7 @@ from matplotlib import pyplot as plt
 from d2l import torch as d2l
 from _5 import Accumulator, Animator
 from _5_1 import load_data_fashion_mnist
-from _5_2 import accuracy, softmax, evaluate_accuracy as _evaluate_accuracy
+from _5_2 import accuracy, softmax, evaluate_accuracy as _evaluate_accuracy, predict_ch3
 
 
 def cross_entropy(y_hat, y):
@@ -80,7 +80,7 @@ if __name__ == "__main__":
     device = torch.device("mps")
 
     batch_size = 256
-    _train_iter, _test_iter = load_data_fashion_mnist(batch_size, device=device)
+    _train_iter, _test_iter = load_data_fashion_mnist(batch_size)
     train_iter = [[X.to(device=device), y.to(device=device)] for X, y in _train_iter]
     test_iter = [[X.to(device=device), y.to(device=device)] for X, y in _test_iter]
 
@@ -106,5 +106,7 @@ if __name__ == "__main__":
 
     num_epochs = 10
     train_ch3(net, train_iter, test_iter, cross_entropy, num_epochs, updater)
+
+    predict_ch3(test_iter, net=net)
 
     plt.show()

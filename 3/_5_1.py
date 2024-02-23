@@ -15,16 +15,18 @@ def get_dataloader_workers():
 
 def load_data_fashion_mnist(batch_size: int, resize=None):
     """Download the Fashion-MNIST dataset and then load it into memory."""
+    
     trans = [transforms.ToTensor()]
     if resize:
         trans.insert(0, transforms.Resize(resize))
     trans = transforms.Compose(trans)
+
     mnist_train = torchvision.datasets.FashionMNIST(  # fashion集 数据
         root="../data", train=True, transform=trans, download=False
     )
     mnist_test = torchvision.datasets.FashionMNIST(
         root="../data", train=False, transform=trans, download=False
-    ) 
+    )
 
     return (
         data.DataLoader(
@@ -62,7 +64,7 @@ def show_images(imgs, num_rows, num_cols, titles=None, scale=1.5):
     for i, (ax, img) in enumerate(zip(axes, imgs)):
         if torch.is_tensor(img):
             # Tensor Image
-            ax.imshow(img.numpy())
+            ax.imshow(img.cpu().numpy())
         else:
             # PIL Image
             ax.imshow(img)
