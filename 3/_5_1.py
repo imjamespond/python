@@ -3,15 +3,17 @@ import torch
 import torchvision
 from torch.utils import data
 from torchvision import transforms
+
 # from d2l import torch as d2l
 from matplotlib import pyplot as plt
+
 
 def get_dataloader_workers():
     """Use 4 processes to read the data."""
     return 2
 
 
-def load_data_fashion_mnist(batch_size, resize=None):
+def load_data_fashion_mnist(batch_size: int, resize=None):
     """Download the Fashion-MNIST dataset and then load it into memory."""
     trans = [transforms.ToTensor()]
     if resize:
@@ -22,7 +24,8 @@ def load_data_fashion_mnist(batch_size, resize=None):
     )
     mnist_test = torchvision.datasets.FashionMNIST(
         root="../data", train=False, transform=trans, download=False
-    )
+    ) 
+
     return (
         data.DataLoader(
             mnist_train, batch_size, shuffle=True, num_workers=get_dataloader_workers()
@@ -52,7 +55,7 @@ def get_fashion_mnist_labels(labels):
 
 def show_images(imgs, num_rows, num_cols, titles=None, scale=1.5):
     """Plot a list of images."""
-    figsize = (num_cols * scale, num_rows * scale)
+    figsize = (num_cols * scale, num_rows * scale + 1)  # width height
     _, axes = plt.subplots(num_rows, num_cols, figsize=figsize)
     print(axes.shape)
     axes = axes.flatten()

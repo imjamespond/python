@@ -1,5 +1,5 @@
 from d2l import torch as d2l
-from IPython import display
+# from IPython import display
 
 class Accumulator:  # @save
         """在n个变量上累加"""
@@ -48,6 +48,9 @@ class Animator:  # @save
         )
         self.X, self.Y, self.fmts = None, None, fmts
 
+        d2l.plt.draw()
+        d2l.plt.pause(.1)
+
     def add(self, x, y):
         # 向图表中添加多个数据点
         if not hasattr(y, "__len__"):
@@ -67,5 +70,8 @@ class Animator:  # @save
         for x, y, fmt in zip(self.X, self.Y, self.fmts):
             self.axes[0].plot(x, y, fmt)
         self.config_axes()
-        display.display(self.fig)
-        display.clear_output(wait=True)
+        # display.display(self.fig)
+        # display.clear_output(wait=True)
+
+        d2l.plt.draw()
+        d2l.plt.pause(.1)
