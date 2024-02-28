@@ -27,7 +27,7 @@ def train_epoch_ch3(net, train_iter, loss, updater):  # @save
     for X, y in train_iter:
         # 计算梯度并更新参数
         y_hat = net(X)
-        l = loss(y_hat, y)
+        l = loss(y_hat, y) # 输入计算出y_hat后，和y计算出损失，再计算w梯度，最后更新w
         if isinstance(updater, torch.optim.Optimizer):
             # 使用PyTorch内置的优化器和损失函数
             updater.zero_grad()
@@ -87,7 +87,7 @@ if __name__ == "__main__":
     num_inputs = 784
     num_outputs = 10
 
-    # 768行，10列 随机权重
+    # 768行，10列 随机权重, w, b 要保存梯度
     W = torch.normal(
         0, 0.01, size=(num_inputs, num_outputs), requires_grad=True, device=device
     )
