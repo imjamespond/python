@@ -1,0 +1,19 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+
+    {
+      "name": "Python Debugger: Current File",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${file}",
+      "args": ["/Users/james/Documents/doc/仙墓中走出的强者 作者：疯狂骷髅.txt"],
+      "console": "integratedTerminal",
+      "justMyCode": false, // 必须关闭以调试库内部的异步调用
+      "subProcess": true   // 如果你的 asyncio 创建了子任务
+    }
+  ]
+}
