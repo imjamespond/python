@@ -21,37 +21,37 @@ CHUNK_SIZE = 4096
 def analyze_chunk(text_chunk):
     print(len(text_chunk))
     messages = [
-        SystemMessage(content="你是一个小说分析器，提取人物、事件和关系。"),
-        HumanMessage(content=f"""
+    SystemMessage(content="你是一个小说分析器，只提取主要人物、主要事件和核心关系。忽略次要人物、次要事件与物件。"),
+    HumanMessage(content=f"""
 请分析以下小说片段：
 {text_chunk}
 
-请以严格 JSON 格式输出，包括以下字段：
+请只抓取最重要的内容，并以**严格 JSON** 格式输出，包含以下字段：
 
-1. characters: 人物列表，每个对象包含：
+1. characters: 主要人物列表，每个对象包含：
     - name: 人物名字
-    - description: 简短描述或性格特征
+    - description: 1–2 句简要说明其身份或性格（仅主要人物）
 
-2. events: 事件列表，每个对象包含：
-    - description: 事件描述
-    - time: 事件发生的时间（如果文中未明确可写 null）
-    - location: 事件发生的地点（如果文中未明确可写 null）
-    - participants: 参与事件的人物名字列表
+2. events: 主要事件列表，每个对象包含：
+    - description: 用一句话概括该片段中最重要的事件
+    - time: 若文本未明确则写 null
+    - location: 若文本未明确则写 null
+    - participants: 参与该主要事件的主要人物名字列表
 
-3. relationships: 人物之间的关系，每个对象包含：
+3. relationships: 主要人物之间的核心关系，每个对象包含：
     - source: 人物名字
     - target: 人物名字
     - type: 关系类型（如朋友、敌人、亲属、合作等）
-    - event: 关联的事件描述（如果适用）
+    - event: 相关联的主要事件描述（如适用）
 
-请严格按照 JSON 格式输出，不要添加额外文本。
+请严格按照 JSON 输出，不要添加任何额外说明或文本。
 """)
-    ]
+]
     # response = llm.invoke(messages)
     # content = response.content
     # return content
     full = None 
-    for chunk in models.LLM1.stream(messages):
+    for chunk in models.LLM_ZP.stream(messages):
         full = chunk if full is None else full + chunk
         print(chunk.text)
     return full.text
@@ -75,22 +75,36 @@ async def send_to_mcp(json_data):
     ]
     # print(selected_tools)
     graph = create_agent(
-        models.LLM2,
+        models.LLM_QW,
         selected_tools,
-        system_prompt= """你是一个记忆管理助手，负责处理记忆的创建、更新和搜索。
+        system_prompt= """你是一个记忆管理助手，负责处理与人物或其他对象相关的记忆的搜索、创建与更新。
 
-工作流程：
-1. 当用户要求创建新记忆时，你必须先使用 search_memories 工具搜索是否已存在类似记忆
-2. 如果搜索结果显示记忆不存在，再使用 create_memory 工具创建新记忆
-3. 如果记忆已存在，考虑使用 update_memory 工具更新现有记忆
-4. 对于其他操作（更新记忆、搜索记忆、创建连接等），按需直接使用相应工具
+核心工作规则：
 
-重要规则：
-- 在创建任何新记忆之前，必须先进行搜索
-- 不要假设记忆不存在，总是先验证
-- 保持记忆内容的准确性和一致性
+1. **所有创建操作必须先搜索**
+   - 当用户请求创建某个记忆（特别是人物记忆）时，你必须先调用 `search_memories`。
+   - 若该记忆与人物相关，你必须优先使用人物的 **name 字段** 进行搜索。
 
-请根据用户请求选择适当的工具并按正确顺序执行。""",
+2. **搜索后的行动逻辑**
+   - 如果搜索结果显示该记忆不存在：使用 `create_memory` 创建新记忆。
+   - 如果搜索结果显示该记忆已存在：使用 `update_memory` 更新该记忆，而不是再次创建。
+
+3. **更新请求**
+   - 若用户要求更新记忆，你可以直接使用 `search_memories` 查找目标记忆，然后调用 `update_memory`。
+
+4. **搜索请求**
+   - 当用户只要求查找记忆时，直接使用 `search_memories`。
+
+5. **创建连接请求**
+   - 若用户要求在记忆之间创建关联，可以直接使用相关工具，但必须保证关联的双方都已存在（如不确定需先搜索）。
+
+重要原则：
+- **永远不要假设记忆不存在，必须先验证。**
+- **保持记忆的准确性、一致性以及人物名称的唯一识别性。**
+- **严格遵守工具调用顺序：搜索 → 创建或更新。**
+
+请根据用户请求，选择正确的工具，并严格按照流程执行。
+""",
     )
     inputs = {"messages": [{"role": "user", "content": json_data}]}
     async for chunk in graph.astream(inputs, stream_mode="messages"):
@@ -148,7 +162,7 @@ def chapter_stream(file_path):
                 chapter_title = line
              
                 count += 1
-                if count > 2: 
+                if count > 2: # end with n
                   break
 
             else:

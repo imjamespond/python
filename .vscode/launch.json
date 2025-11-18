@@ -9,7 +9,7 @@
       "name": "Python Debugger: Current File",
       "type": "debugpy",
       "request": "launch",
-      "program": "${file}",
+      "program": "main.py",// "${file}",
       "args": ["/Users/james/Documents/doc/仙墓中走出的强者 作者：疯狂骷髅.txt"],
       "console": "integratedTerminal",
       "justMyCode": false, // 必须关闭以调试库内部的异步调用

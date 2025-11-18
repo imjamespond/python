@@ -13,8 +13,9 @@ BASE_URL_ZP="https://open.bigmodel.cn/api/paas/v4"
 
 # ---------- 配置 ----------
 # 直接初始化ChatOpenAI
-LLM1 = init_chat_model(
-    model="ernie-4.5-21b-a3b" ,              # modelname: 指定模型名称
+LLM_BD = init_chat_model(
+    # model="ernie-4.5-21b-a3b" ,              # modelname: 指定模型名称
+    model="ernie-4.5-turbo-128k-preview" , 
     model_provider=MODEL_PROVIDER,
     api_key=os.getenv("ERNIE_API_KEY"),      # apikey: 设置API密钥
     base_url=BASE_URL_BD,  # apiurl: 设置基础URL
@@ -24,7 +25,7 @@ LLM1 = init_chat_model(
     timeout=30
 )
 
-LLM2 = init_chat_model(
+LLM_QW = init_chat_model(
   #  "Qwen/Qwen3-Next-80B-A3B-Instruct" 
     model="Qwen/Qwen3-32B",              # modelname: 指定模型名称
     model_provider=MODEL_PROVIDER,
@@ -41,7 +42,7 @@ LLM2 = init_chat_model(
     }
 )
 
-LLM3 = init_chat_model(
+LLM_ZP = init_chat_model(
     model="GLM-4.5-Flash",              # modelname: 指定模型名称
     model_provider=MODEL_PROVIDER,
     api_key=os.getenv("ZHIPUAI_API_KEY"),      # apikey: 设置API密钥
@@ -49,5 +50,11 @@ LLM3 = init_chat_model(
     # 其他可选参数
     temperature=0.5,
     max_tokens=8192,
-    timeout=30
+    timeout=30,
+    extra_body={
+      "thinking":{
+        "type":"disabled"
+      }
+    }
+    
 )
