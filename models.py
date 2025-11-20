@@ -9,7 +9,8 @@ MODEL_PROVIDER = "openai"
 BASE_URL_MD="https://api-inference.modelscope.cn/v1"
 BASE_URL_BD="https://aistudio.baidu.com/llm/lmapi/v3"
 BASE_URL_ZP="https://open.bigmodel.cn/api/paas/v4"
-
+BASE_URL_CF="https://gateway.ai.cloudflare.com/v1/7b606aa2446b22c790782eaba9cf2ce8/aistudio/compat"
+BASE_URL_OR="https://openrouter.ai/api/v1/"
 
 # ---------- 配置 ----------
 # 直接初始化ChatOpenAI
@@ -57,4 +58,26 @@ LLM_ZP = init_chat_model(
       }
     }
     
+)
+
+LLM_GM = init_chat_model(
+    model="google-ai-studio/gemini-2.5-flash-lite",   
+    model_provider=MODEL_PROVIDER,
+    api_key=os.getenv("GM_API_KEY"),    
+    base_url=BASE_URL_CF,  
+    # 其他可选参数
+    temperature=0.5,
+    max_tokens=8192,
+    timeout=30
+)
+
+LLM_OR = init_chat_model(
+    model="openai/gpt-oss-20b:free",      
+    model_provider=MODEL_PROVIDER,
+    api_key=os.getenv("OR_API_KEY"),   
+    base_url=BASE_URL_OR,  
+    # 其他可选参数
+    temperature=0.5,
+    max_tokens=8192,
+    timeout=30
 )
