@@ -10,7 +10,7 @@ import agent_tools
 import models
 import tmp
 
-LLM_JSON=models.LLM_BD
+LLM_JSON=models.LLM_ZP
 LLM_TOOLS=models.LLM_GM
 CHUNK_SIZE = 4096
 START = 0 # start from n+1 
@@ -32,7 +32,7 @@ def analyze_chunk(text_chunk):
 提取核心内容，并以严格 JSON 格式输出，仅包含以下字段：
 
 - characters: 主要人物列表（每个对象包含）：
-  - name: 人物姓名（注意：小李的全名是李耀）
+  - name: 人物姓名（说明："我"、"小李"等指代均统一视为其全名 **李耀**）
   - description: 1-2 句关键身份或性格描述（仅限关键人物）
 
 - events: 主要事件列表（每个对象包含）：
@@ -162,6 +162,6 @@ if __name__ == "__main__":
         print("请提供小说文件路径作为第一个参数")
         sys.exit(1)
     file_path = sys.argv[1]
-    # process_novel_by_chapter(file_path)
-    asyncio.run(send_to_mcp(tmp.JSON))
+    process_novel_by_chapter(file_path)
+    # asyncio.run(send_to_mcp(tmp.JSON))
 
