@@ -10,11 +10,11 @@ import agent_tools
 import models
 import tmp
 
-LLM_JSON=models.LLM_ZP
+LLM_JSON=models.LLM_OR
 LLM_TOOLS=models.LLM_GM
 CHUNK_SIZE = 4096
 START = 0 # start from n+1 
-END = 10 # end with n
+END = 20 # end with n
 
 # ---------- Step 1: 小说分片 ----------
 
