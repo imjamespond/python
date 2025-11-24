@@ -1,5 +1,6 @@
-from langchain.chat_models import init_chat_model
 import os
+
+from langchain.chat_models import init_chat_model
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -11,6 +12,7 @@ BASE_URL_BD="https://aistudio.baidu.com/llm/lmapi/v3"
 BASE_URL_ZP="https://open.bigmodel.cn/api/paas/v4"
 BASE_URL_CF="https://gateway.ai.cloudflare.com/v1/7b606aa2446b22c790782eaba9cf2ce8/aistudio/compat"
 BASE_URL_OR="https://openrouter.ai/api/v1/"
+BASE_URL_NV="https://integrate.api.nvidia.com/v1"
 
 # ---------- 配置 ----------
 # 直接初始化ChatOpenAI
@@ -81,3 +83,31 @@ LLM_OR = init_chat_model(
     max_tokens=8192,
     timeout=30
 )
+
+LLM_NV_INS = init_chat_model(
+    model="qwen/qwen3-next-80b-a3b-instruct",      
+    model_provider=MODEL_PROVIDER,
+    api_key=os.getenv("NV_API_KEY"),   
+    base_url=BASE_URL_NV,  
+    # 其他可选参数
+    temperature=0.5,
+    max_tokens=8192,
+    timeout=30
+)
+
+LLM_NV_NANO = init_chat_model(
+    model="nvidia/nvidia-nemotron-nano-9b-v2",      
+    model_provider=MODEL_PROVIDER,
+    api_key=os.getenv("NV_API_KEY"),   
+    base_url=BASE_URL_NV,  
+    # 其他可选参数
+    temperature=0.5,
+    max_tokens=8192,
+    timeout=30
+)
+
+
+LLM_JSON=LLM_NV_INS
+LLM_TOOLS=LLM_NV_NANO
+
+PROMPT_PERSON = os.getenv("PROMPT_PERSON") or ""

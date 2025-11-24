@@ -9,9 +9,22 @@ import neo4j from "neo4j-driver";
  * @param {Array<{ source: string, target: string, type: string }>|undefined} data.relationships - 角色之间的关系列表。
  */
 export async function writeToNeo4j(data) {
+  if (!Array.isArray(data.characters) || !data.characters.length > 0) {
+    const result = {
+      type: "text",
+      text: "数据为空，跳过执行",
+    };
+    return {
+      content: [result],
+      structuredContent: result,
+    };
+  }
   // 创建 Neo4j 驱动
   // const driver = neo4j.driver("bolt://192.168.8.201:7687", neo4j.auth.basic("neo4j", "your-password"));
-  const driver = neo4j.driver(process.env.NEO4J_URI, neo4j.auth.basic(process.env.NEO4J_USERNAME, process.env.NEO4J_PASSWORD));
+  const driver = neo4j.driver(
+    process.env.NEO4J_URI,
+    neo4j.auth.basic(process.env.NEO4J_USERNAME, process.env.NEO4J_PASSWORD)
+  );
 
   const session = driver.session();
 
@@ -22,14 +35,14 @@ export async function writeToNeo4j(data) {
         await tx.run(
           `
           MERGE (p:person {name: $name})
-          SET p.description = $description
+          SET p.description = coalesce(p.description, '') + ' ' + coalesce($description, '')
           `,
           character
         );
       }
 
       /** --- 写入事件 & 角色参与关系 --- **/
-      if (Array.isArray(data.events)) {
+      if (Array.isArray(data.events) && data.events.length > 0) {
         for (const event of data.events) {
           await tx.run(
             `
@@ -47,7 +60,7 @@ export async function writeToNeo4j(data) {
       }
 
       /** --- 写入自定义角色关系 --- **/
-      if (Array.isArray(data.relationships)) {
+      if (Array.isArray(data.relationships) && data.relationships.length > 0) {
         for (const rel of data.relationships) {
           await tx.run(
             `
