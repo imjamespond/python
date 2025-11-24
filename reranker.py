@@ -23,8 +23,10 @@ def process_inputs(pairs):
 @torch.no_grad()
 def compute_logits(inputs, **kwargs):
     batch_scores = model(**inputs).logits[:, -1, :]
+    # 得到 yes 的概率。
     true_vector = batch_scores[:, token_true_id]
     false_vector = batch_scores[:, token_false_id]
+    # 得到 yes 的概率。
     batch_scores = torch.stack([false_vector, true_vector], dim=1)
     batch_scores = torch.nn.functional.log_softmax(batch_scores, dim=1)
     scores = batch_scores[:, 1].exp().tolist()
@@ -47,11 +49,16 @@ task = 'Given a web search query, retrieve relevant passages that answer the que
 
 queries = ["What is the capital of China?",
     "Explain gravity",
+    "what is the weather of today",
+    "解释引力",
 ]
 
 documents = [
     "The capital of China is Beijing.",
     "Gravity is a force that attracts two bodies towards each other. It gives weight to physical objects and is responsible for the movement of planets around the sun.",
+    "heavy rain",
+    "引力是一种力"
+
 ]
 
 pairs = [format_instruction(task, query, doc) for query, doc in zip(queries, documents)]
