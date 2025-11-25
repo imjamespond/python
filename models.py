@@ -107,8 +107,20 @@ LLM_NV_NANO = init_chat_model(
     timeout=30
 )
 
+LLM_OLLAMA = init_chat_model(
+    model="modelscope.cn/unsloth/Qwen3-4B-Instruct-2507-GGUF:Q8",      
+    model_provider="ollama",
+    api_key="",   
+    # base_url=,  
+    # 其他可选参数
+    temperature=0.2,
+    max_tokens=4096,
+    timeout=30
+)
 
-LLM_JSON=LLM_OR
-LLM_TOOLS=LLM_NV_NANO
+
+
+LLM_JSON=LLM_OLLAMA
+LLM_TOOLS=LLM_OLLAMA
 
 PROMPT_PERSON = os.getenv("PROMPT_PERSON") or ""

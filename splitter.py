@@ -1,14 +1,14 @@
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
-CHUNK_SIZE = 4096
-START = 31 # start from n
-END = 50 # end with n
+CHUNK_SIZE = 2048
+START = 84 # start from n
+END = 99 # end with n
 
 class ChapterProcessor:
     def __init__(self):
         self.text_splitter = RecursiveCharacterTextSplitter(
-            chunk_size=4096,
-            chunk_overlap=200,
+            chunk_size=CHUNK_SIZE,
+            chunk_overlap=256,
             separators=["\n\n", "\n", "。", "！", "？"]
         )
 

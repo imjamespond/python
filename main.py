@@ -88,7 +88,7 @@ async def send_to_mcp(json_data):
     try:
         async for chunk in graph.astream(inputs, stream_mode="messages"):
             print(chunk)
-            await asyncio.sleep(10)
+            await asyncio.sleep(1)
     except Exception as e:
         print("工具调用出错:", e)
     # rs = await asyncio.create_task(graph.ainvoke(inputs,stream_mode="messages")) 
