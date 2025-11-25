@@ -2,7 +2,7 @@ import { z } from "zod";
 import { McpServer, ResourceTemplate } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
 import express from "express";
-import { writeToNeo4j } from "./neo4j.js";
+import { writeToNeo4j, queryNeo4j } from "./neo4j.js";
 
 const server = new McpServer({
   name: "neo4j-mcp-server",
@@ -46,6 +46,21 @@ server.registerTool(
   },
   async (data) => {
     return await writeToNeo4j(data);
+  }
+);
+
+server.registerTool(
+  "query",
+  {
+    title: "query",
+    description: "执行 cypher 查询 Neo4j",
+    inputSchema: z.object({
+      cypher: z.string() , 
+    }),
+    outputSchema: z.object({ type: z.string(), text: z.string() }), // langgraph对格式严格要求
+  },
+  async (data) => {
+    return await queryNeo4j(data);
   }
 );
 

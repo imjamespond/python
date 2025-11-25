@@ -51,7 +51,7 @@ LLM_ZP = init_chat_model(
     api_key=os.getenv("ZHIPUAI_API_KEY"),      # apikey: 设置API密钥
     base_url=BASE_URL_ZP,  # apiurl: 设置基础URL
     # 其他可选参数
-    temperature=0.5,
+    temperature=0.2,
     max_tokens=8192,
     timeout=30,
     extra_body={
@@ -68,18 +68,19 @@ LLM_GM = init_chat_model(
     api_key=os.getenv("GM_API_KEY"),    
     base_url=BASE_URL_CF,  
     # 其他可选参数
-    temperature=0.5,
+    temperature=0.2,
     max_tokens=8192,
     timeout=30
 )
 
 LLM_OR = init_chat_model(
-    model="x-ai/grok-4.1-fast:free",      
+    # model="x-ai/grok-4.1-fast:free",      
+    model="tngtech/deepseek-r1t2-chimera:free",      
     model_provider=MODEL_PROVIDER,
     api_key=os.getenv("OR_API_KEY"),   
     base_url=BASE_URL_OR,  
     # 其他可选参数
-    temperature=0.5,
+    temperature=0.2,
     max_tokens=8192,
     timeout=30
 )
@@ -90,7 +91,7 @@ LLM_NV_INS = init_chat_model(
     api_key=os.getenv("NV_API_KEY"),   
     base_url=BASE_URL_NV,  
     # 其他可选参数
-    temperature=0.5,
+    temperature=0.2,
     max_tokens=8192,
     timeout=30
 )
@@ -101,7 +102,7 @@ LLM_NV_NANO = init_chat_model(
     api_key=os.getenv("NV_API_KEY"),   
     base_url=BASE_URL_NV,  
     # 其他可选参数
-    temperature=0.3,
+    temperature=0.2,
     max_tokens=8192,
     timeout=30
 )

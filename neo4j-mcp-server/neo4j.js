@@ -1,5 +1,21 @@
 import neo4j from "neo4j-driver";
 
+// 创建 Neo4j 驱动
+function initNeo4j() {
+  // const driver = neo4j.driver("bolt://192.168.8.201:7687", neo4j.auth.basic("neo4j", "your-password"));
+  const driver = neo4j.driver(
+    process.env.NEO4J_URI,
+    neo4j.auth.basic(process.env.NEO4J_USERNAME, process.env.NEO4J_PASSWORD)
+  );
+  const session = driver.session();
+  return [
+    session,
+    async () => {
+      await session.close();
+      await driver.close();
+    },
+  ];
+}
 /**
  * 将结构化的角色、事件和关系数据写入 Neo4j 图数据库。
  *
@@ -19,14 +35,8 @@ export async function writeToNeo4j(data) {
       structuredContent: result,
     };
   }
-  // 创建 Neo4j 驱动
-  // const driver = neo4j.driver("bolt://192.168.8.201:7687", neo4j.auth.basic("neo4j", "your-password"));
-  const driver = neo4j.driver(
-    process.env.NEO4J_URI,
-    neo4j.auth.basic(process.env.NEO4J_USERNAME, process.env.NEO4J_PASSWORD)
-  );
 
-  const session = driver.session();
+  const [session, close] = initNeo4j();
 
   try {
     await session.executeWrite(async (tx) => {
@@ -106,7 +116,38 @@ export async function writeToNeo4j(data) {
       structuredContent: result,
     };
   } finally {
-    await session.close();
-    await driver.close();
+    await close();
+  }
+}
+
+export async function queryNeo4j(data) {
+  const [session, close] = initNeo4j();
+
+  try {
+    const result = await session.executeRead((tx) => tx.run(data.cypher));
+    const textOutput =
+      result.records.map((record) => JSON.stringify(record.toObject(), null, 2)).join("\n") || "No results";
+
+    const structuredContent = {
+      type: "text",
+      text: textOutput,
+    };
+
+    return {
+      content: [structuredContent],
+      structuredContent,
+    };
+  } catch (error) {
+    console.error(error);
+    const result = {
+      type: "text",
+      text: err.message,
+    };
+    return {
+      content: [result],
+      structuredContent: result,
+    };
+  } finally {
+    await close();
   }
 }
