@@ -74,7 +74,7 @@ LLM_GM = init_chat_model(
 )
 
 LLM_OR = init_chat_model(
-    model="openai/gpt-oss-20b:free",      
+    model="x-ai/grok-4.1-fast:free",      
     model_provider=MODEL_PROVIDER,
     api_key=os.getenv("OR_API_KEY"),   
     base_url=BASE_URL_OR,  
@@ -101,13 +101,13 @@ LLM_NV_NANO = init_chat_model(
     api_key=os.getenv("NV_API_KEY"),   
     base_url=BASE_URL_NV,  
     # 其他可选参数
-    temperature=0.5,
+    temperature=0.3,
     max_tokens=8192,
     timeout=30
 )
 
 
-LLM_JSON=LLM_NV_INS
+LLM_JSON=LLM_OR
 LLM_TOOLS=LLM_NV_NANO
 
 PROMPT_PERSON = os.getenv("PROMPT_PERSON") or ""

@@ -5,24 +5,33 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "name": "test neo4j",
+      "program": "${workspaceFolder}/neo4j-mcp-server/test.js",
+      "cwd": "${workspaceFolder}/neo4j-mcp-server",
+      "runtimeArgs": ["--env-file=.env"],
+      "request": "launch",
+      "skipFiles": ["<node_internals>/**"],
+      "type": "node"
+    },
+    {
       "name": "main",
       "type": "debugpy",
       "request": "launch",
-      "program": "main.py",// "${file}",
+      "program": "main.py", // "${file}",
       "args": ["input.txt"],
       "console": "integratedTerminal",
       "justMyCode": false, // 必须关闭以调试库内部的异步调用
-      "subProcess": true   // 如果你的 asyncio 创建了子任务
+      "subProcess": true // 如果你的 asyncio 创建了子任务
     },
     {
       "name": "graph",
       "type": "debugpy",
       "request": "launch",
-      "program": "graph.py",// "${file}",
+      "program": "graph.py", // "${file}",
       "args": ["input.txt"],
       "console": "integratedTerminal",
       "justMyCode": false, // 必须关闭以调试库内部的异步调用
-      "subProcess": true   // 如果你的 asyncio 创建了子任务
+      "subProcess": true // 如果你的 asyncio 创建了子任务
     },
     {
       "name": "file",
@@ -32,7 +41,7 @@
       "args": [],
       "console": "integratedTerminal",
       "justMyCode": false, // 必须关闭以调试库内部的异步调用
-      "subProcess": true   // 如果你的 asyncio 创建了子任务
+      "subProcess": true // 如果你的 asyncio 创建了子任务
     }
   ]
 }

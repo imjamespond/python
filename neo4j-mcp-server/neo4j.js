@@ -35,7 +35,7 @@ export async function writeToNeo4j(data) {
         await tx.run(
           `
           MERGE (p:person {name: $name})
-          SET p.description = coalesce(p.description, '') + ' ' + coalesce($description, '')
+          SET p.description = substring( coalesce(p.description, '') + ' ' + coalesce($description, ''), 0, 100)
           `,
           character
         );
@@ -46,7 +46,16 @@ export async function writeToNeo4j(data) {
         for (const event of data.events) {
           await tx.run(
             `
-          MERGE (e:event {name: $name, description: $description})
+          OPTIONAL MATCH (prev:event)
+          WITH prev ORDER BY prev.seq DESC LIMIT 1
+          WITH prev, coalesce(prev.seq + 1, 1) AS newSeq
+          
+          CREATE (e:event {name: $name, description: $description, seq: newSeq})
+
+          WITH prev, e
+          WHERE prev IS NOT NULL
+          CREATE (prev)-[:NEXT]->(e)
+
           WITH e
           UNWIND $characters AS charName
           OPTIONAL MATCH (p:person {name: charName})
@@ -87,6 +96,7 @@ export async function writeToNeo4j(data) {
       structuredContent: result,
     };
   } catch (err) {
+    console.error(err);
     const result = {
       type: "text",
       text: err.message,
