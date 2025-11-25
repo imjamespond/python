@@ -121,9 +121,9 @@ def process_novel_by_chapter(file_path):
                     break
 
         if analysis:
-            result = asyncio.run(send_to_mcp(analysis))  # 上面定义的 MCP 发送函数
+            asyncio.run(send_to_mcp(analysis))  # 上面定义的 MCP 发送函数
             time.sleep(10)
-            print(f"{i} mcp result：{result}")
+            print(f"{i} done")
     # for chapter_title, chapter_text in chapter_stream(file_path):
     #     if len(chapter_text) > CHUNK_SIZE + 2000:
     #       chunks = []
