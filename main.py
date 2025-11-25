@@ -101,7 +101,7 @@ def process_novel_by_chapter(file_path):
       text = f.read()
       cp = splitter.ChapterProcessor()
       chunks = cp.process_novel_by_chapters(text)
-      for chunk in chunks:
+      for i, chunk in chunks:
         max_retries = 3
         retry_count = 0
         analysis = None
@@ -123,7 +123,7 @@ def process_novel_by_chapter(file_path):
         if analysis:
             result = asyncio.run(send_to_mcp(analysis))  # 上面定义的 MCP 发送函数
             time.sleep(10)
-            print(f"MCP 返回：{result}")
+            print(f"{i} mcp result：{result}")
     # for chapter_title, chapter_text in chapter_stream(file_path):
     #     if len(chapter_text) > CHUNK_SIZE + 2000:
     #       chunks = []

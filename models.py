@@ -74,8 +74,8 @@ LLM_GM = init_chat_model(
 )
 
 LLM_OR = init_chat_model(
-    # model="x-ai/grok-4.1-fast:free",      
-    model="tngtech/deepseek-r1t2-chimera:free",      
+    model="x-ai/grok-4.1-fast:free",      
+    # model="tngtech/deepseek-r1t2-chimera:free",      
     model_provider=MODEL_PROVIDER,
     api_key=os.getenv("OR_API_KEY"),   
     base_url=BASE_URL_OR,  

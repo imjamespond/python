@@ -1,7 +1,7 @@
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 CHUNK_SIZE = 4096
-START = 1 # start from n
+START = 31 # start from n
 END = 50 # end with n
 
 class ChapterProcessor:
