@@ -141,7 +141,7 @@ export async function queryNeo4j(data) {
     console.error(error);
     const result = {
       type: "text",
-      text: err.message,
+      text: error.message,
     };
     return {
       content: [result],
