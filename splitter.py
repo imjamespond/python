@@ -1,7 +1,7 @@
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
-CHUNK_SIZE = 2048
-START = 84 # start from n
+CHUNK_SIZE = 4096+2048
+START = 1 # start from n
 END = 99 # end with n
 
 class ChapterProcessor:
@@ -21,7 +21,7 @@ class ChapterProcessor:
           for i, chapter_content in enumerate(chapters):
               if i < START:
                   continue
-              if i >= END:
+              if i > END:
                   break
               chunks = self.text_splitter.split_text(chapter_content)
               for j, chunk in enumerate(chunks):

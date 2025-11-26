@@ -45,21 +45,23 @@ server.registerTool(
     outputSchema: z.object({ type: z.string(), text: z.string() }), // langgraph对格式严格要求
   },
   async (data) => {
+    console.log("add_to_neo4j", data);
     return await writeToNeo4j(data);
   }
 );
 
 server.registerTool(
-  "query",
+  "query_neo4j",
   {
-    title: "query",
-    description: "执行 cypher 查询 Neo4j",
+    title: "query neo4j",
+    description: "执行 cypher 查询",
     inputSchema: z.object({
-      cypher: z.string() , 
+      cypher: z.string(),
     }),
     outputSchema: z.object({ type: z.string(), text: z.string() }), // langgraph对格式严格要求
   },
   async (data) => {
+    console.log("query_neo4j", data);
     return await queryNeo4j(data);
   }
 );

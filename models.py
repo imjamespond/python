@@ -16,26 +16,26 @@ BASE_URL_NV="https://integrate.api.nvidia.com/v1"
 
 # ---------- 配置 ----------
 # 直接初始化ChatOpenAI
-LLM_BD = init_chat_model(
+LLM_BAIDU = init_chat_model(
     # model="ernie-4.5-21b-a3b" ,              # modelname: 指定模型名称
     model="ernie-4.5-turbo-128k-preview" , 
     model_provider=MODEL_PROVIDER,
     api_key=os.getenv("ERNIE_API_KEY"),      # apikey: 设置API密钥
     base_url=BASE_URL_BD,  # apiurl: 设置基础URL
     # 其他可选参数
-    temperature=0.5,
+    temperature=0.2,
     max_tokens=8192,
     timeout=30
 )
 
-LLM_QW = init_chat_model(
+LLM_QWEN = init_chat_model(
   #  "Qwen/Qwen3-Next-80B-A3B-Instruct" 
     model="Qwen/Qwen3-32B",              # modelname: 指定模型名称
     model_provider=MODEL_PROVIDER,
     api_key=os.getenv("MODELSCOPE_API_KEY"),      # apikey: 设置API密钥
     base_url=BASE_URL_MD,  # apiurl: 设置基础URL
     # 其他可选参数
-    temperature=0.5,
+    temperature=0.1,
     max_tokens=8192,
     timeout=30,
     # https://www.dataleadsfuture.com/build-autogen-agents-with-qwen3-structured-output-thinking-mode/
@@ -45,13 +45,13 @@ LLM_QW = init_chat_model(
     }
 )
 
-LLM_ZP = init_chat_model(
-    model="GLM-4.5-Flash",              # modelname: 指定模型名称
+LLM_ZHIPU = init_chat_model(
+    model="GLM-4.5-Flash", # 不能输出纯JSON！
     model_provider=MODEL_PROVIDER,
-    api_key=os.getenv("ZHIPUAI_API_KEY"),      # apikey: 设置API密钥
+    api_key=os.getenv("ZHIPUAI_API_KEY"),
     base_url=BASE_URL_ZP,  # apiurl: 设置基础URL
     # 其他可选参数
-    temperature=0.2,
+    temperature=0.7,
     max_tokens=8192,
     timeout=30,
     extra_body={
@@ -62,8 +62,8 @@ LLM_ZP = init_chat_model(
     
 )
 
-LLM_GM = init_chat_model(
-    model="google-ai-studio/gemini-2.5-flash-lite",   
+LLM_GEMINI = init_chat_model(
+    model="google-ai-studio/gemini-2.5-flash-lite",  # 逻辑能力强
     model_provider=MODEL_PROVIDER,
     api_key=os.getenv("GM_API_KEY"),    
     base_url=BASE_URL_CF,  
@@ -120,7 +120,7 @@ LLM_OLLAMA = init_chat_model(
 
 
 
-LLM_JSON=LLM_OLLAMA
+LLM_JSON=LLM_BAIDU
 LLM_TOOLS=LLM_OLLAMA
 
 PROMPT_PERSON = os.getenv("PROMPT_PERSON") or ""
