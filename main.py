@@ -1,8 +1,7 @@
-# import re
+import os
 import sys
 import asyncio
 import time
-import json
 
 from langchain_core.messages import HumanMessage, SystemMessage
 # from langchain_mcp_adapters.tools import load_mcp_tools
@@ -20,7 +19,8 @@ import models
 
 # ---------- Step 2: AI分析 ----------
 def analyze_chunk(text_chunk):
-    print(len(text_chunk))
+    title=text_chunk.split('\n')[0][:10] 
+    print("\nanalyze_chunk", title)
     messages = [
     SystemMessage(content="你是一个小说分析器，提取人物、主要事件和核心关系。"),
     HumanMessage(content=f"""
@@ -58,7 +58,7 @@ def analyze_chunk(text_chunk):
     for chunk in models.LLM_JSON.stream(messages):
         full = chunk if full is None else full + chunk
         print(chunk.text, end="")
-    print("\noutput json done!")
+    print("\nanalyze_chunk done!", title )
     return full.text
 
 # ---------- Step 3: 调用 MCP Server ----------
@@ -78,18 +78,27 @@ async def send_to_mcp(json_data):
     retry_count = 0
     while retry_count < max_retries:
 
-        # graph = create_agent(
-        #     models.LLM_TOOLS,
-        #     selected_tools,
-        #     system_prompt = """将JSON传给add_to_neo4j。""",
-        # )
-        # inputs = {"messages": [{"role": "user", "content": json_data}]}
         try:
-            # async for chunk in graph.astream(inputs, stream_mode="messages"):
-            #     print(chunk)
-            #     await asyncio.sleep(1)
-            await selected_tools[0].ainvoke(json_tool.getJSON(json_data))
+            if os.getenv("USE_TOOLS_CALL"):
+              graph = create_agent(
+                  models.LLM_TOOLS,
+                  selected_tools,
+                  system_prompt = """将JSON传给add_to_neo4j。""",
+              )
+              inputs = {"messages": [{"role": "user", "content": json_data}]}
+              async for chunk in graph.astream(inputs, stream_mode="messages"):
+                  print(chunk)
+                  await asyncio.sleep(10)
+
+            else:
+              rs = await selected_tools[0].ainvoke(json_tool.getJSON(json_data))
+              print('mcp result',rs)
+              if rs != "ok": 
+                  retry_count = 999
+                  raise RuntimeError(rs)
+
             break  # 成功则跳出重试循环
+        
         except Exception as e:
             print("工具调用出错:", e)
             retry_count += 1
@@ -97,8 +106,8 @@ async def send_to_mcp(json_data):
                 print(f"等待 5 秒后重试...")
                 time.sleep(5)  # 同步sleep
             else:
-                print("达到最大重试次数")
-                break
+                raise RuntimeError("达到最大重试次数")
+                
         # rs = await asyncio.create_task(graph.ainvoke(inputs,stream_mode="messages")) 
         # print(rs)
 
@@ -109,6 +118,7 @@ def process_novel_by_chapter(file_path):
       text = f.read()
       cp = splitter.ChapterProcessor()
       chunks = cp.process_novel_by_chapters(text)
+
       for i, chunk in enumerate(chunks):
         max_retries = 3
         retry_count = 0
@@ -125,8 +135,7 @@ def process_novel_by_chapter(file_path):
                     print(f"等待 5 秒后重试...")
                     time.sleep(5)  # 同步sleep
                 else:
-                    print("analyze_chunk 达到最大重试次数，跳过此chunk")
-                    break
+                    raise RuntimeError("达到最大重试次数")
 
         if analysis:
             asyncio.run(send_to_mcp(analysis))  # 上面定义的 MCP 发送函数

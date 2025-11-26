@@ -29,8 +29,9 @@ LLM_BAIDU = init_chat_model(
 )
 
 LLM_QWEN = init_chat_model(
-  #  "Qwen/Qwen3-Next-80B-A3B-Instruct" 
-    model="Qwen/Qwen3-32B",              # modelname: 指定模型名称
+    # "Qwen/Qwen3-Next-80B-A3B-Instruct" 
+    # model="Qwen/Qwen3-32B",   
+    model="Qwen/Qwen3-14B",              
     model_provider=MODEL_PROVIDER,
     api_key=os.getenv("MODELSCOPE_API_KEY"),      # apikey: 设置API密钥
     base_url=BASE_URL_MD,  # apiurl: 设置基础URL
@@ -85,8 +86,8 @@ LLM_OR = init_chat_model(
     timeout=30
 )
 
-LLM_NV_INS = init_chat_model(
-    model="qwen/qwen3-next-80b-a3b-instruct",      
+LLM_NV2 = init_chat_model(
+    model="qwen/qwen3-next-80b-a3b-instruct", # 生成json不错
     model_provider=MODEL_PROVIDER,
     api_key=os.getenv("NV_API_KEY"),   
     base_url=BASE_URL_NV,  
@@ -96,8 +97,8 @@ LLM_NV_INS = init_chat_model(
     timeout=30
 )
 
-LLM_NV_NANO = init_chat_model(
-    model="nvidia/nvidia-nemotron-nano-9b-v2",      
+LLM_NV1 = init_chat_model(
+    model="nvidia/nvidia-nemotron-nano-9b-v2",    
     model_provider=MODEL_PROVIDER,
     api_key=os.getenv("NV_API_KEY"),   
     base_url=BASE_URL_NV,  
@@ -120,7 +121,7 @@ LLM_OLLAMA = init_chat_model(
 
 
 
-LLM_JSON=LLM_BAIDU
+LLM_JSON=LLM_NV2
 LLM_TOOLS=LLM_OLLAMA
 
 PROMPT_PERSON = os.getenv("PROMPT_PERSON") or ""

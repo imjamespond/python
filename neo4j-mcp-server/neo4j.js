@@ -98,7 +98,7 @@ export async function writeToNeo4j(data) {
 
     const result = {
       type: "text",
-      text: "成功写入 Neo4j",
+      text: "ok",
     };
 
     return {
