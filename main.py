@@ -19,7 +19,7 @@ import models
 
 # ---------- Step 2: AI分析 ----------
 def analyze_chunk(text_chunk):
-    title=text_chunk.split('\n')[0][:10] 
+    title=text_chunk.split('\n')[0][:20] 
     print("\nanalyze_chunk", title)
     messages = [
     SystemMessage(content="你是一个小说分析器，提取人物、主要事件和核心关系。"),
@@ -27,7 +27,9 @@ def analyze_chunk(text_chunk):
 请分析以下小说片段：
 {text_chunk}
 
-提取核心内容，并以严格 JSON 格式字串输出，仅包含以下字段：
+提取核心内容，并**严格以 JSON 字符串格式**输出，仅包含以下字段：
+
+- chapter: 文本中明确提到的章节编号（如“第一章”、“第5章”等），若未提及任何章节信息，则该字段值为 `null`。
 
 - characters: 主要人物列表（每个对象包含）：
   - name: 人物姓名{models.PROMPT_PERSON}

@@ -46,5 +46,6 @@ class ChapterProcessor:
             title = parts[i]
             content = parts[i+1] if i+1 < len(parts) else ""
             chapters.append(title + content)
+            # print(title)
 
         return [c for c in chapters if c.strip()]
