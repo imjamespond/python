@@ -16,3 +16,8 @@ client must both accept
 "accept": "text/event-stream,application/json;
 
 ```
+
+start
+`npm start`
+flush jsondata
+`npm run flush`

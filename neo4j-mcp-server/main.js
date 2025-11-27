@@ -3,7 +3,7 @@ import { McpServer, ResourceTemplate } from "@modelcontextprotocol/sdk/server/mc
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
 import express from "express";
 import { writeToNeo4j, queryNeo4j } from "./neo4j.js";
-import { appendObjAsJsonLineAsync } from "./jsondata.js";
+import { appendObjAsJsonLineAsync } from "./jsonl.js";
 
 const server = new McpServer({
   name: "neo4j-mcp-server",

@@ -5,6 +5,8 @@
   "main": "main.js",
   "type": "module",
   "scripts": {
+    "start": "node --env-file=.env main.js",
+    "flush": "node --env-file=.env flush-jsonl.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",

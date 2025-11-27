@@ -1,4 +1,4 @@
-import { appendObjAsJsonLineAsync, readJsonLines } from "./jsondata.js";
+import { appendObjAsJsonLineAsync, readJsonLines } from "./jsonl.js";
 
 // 示例使用
 async function main() {
