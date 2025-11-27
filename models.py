@@ -31,7 +31,8 @@ LLM_BAIDU = init_chat_model(
 LLM_QWEN = init_chat_model(
     # "Qwen/Qwen3-Next-80B-A3B-Instruct" 
     # model="Qwen/Qwen3-32B",   
-    model="Qwen/Qwen3-14B",              
+    # model="Qwen/Qwen3-14B",
+    model="Qwen/Qwen3-Coder-30B-A3B-Instruct",              
     model_provider=MODEL_PROVIDER,
     api_key=os.getenv("MODELSCOPE_API_KEY"),      # apikey: 设置API密钥
     base_url=BASE_URL_MD,  # apiurl: 设置基础URL
@@ -91,14 +92,16 @@ LLM_NV2 = init_chat_model(
     # model="qwen/qwen3-next-80b-a3b-instruct", # 生成json不错
     # model="qwen/qwen3-next-80b-a3b-thinking", too slow
     # model="deepseek-ai/deepseek-v3.1-terminus", not good
-    model="deepseek-ai/deepseek-v3.1",
+    # model="deepseek-ai/deepseek-v3.1", # 还行
+    # model="moonshotai/kimi-k2-instruct-0905", # 较快
+    model="bytedance/seed-oss-36b-instruct", # 不错
     model_provider=MODEL_PROVIDER,
     api_key=os.getenv("NV_API_KEY"),   
     base_url=BASE_URL_NV,  
     # 其他可选参数
     temperature=0.2,
     max_tokens=8192,
-    timeout=30
+    timeout=60
 )
 
 LLM_NV1 = init_chat_model(

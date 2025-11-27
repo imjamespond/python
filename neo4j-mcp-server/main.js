@@ -16,7 +16,7 @@ server.registerTool(
     title: "add_to_neo4j",
     description: "将数据写入 Neo4j",
     inputSchema: z.object({
-      chapter: z.string().optional(),
+      chapter: z.string().nullish(),
       characters: z
         .array(
           z.object({
