@@ -116,7 +116,7 @@ LLM_NV1 = init_chat_model(
 )
 
 LLM_OLLAMA = init_chat_model(
-    model="modelscope.cn/unsloth/Qwen3-4B-Instruct-2507-GGUF:Q8",      
+    model="modelscope.cn/unsloth/Qwen3-4B-Instruct-2507-GGUF:Q8", # 小模型一定要把input不能太大！！！否则会忽略很多细节，最好不超1倍，即4096。
     model_provider="ollama",
     api_key="",   
     # base_url=,  

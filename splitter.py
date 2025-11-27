@@ -2,7 +2,7 @@ import re
 import os
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
-CHUNK_SIZE = 4096 << 4
+CHUNK_SIZE = 4096
 START = int(os.getenv("START", 0)) # start from n+1
 END = int(os.getenv("END", 99)) # end with n
 
@@ -50,7 +50,7 @@ class ChapterProcessor:
 
         # 步长设为 10，因为每5章包含5个标题和5个内容，共10个元素
         # 从索引1开始，跳过可能存在的"前言"等非章节内容
-        num = 4
+        num = 2
         step = num * 2
         for i in range(1, len(parts), step):
             group_title = "" # 用于存储合并后的大章节标题
