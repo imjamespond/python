@@ -17,7 +17,7 @@ client must both accept
 
 ```
 
-start
+- start
 `npm start`
-flush jsondata
+- flush jsonl
 `npm run flush`

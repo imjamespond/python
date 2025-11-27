@@ -1,9 +1,10 @@
 import re
+import os
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 CHUNK_SIZE = 4096+2048
-START = 0 # start from n+1
-END = 99 # end with n
+START = int(os.getenv("START", 0)) # start from n+1
+END = int(os.getenv("END", 99)) # end with n
 
 class ChapterProcessor:
     def __init__(self):
