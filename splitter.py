@@ -2,7 +2,7 @@ import re
 import os
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
-CHUNK_SIZE = 4096
+CHUNK_SIZE = 4096+2048
 START = int(os.getenv("START", 0)) # start from n+1
 END = int(os.getenv("END", 99)) # end with n
 
@@ -38,7 +38,7 @@ class ChapterProcessor:
         # return [chap for chap in chapters if chap.strip()]
 
         # 用括号把“章节标题”捕获下来，使其在 split 结果中保留
-        pattern = r'(第[零一二三四五六七八九十百千\d]+章\s+[^\n]*\n)'
+        pattern = r'(第[零一二三四五六七八九十百千\d]+章(?:[\t\f\v  ]+[^\n]*)?\n)'
         parts = re.split(pattern, text)
         chapters = []
         # # parts 的结构类似: ["前言", "第1章...", "内容1", "第2章...", "内容2", ...]
