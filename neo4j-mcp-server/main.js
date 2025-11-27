@@ -3,6 +3,7 @@ import { McpServer, ResourceTemplate } from "@modelcontextprotocol/sdk/server/mc
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
 import express from "express";
 import { writeToNeo4j, queryNeo4j } from "./neo4j.js";
+import { appendObjAsJsonLineAsync } from "./jsondata.js";
 
 const server = new McpServer({
   name: "neo4j-mcp-server",
@@ -28,7 +29,7 @@ server.registerTool(
           z.object({
             name: z.string(),
             description: z.string(),
-            characters: z.array(z.string()),
+            characters: z.array(z.string()).default([]),
           })
         )
         .optional(),
@@ -46,6 +47,7 @@ server.registerTool(
   },
   async (data) => {
     console.log("add_to_neo4j", data);
+    await appendObjAsJsonLineAsync(data)
     return await writeToNeo4j(data);
   }
 );

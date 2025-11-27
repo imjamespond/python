@@ -94,19 +94,18 @@ async def send_to_mcp(json_data):
               rs = await selected_tools[0].ainvoke(json_tool.getJSON(json_data))
               print('mcp result',rs)
               if rs != "ok": 
-                  retry_count = 999
                   raise RuntimeError(rs)
 
             break  # 成功则跳出重试循环
         
         except Exception as e:
-            print("工具调用出错:", e)
+            print("send_to_mcp 出错:", e)
             retry_count += 1
             if retry_count < max_retries:
-                print(f"等待 5 秒后重试...")
+                print(f"send_to_mcp 等待 5 秒后重试...")
                 time.sleep(5)  # 同步sleep
             else:
-                raise RuntimeError("达到最大重试次数")
+                raise RuntimeError("send_to_mcp 达到最大重试次数")
                 
         # rs = await asyncio.create_task(graph.ainvoke(inputs,stream_mode="messages")) 
         # print(rs)
@@ -132,10 +131,10 @@ def process_novel_by_chapter(file_path):
                 retry_count += 1
                 print(f"analyze_chunk 第 {retry_count} 次尝试失败: {e}")
                 if retry_count < max_retries:
-                    print(f"等待 5 秒后重试...")
+                    print(f"analyze_chunk 等待 5 秒后重试...")
                     time.sleep(5)  # 同步sleep
                 else:
-                    raise RuntimeError("达到最大重试次数")
+                    raise RuntimeError("analyze_chunk 达到最大重试次数")
 
         if analysis:
             asyncio.run(send_to_mcp(analysis))  # 上面定义的 MCP 发送函数
