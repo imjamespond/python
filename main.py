@@ -29,7 +29,7 @@ def analyze_chunk(text_chunk):
 
 提取核心内容，并**严格以 JSON 字符串格式**输出，仅包含以下字段：
 
-- chapter: 文本中明确提到的章节编号（如“第一章”、“第5章”等），若未提及任何章节信息，则该字段值为 `null`。
+- chapter: 类型string, 文本中明确提到的章节编号（如“第一章”、“第5章”等），若未提及任何章节信息，则该字段值为 `null`，若有多个章节则这么返回"第一，二，三章"。
 
 - characters: 主要人物列表（每个对象包含）：
   - name: 人物姓名{models.PROMPT_PERSON}
@@ -119,7 +119,7 @@ def process_novel_by_chapter(file_path):
       text = f.read()
       cp = splitter.ChapterProcessor()
       chunks = cp.process_novel_by_chapters(text)
-
+      # return # debug
       for i, chunk in enumerate(chunks):
         max_retries = 3
         retry_count = 0
