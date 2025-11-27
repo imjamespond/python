@@ -86,8 +86,12 @@ LLM_OR = init_chat_model(
     timeout=30
 )
 
+# https://build.nvidia.com/search?q=text-generation
 LLM_NV2 = init_chat_model(
-    model="qwen/qwen3-next-80b-a3b-instruct", # 生成json不错
+    # model="qwen/qwen3-next-80b-a3b-instruct", # 生成json不错
+    # model="qwen/qwen3-next-80b-a3b-thinking", too slow
+    # model="deepseek-ai/deepseek-v3.1-terminus", not good
+    model="deepseek-ai/deepseek-v3.1",
     model_provider=MODEL_PROVIDER,
     api_key=os.getenv("NV_API_KEY"),   
     base_url=BASE_URL_NV,  
@@ -121,7 +125,7 @@ LLM_OLLAMA = init_chat_model(
 
 
 
-LLM_JSON=LLM_OR
+LLM_JSON=LLM_NV2
 LLM_TOOLS=LLM_OLLAMA
 
 PROMPT_PERSON = os.getenv("PROMPT_PERSON") or ""
