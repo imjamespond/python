@@ -75,7 +75,9 @@ class ChapterProcessor:
                     
                 if content_index < len(parts):
                     group_content += parts[content_index]
-            
+
+            if chapter_num < START:
+                continue
             if end:
                 break
              
