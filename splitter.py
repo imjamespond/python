@@ -49,7 +49,6 @@ class ChapterProcessor:
         batch_num = int(os.getenv("BATCH_NUM", 2))
         step = batch_num * 2
         chapter_num = 0
-        end = False
         for i in range(1, len(parts), step):
             group_title = "" # 用于存储合并后的大章节标题
             group_content = "" # 用于存储合并后的所有内容
@@ -64,7 +63,6 @@ class ChapterProcessor:
                 if chapter_num < START:
                     continue
                 if chapter_num > END:
-                    end = True
                     break
                   
                 # 检查索引是否越界，防止在最后几章数量不足5时报错
@@ -78,7 +76,7 @@ class ChapterProcessor:
 
             if chapter_num < START:
                 continue
-            if end:
+            if chapter_num > END:
                 break
              
             # 将合并后的标题和内容组合成一个章节
