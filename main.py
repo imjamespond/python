@@ -27,9 +27,9 @@ def analyze_chunk(text_chunk):
 请分析以下小说片段：
 {text_chunk}
 
-提取核心内容，并**严格以 JSON 字符串格式**输出，仅包含以下字段：
+提取核心内容，并**严格以 JSON 字符串格式**输出，类型为Map，仅包含以下字段：
 
-- chapter: 章节编号，不要标题（如“第一章，第二章，第三章...”）,类型string。
+- chapter: 章节编号，不要标题（如“第一章，第二章，第三章…”）,类型为string。
 
 - characters: 主要人物列表（每个对象包含）：
   - name: 人物名称{models.PROMPT_PERSON}
@@ -37,7 +37,7 @@ def analyze_chunk(text_chunk):
 
 - events: 主要事件列表（每个对象包含）：
   - name: 10字以内描述
-  - description: 概括事件。要求：1，每个事件必须以该事件在原文中的第一句话的开头(不超过50字)；2，接着完整说明事件的起因与经过(不超过100字)。
+  - description: 概括事件。要求：1，每个事件必须以其在原文中的第一句话作为开头并以…结束(不超过50字)；2，接着完整说明事件的起因与经过(不超过100字)。
   - characters: 参与该事件的全部人物名称列表
 
 - relationships: 核心关系列表（每个对象包含）：
