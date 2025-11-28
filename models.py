@@ -76,8 +76,9 @@ LLM_GEMINI = init_chat_model(
 )
 
 LLM_OR = init_chat_model(
-    model="x-ai/grok-4.1-fast:free",      
-    # model="tngtech/deepseek-r1t2-chimera:free",      
+    # model="x-ai/grok-4.1-fast:free",      
+    # model="tngtech/deepseek-r1t2-chimera:free",  
+    model="openai/gpt-oss-20b:free",   
     model_provider=MODEL_PROVIDER,
     api_key=os.getenv("OR_API_KEY"),   
     base_url=BASE_URL_OR,  
@@ -88,6 +89,7 @@ LLM_OR = init_chat_model(
 )
 
 # https://build.nvidia.com/search?q=text-generation
+api_key_nv = os.getenv("NV_API_KEY")
 LLM_NV2 = init_chat_model(
     model="qwen/qwen3-next-80b-a3b-instruct", # 生成json不错
     # model="qwen/qwen3-next-80b-a3b-thinking", too slow
@@ -96,7 +98,7 @@ LLM_NV2 = init_chat_model(
     # model="moonshotai/kimi-k2-instruct-0905", # 较快
     # model="bytedance/seed-oss-36b-instruct", # 不错
     model_provider=MODEL_PROVIDER,
-    api_key=os.getenv("NV_API_KEY"),   
+    api_key=api_key_nv,   
     base_url=BASE_URL_NV,  
     # 其他可选参数
     temperature=0.2,
@@ -107,7 +109,7 @@ LLM_NV2 = init_chat_model(
 LLM_NV1 = init_chat_model(
     model="nvidia/nvidia-nemotron-nano-9b-v2",    
     model_provider=MODEL_PROVIDER,
-    api_key=os.getenv("NV_API_KEY"),   
+    api_key=api_key_nv,   
     base_url=BASE_URL_NV,  
     # 其他可选参数
     temperature=0.2,
@@ -126,9 +128,16 @@ LLM_OLLAMA = init_chat_model(
     timeout=30
 )
 
+LLM_TEXT = init_chat_model(
+    model=os.getenv("TEXT_MODEL","qwen/qwen3-next-80b-a3b-instruct"), 
+    model_provider=MODEL_PROVIDER,
+    api_key=os.getenv("TEXT_API_KEY", api_key_nv),   
+    base_url=os.getenv("TEXT_API_BASE", BASE_URL_NV),  
+    temperature=0.2,
+    timeout=60
+)
 
 LLM_JSON=LLM_QWEN
-LLM_TEXT=LLM_NV2
 LLM_TOOLS=LLM_OLLAMA
 
 PROMPT_PERSON = os.getenv("PROMPT_PERSON") or ""
