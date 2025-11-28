@@ -1,5 +1,5 @@
 import os
-
+# https://reference.langchain.com/python/langchain/models/#langchain.chat_models.init_chat_model(model)
 from langchain.chat_models import init_chat_model
 from dotenv import load_dotenv
 
@@ -89,16 +89,17 @@ LLM_OR = init_chat_model(
 )
 
 # https://build.nvidia.com/search?q=text-generation
-api_key_nv = os.getenv("NV_API_KEY")
-LLM_NV2 = init_chat_model(
+API_KEY_NV = os.getenv("NV_API_KEY")
+LLM_NV = init_chat_model(
     model="qwen/qwen3-next-80b-a3b-instruct", # 生成json不错
     # model="qwen/qwen3-next-80b-a3b-thinking", too slow
     # model="deepseek-ai/deepseek-v3.1-terminus", not good
     # model="deepseek-ai/deepseek-v3.1", # 还行
     # model="moonshotai/kimi-k2-instruct-0905", # 较快
     # model="bytedance/seed-oss-36b-instruct", # 不错
+    # model="nvidia/nvidia-nemotron-nano-9b-v2",    
     model_provider=MODEL_PROVIDER,
-    api_key=api_key_nv,   
+    api_key=API_KEY_NV,   
     base_url=BASE_URL_NV,  
     # 其他可选参数
     temperature=0.2,
@@ -106,37 +107,33 @@ LLM_NV2 = init_chat_model(
     timeout=60
 )
 
-LLM_NV1 = init_chat_model(
-    model="nvidia/nvidia-nemotron-nano-9b-v2",    
-    model_provider=MODEL_PROVIDER,
-    api_key=api_key_nv,   
-    base_url=BASE_URL_NV,  
-    # 其他可选参数
-    temperature=0.2,
-    max_tokens=8192,
-    timeout=30
-)
-
-LLM_OLLAMA = init_chat_model(
-    model="modelscope.cn/unsloth/Qwen3-4B-Instruct-2507-GGUF:Q8", # 小模型一定要把input不能太大！！！否则会忽略很多细节，最好不超1倍，即4096。
-    model_provider="ollama",
-    api_key="",   
-    # base_url=,  
-    # 其他可选参数
-    temperature=0.2,
-    max_tokens=4096,
-    timeout=30
-)
-
-LLM_TEXT = init_chat_model(
+LLM_OPENAI = init_chat_model(
     model=os.getenv("TEXT_MODEL","qwen/qwen3-next-80b-a3b-instruct"), 
     model_provider=MODEL_PROVIDER,
-    api_key=os.getenv("TEXT_API_KEY", api_key_nv),   
+    api_key=os.getenv("TEXT_API_KEY", API_KEY_NV),   
     base_url=os.getenv("TEXT_API_BASE", BASE_URL_NV),  
     temperature=0.2,
     timeout=60
 )
 
+LLM_OLLAMA = init_chat_model(
+    model=os.getenv("TEXT_MODEL","modelscope.cn/unsloth/Qwen3-4B-Instruct-2507-GGUF:Q8"), # 小模型一定要把input不能太大！！！否则会忽略很多细节，最好不超1倍，即4096。
+    model_provider="ollama",
+    api_key="",   
+    # base_url=,  
+    # 其他可选参数
+    temperature=0.1,
+    max_tokens=4096,
+    timeout=30
+)
+
+def get_llm_text():
+  model_provider = os.getenv("TEXT_PROVIDER", MODEL_PROVIDER)
+  if model_provider == MODEL_PROVIDER:
+    return LLM_OPENAI
+  return LLM_OLLAMA
+
+LLM_TEXT = get_llm_text()
 LLM_JSON=LLM_QWEN
 LLM_TOOLS=LLM_OLLAMA
 

@@ -67,7 +67,7 @@ class ChapterProcessor:
                   
                 # 检查索引是否越界，防止在最后几章数量不足5时报错
                 if title_index < len(parts):
-                    title = parts[title_index].replace('\n', '') + ", "
+                    title = parts[title_index].replace('\n', '') + "  "
                     group_title += title # 用 " / " 连接标题
                     print('title', title)
                     
@@ -81,7 +81,7 @@ class ChapterProcessor:
              
             # 将合并后的标题和内容组合成一个章节
             # 你可以自定义合并后的格式，这里用标题作为新标题，内容拼接
-            final_chapter = f"--- {group_title} ---\n\n{group_content}"
+            final_chapter = f"{group_title}\n{group_content}"
             chapters.append(final_chapter)
             # print('final_chapter',final_chapter)
 
