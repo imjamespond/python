@@ -14,7 +14,7 @@ def getJSON(json_data: str):
     HumanMessage(content=json_data)
 ]
     full = None
-    for chunk in models.LLM_QWEN.stream(messages):
+    for chunk in models.LLM_JSON.stream(messages):
       full = chunk if full is None else full + chunk
       print(chunk.text, end="")
     return json.loads(full.content)

@@ -56,7 +56,7 @@ def analyze_chunk(text_chunk):
     # content = response.content
     # return content
     full = None 
-    for chunk in models.LLM_JSON.stream(messages):
+    for chunk in models.LLM_TEXT.stream(messages):
         full = chunk if full is None else full + chunk
         print(chunk.text, end="")
     print("\nanalyze_chunk done!", title )
