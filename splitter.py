@@ -3,7 +3,7 @@ import os
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 CHUNK_SIZE = int(os.getenv("CHUNK_SIZE", 4096))
-START = int(os.getenv("START", 0)) # start from n+1
+START = int(os.getenv("START", 1)) # start from n
 END = int(os.getenv("END", 99)) # end with n
 
 class ChapterProcessor:
