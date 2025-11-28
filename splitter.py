@@ -2,7 +2,7 @@ import re
 import os
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
-CHUNK_SIZE = 4096+2048
+CHUNK_SIZE = int(os.getenv("CHUNK_SIZE", 4096))
 START = int(os.getenv("START", 0)) # start from n+1
 END = int(os.getenv("END", 99)) # end with n
 
@@ -21,10 +21,6 @@ class ChapterProcessor:
           
           chapter_chunks = []
           for i, chapter_content in enumerate(chapters):
-              if i < START:
-                  continue
-              if i > END:
-                  break
               chunks = self.text_splitter.split_text(chapter_content)
               for j, chunk in enumerate(chunks):
                   chapter_chunks.append(chunk)
@@ -38,7 +34,7 @@ class ChapterProcessor:
         # return [chap for chap in chapters if chap.strip()]
 
         # 用括号把“章节标题”捕获下来，使其在 split 结果中保留
-        pattern = r'(第[零一二三四五六七八九十百千\d]+章(?:[\t\f\v  ]+[^\n]*)?\n)'
+        pattern = r'(第[零一二两三四五六七八九十百千\d]+章(?:[\t\f\v  ]+[^\n]*)?\n)'
         parts = re.split(pattern, text)
         chapters = []
         # # parts 的结构类似: ["前言", "第1章...", "内容1", "第2章...", "内容2", ...]
@@ -50,8 +46,10 @@ class ChapterProcessor:
 
         # 步长设为 10，因为每5章包含5个标题和5个内容，共10个元素
         # 从索引1开始，跳过可能存在的"前言"等非章节内容
-        num = 2
+        num = 4
         step = num * 2
+        chapter_num = 0
+        end = False
         for i in range(1, len(parts), step):
             group_title = "" # 用于存储合并后的大章节标题
             group_content = "" # 用于存储合并后的所有内容
@@ -61,15 +59,26 @@ class ChapterProcessor:
             for j in range(0, step, 2):
                 title_index = i + j
                 content_index = i + j + 1
-                
+
+                chapter_num += 1
+                if chapter_num < START:
+                    continue
+                if chapter_num > END:
+                    end = True
+                    break
+                  
                 # 检查索引是否越界，防止在最后几章数量不足5时报错
                 if title_index < len(parts):
-                    group_title += parts[title_index].replace('\n', '') + " , " # 用 " / " 连接标题
+                    title = parts[title_index].replace('\n', '') + ", "
+                    group_title += title # 用 " / " 连接标题
+                    print('title', title)
                     
                 if content_index < len(parts):
                     group_content += parts[content_index]
             
-                
+            if end:
+                break
+             
             # 将合并后的标题和内容组合成一个章节
             # 你可以自定义合并后的格式，这里用标题作为新标题，内容拼接
             final_chapter = f"--- {group_title} ---\n\n{group_content}"

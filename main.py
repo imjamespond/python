@@ -118,7 +118,10 @@ def process_novel_by_chapter(file_path):
       text = f.read()
       cp = splitter.ChapterProcessor()
       chunks = cp.process_novel_by_chapters(text)
-      # return # debug
+
+      # debug chunks
+      # return 
+    
       for i, chunk in enumerate(chunks):
         max_retries = 3
         retry_count = 0
