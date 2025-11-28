@@ -46,8 +46,8 @@ class ChapterProcessor:
 
         # 步长设为 10，因为每5章包含5个标题和5个内容，共10个元素
         # 从索引1开始，跳过可能存在的"前言"等非章节内容
-        num = 4
-        step = num * 2
+        batch_num = int(os.getenv("BATCH_NUM", 2))
+        step = batch_num * 2
         chapter_num = 0
         end = False
         for i in range(1, len(parts), step):
