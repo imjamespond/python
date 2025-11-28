@@ -34,7 +34,7 @@ class ChapterProcessor:
         # return [chap for chap in chapters if chap.strip()]
 
         # 用括号把“章节标题”整体捕获，`?:`不单独捕获标题，使其在 split 结果中保留
-        pattern = r'(第[零一二两三四五六七八九十百千\d]+[章回](?:[\t\f\v  ]+[^\n]*)?\n)'
+        pattern = r'(第[零一二两三四五六七八九十百千\d]+[章回](?:[\t\f 　]+[^\n]*)?\n)'
         parts = re.split(pattern, text)
         chapters = []
         # # parts 的结构类似: ["前言", "第1章...", "内容1", "第2章...", "内容2", ...]
