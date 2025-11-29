@@ -22,7 +22,7 @@ def analyze_chunk(text_chunk):
     messages = [
         SystemMessage(content=f"""
 你是一名中文多音字分析器。
-按以下匹配规则找出相关词语，不要输出没匹配的词语！
+按以下匹配规则找出相关词语或短句，不要输出不匹配的词语或单字！
   查找规则：{PROMPT_POLYPHONIC}
 每行一个词语输出，禁止输出任何样例格式以外的内容！
 样例格式：
@@ -39,6 +39,7 @@ def analyze_chunk(text_chunk):
         print(chunk.text, end="")
 
     print("\n===找出多音词===")
+    time.sleep(10)
 
     messages2 = [
         SystemMessage(content=f""" 
