@@ -5,7 +5,7 @@ import models
 
 def getJSON(json_data: str):
   try:
-    return json.loads(json_data)
+    return json.loads(json_data.replace("```json\n", "").replace("```\n", "").replace("```", "").strip())
      
   except:
     print("修复JSON")

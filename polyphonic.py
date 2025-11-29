@@ -22,7 +22,7 @@ def analyze_chunk(text_chunk):
     messages = [
         SystemMessage(content=f"""
 你是一名中文多音字分析器。
-按以下匹配规则找出相关词语或短句，不要输出不匹配的词语或单字！
+按以下匹配规则找出相关词语，如果是单字则返回前后5字内短语，不要输出不匹配的词语！
   查找规则：{PROMPT_POLYPHONIC}
 每行一个词语输出，禁止输出任何样例格式以外的内容！
 样例格式：
@@ -116,7 +116,7 @@ async def handle(json_data):
     print("handle", len(json_data))
     try:
         # 解析JSON字符串
-        parsed_data = json.loads(json_data)
+        parsed_data = json.loads(json_data.replace("```json\n", "").replace("```\n", "").replace("```", "").strip())
 
         # 将解析后的数据添加到列表中
         result_list.extend(parsed_data)
