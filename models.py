@@ -137,5 +137,3 @@ def get_llm_text():
 LLM_TEXT = get_llm_text()
 LLM_JSON=LLM_QWEN
 LLM_TOOLS=LLM_OLLAMA
-
-PROMPT_PERSON = os.getenv("PROMPT_PERSON") or ""

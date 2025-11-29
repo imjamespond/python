@@ -10,9 +10,7 @@ import agent_tools
 import json_tool
 import models
 
-# CHUNK_SIZE = 4096
-# START = 0 # start from n+1 
-# END = 20 # end with n
+PROMPT_PERSON = os.getenv("PROMPT_PERSON") or ""
 
 # ---------- Step 1: 小说分片 ----------
 
@@ -32,7 +30,7 @@ def analyze_chunk(text_chunk):
 - chapter: 章节编号，不要标题（如“第一章，第二章，第三章…”）,类型为string。
 
 - characters: 主要人物列表（每个对象包含）：
-  - name: 人物名称{models.PROMPT_PERSON}
+  - name: 人物名称{PROMPT_PERSON}
   - description: 关键身份，性格，背景描述
 
 - events: 主要事件列表（每个对象包含）：

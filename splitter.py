@@ -7,10 +7,14 @@ START = int(os.getenv("START", 1)) # start from n
 END = int(os.getenv("END", 99)) # end with n
 
 class ChapterProcessor:
-    def __init__(self):
+    def __init__(
+        self,
+        chunk_size: int = CHUNK_SIZE,       # 默认值，可按需改
+        chunk_overlap: int = 256      # 默认值，可按需改
+    ):
         self.text_splitter = RecursiveCharacterTextSplitter(
-            chunk_size=CHUNK_SIZE,
-            chunk_overlap=256,
+            chunk_size=chunk_size,
+            chunk_overlap=chunk_overlap,
             separators=["\n\n", "\n", "。", "！", "？"]
         )
 
