@@ -111,7 +111,8 @@ LLM_OPENAI = init_chat_model(
     model=os.getenv("TEXT_MODEL","qwen/qwen3-next-80b-a3b-instruct"), 
     model_provider=MODEL_PROVIDER,
     api_key=os.getenv("TEXT_API_KEY", API_KEY_NV),   
-    base_url=os.getenv("TEXT_API_BASE", BASE_URL_NV),  
+    base_url=os.getenv("TEXT_API_BASE", BASE_URL_NV), 
+    max_tokens=os.getenv("MAX_TOKENS", 8192),
     temperature=0.2,
     timeout=60
 )
