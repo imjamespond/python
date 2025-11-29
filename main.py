@@ -1,3 +1,4 @@
+import splitter
 import os
 import sys
 import asyncio
@@ -17,11 +18,11 @@ PROMPT_PERSON = os.getenv("PROMPT_PERSON") or ""
 
 # ---------- Step 2: AI分析 ----------
 def analyze_chunk(text_chunk):
-    title=text_chunk.split('\n')[0][:20] 
+    title = text_chunk.split('\n')[0][:20]
     print("\nanalyze_chunk", title)
     messages = [
-    SystemMessage(content="你是一个小说分析器，提取人物、主要事件和核心关系。"),
-    HumanMessage(content=f"""
+        SystemMessage(content="你是一个小说分析器，提取人物、主要事件和核心关系。"),
+        HumanMessage(content=f"""
 请分析以下小说片段：
 {text_chunk}
 
@@ -54,14 +55,16 @@ def analyze_chunk(text_chunk):
     # response = llm.invoke(messages)
     # content = response.content
     # return content
-    full = None 
+    full = None
     for chunk in models.LLM_TEXT.stream(messages):
         full = chunk if full is None else full + chunk
         print(chunk.text, end="")
-    print("\nanalyze_chunk done!", title )
+    print("\nanalyze_chunk done!", title)
     return full.text
 
 # ---------- Step 3: 调用 MCP Server ----------
+
+
 async def send_to_mcp(json_data):
     print("send_to_mcp", len(json_data))
 
@@ -69,7 +72,7 @@ async def send_to_mcp(json_data):
     all_tools = await agent_tools.client.get_tools()
     # print(f"所有可用工具: {[tool.name for tool in all_tools]}")
     selected_tools = [
-        tool for tool in all_tools 
+        tool for tool in all_tools
         if tool.name in ['add_to_neo4j']
     ]
     # print(selected_tools)
@@ -80,24 +83,24 @@ async def send_to_mcp(json_data):
 
         try:
             if os.getenv("USE_TOOLS_CALL"):
-              graph = create_agent(
-                  models.LLM_TOOLS,
-                  selected_tools,
-                  system_prompt = """将JSON传给add_to_neo4j。""",
-              )
-              inputs = {"messages": [{"role": "user", "content": json_data}]}
-              async for chunk in graph.astream(inputs, stream_mode="messages"):
-                  print(chunk)
-                  await asyncio.sleep(10)
+                graph = create_agent(
+                    models.LLM_TOOLS,
+                    selected_tools,
+                    system_prompt="""将JSON传给add_to_neo4j。""",
+                )
+                inputs = {"messages": [{"role": "user", "content": json_data}]}
+                async for chunk in graph.astream(inputs, stream_mode="messages"):
+                    print(chunk)
+                    await asyncio.sleep(10)
 
             else:
-              rs = await selected_tools[0].ainvoke(json_tool.getJSON(json_data))
-              print('mcp result',rs)
-              if rs != "ok": 
-                  raise RuntimeError(rs)
+                rs = await selected_tools[0].ainvoke(json_tool.getJSON(json_data))
+                print('mcp result', rs)
+                if rs != "ok":
+                    raise RuntimeError(rs)
 
             break  # 成功则跳出重试循环
-        
+
         except Exception as e:
             print("send_to_mcp 出错:", e)
             retry_count += 1
@@ -106,43 +109,44 @@ async def send_to_mcp(json_data):
                 time.sleep(5)  # 同步sleep
             else:
                 raise RuntimeError("send_to_mcp 达到最大重试次数")
-                
-        # rs = await asyncio.create_task(graph.ainvoke(inputs,stream_mode="messages")) 
+
+        # rs = await asyncio.create_task(graph.ainvoke(inputs,stream_mode="messages"))
         # print(rs)
 
 # ---------- Step 4: 主流程 ----------
-import splitter
+
+
 def process_novel_by_chapter(file_path):
     with open(file_path, "r", encoding="utf-8") as f:
-      text = f.read()
-      cp = splitter.ChapterProcessor()
-      chunks = cp.process_novel_by_chapters(text)
+        text = f.read()
+        cp = splitter.ChapterProcessor()
+        chunks = cp.process_novel_by_chapters(text)
 
-      # debug chunks
-      # return 
-    
-      for i, chunk in enumerate(chunks):
-        max_retries = 3
-        retry_count = 0
-        analysis = None
+        # debug chunks
+        # return
 
-        while retry_count < max_retries:
-            try:
-                analysis = analyze_chunk(chunk)  # 上面定义的分析函数
-                break  # 成功则跳出重试循环
-            except Exception as e:
-                retry_count += 1
-                print(f"analyze_chunk 第 {retry_count} 次尝试失败: {e}")
-                if retry_count < max_retries:
-                    print(f"analyze_chunk 等待 5 秒后重试...")
-                    time.sleep(5)  # 同步sleep
-                else:
-                    raise RuntimeError("analyze_chunk 达到最大重试次数")
+        for i, chunk in enumerate(chunks):
+            max_retries = 3
+            retry_count = 0
+            analysis = None
 
-        if analysis:
-            asyncio.run(send_to_mcp(analysis))  # 上面定义的 MCP 发送函数
-            time.sleep(10)
-            print(f"{i} done")
+            while retry_count < max_retries:
+                try:
+                    analysis = analyze_chunk(chunk)  # 上面定义的分析函数
+                    break  # 成功则跳出重试循环
+                except Exception as e:
+                    retry_count += 1
+                    print(f"analyze_chunk 第 {retry_count} 次尝试失败: {e}")
+                    if retry_count < max_retries:
+                        print(f"analyze_chunk 等待 5 秒后重试...")
+                        time.sleep(5)  # 同步sleep
+                    else:
+                        raise RuntimeError("analyze_chunk 达到最大重试次数")
+
+            if analysis:
+                asyncio.run(send_to_mcp(analysis))  # 上面定义的 MCP 发送函数
+                time.sleep(10)
+                print(f"{i} done")
     # for chapter_title, chapter_text in chapter_stream(file_path):
     #     if len(chapter_text) > CHUNK_SIZE + 2000:
     #       chunks = []
@@ -152,7 +156,7 @@ def process_novel_by_chapter(file_path):
     #           chunks.append(chunk)
     #     else:
     #       chunks = [chapter_text]
-        
+
     #     # 然后处理 chunks 列表
     #     print(f"处理章节：{chapter_title}, chunks: {len(chunks)}")
     #     for chunk in chunks:
@@ -161,7 +165,6 @@ def process_novel_by_chapter(file_path):
     #           result = asyncio.run(send_to_mcp(analysis))  # 上面定义的 MCP 发送函数
     #           asyncio.sleep(10)
     #           print(f"MCP 返回：{result}")
-
 
 
 # def chapter_stream(file_path):
@@ -180,15 +183,15 @@ def process_novel_by_chapter(file_path):
 #                 continue  # 跳过空行
 #             match = chapter_pattern.match(line)
 #             if match:
-                
+
 #                 # 遇到新章节，先返回上一章
 #                 if current_chapter:
-#                     if count > START: # start from n+1 
+#                     if count > START: # start from n+1
 #                       yield chapter_title, "\n".join(current_chapter)
 #                     current_chapter = []
-                
+
 #                 chapter_title = line
-             
+
 #                 count += 1
 #                 if count > END: # end with n
 #                   break
@@ -198,7 +201,6 @@ def process_novel_by_chapter(file_path):
 #         # 返回最后一章
 #         if current_chapter:
 #             yield chapter_title, "\n".join(current_chapter)
-
 # ---------- 示例 ----------
 if __name__ == "__main__":
     if len(sys.argv) < 2:
@@ -208,4 +210,3 @@ if __name__ == "__main__":
     process_novel_by_chapter(file_path)
     # import tmp
     # asyncio.run(send_to_mcp(tmp.JSON))
-

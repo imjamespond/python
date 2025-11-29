@@ -14,46 +14,58 @@ result_list = []
 # ---------- Step 1: 小说分片 ----------
 
 
-# ---------- Step 2: AI分析 ----------
+# ---------- Step 2: AI分析 ---------- ZHIPU 可以
 def analyze_chunk(text_chunk):
     title = text_chunk.split('\n')[0][:20]
     print("\nanalyze_chunk", title)
 
     messages = [
         SystemMessage(content=f"""
-你是一名中文多音字分析器。你的任务是从输入文本中识别所有出现的多音词，并根据语境判断正确读音。
-
-要求：
-1. 仅对识别出的多音字或多音词进行替换，不改变其他文本内容
-2. 匹配规则必须基于完整词语，而非单个字。例如“查先生”应整体匹配为“zha1先生”，而非单独匹配“查”
-3. 替换格式：将多音字读音替换为对应的拼音（带数字声调）
-4. 特殊优先匹配规则：
-   - 姓氏场景：“查先生” → “zha1先生”
-   - 外部自定义规则：{PROMPT_POLYPHONIC}
-5. 输出格式为严格的标准JSON数组：
-   [
-     ["原词1", "替换后1"],
-     ["原词2", "替换后2"]
-   ]
-
-注意：
-- 仅输出完整匹配多音词的结果，不修改非多音词
-- 每个条目必须是二维数组，对应原词与替换结果
-- 禁止输出任何非JSON内容（包括Markdown、反引号、解释文字等）
-- 确保所有输出均可被标准JSON解析器直接解析
-"""
-                      ),
+你是一名中文多音字分析器。
+按以下匹配规则找出相关词语，不要输出没匹配的词语！
+  查找规则：{PROMPT_POLYPHONIC}
+每行一个词语输出，禁止输出任何样例格式以外的内容！
+样例格式：
+词语1
+词语2
+...
+"""),
 
         HumanMessage(content=text_chunk)
     ]
-
     full = None
     for chunk in models.LLM_TEXT.stream(messages):
         full = chunk if full is None else full + chunk
         print(chunk.text, end="")
 
+    print("\n===找出多音词===")
+
+    messages2 = [
+        SystemMessage(content=f""" 
+你是一名中文多音字分析器。
+要求：
+- 替换格式：将词语中的多音字替换为对应的拼音（带数字声调）如：银行->银hang2
+- 特殊优先匹配规则：{PROMPT_POLYPHONIC}
+- 输出格式为严格的标准JSON数组：
+  [
+    ["原词1", "替换后1"],
+    ["原词2", "替换后2"]
+  ]
+
+注意：
+- 仅输出完整匹配多音词的结果，不修改非多音词
+- 每个条目必须是二维数组，对应原词与替换结果
+- 禁止输出任何非JSON内容（包括Markdown、反引号、解释文字等）
+- 确保所有输出均可被标准JSON解析器直接解析 """),
+        HumanMessage(content=full.text)
+    ]
+    full2 = None
+    for chunk in models.LLM_TEXT.stream(messages2):
+        full2 = chunk if full2 is None else full2 + chunk
+        print(chunk.text, end="")
+
     print("\nanalyze_chunk done!", title)
-    return full.text
+    return full2.text
 
 
 # ---------- Step 4: 主流程 ----------
