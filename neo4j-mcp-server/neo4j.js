@@ -60,7 +60,7 @@ export async function writeToNeo4j(data) {
           WITH prev ORDER BY prev.seq DESC LIMIT 1
           WITH prev, coalesce(prev.seq + 1, 1) AS newSeq
           
-          CREATE (e:event {name: $name, description: $description, seq: newSeq})
+          CREATE (e:event {name: $name, description: $description, reference: $reference, seq: newSeq})
 
           WITH prev, e
           WHERE prev IS NOT NULL

@@ -30,6 +30,7 @@ server.registerTool(
           z.object({
             name: z.string(),
             description: z.string(),
+            reference: z.string().optional(),
             characters: z.array(z.string()).default([]),
           })
         )
