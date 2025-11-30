@@ -52,17 +52,17 @@ server.registerTool(
     await appendObjAsJsonLineAsync(data);
 
     // only json
-    // const result = {
-    //   type: "text",
-    //   text: "ok",
-    // };
+    const result = {
+      type: "text",
+      text: "ok",
+    };
 
-    // return {
-    //   content: [result],
-    //   structuredContent: result,
-    // };
+    return {
+      content: [result],
+      structuredContent: result,
+    };
 
-    return await writeToNeo4j(data);
+    // return await writeToNeo4j(data);
   }
 );
 
