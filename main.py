@@ -12,6 +12,7 @@ import json_tool
 import models
 
 PROMPT_PERSON = os.getenv("PROMPT_PERSON") or ""
+RATE_LIMIT = int(os.getenv("RATE_LIMIT", 10))
 
 # ---------- Step 1: 小说分片 ----------
 
@@ -145,7 +146,7 @@ def process_novel_by_chapter(file_path):
 
             if analysis:
                 asyncio.run(send_to_mcp(analysis))  # 上面定义的 MCP 发送函数
-                time.sleep(10)
+                time.sleep(RATE_LIMIT)
                 print(f"{i} done")
     # for chapter_title, chapter_text in chapter_stream(file_path):
     #     if len(chapter_text) > CHUNK_SIZE + 2000:
