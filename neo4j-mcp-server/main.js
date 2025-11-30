@@ -49,7 +49,19 @@ server.registerTool(
   },
   async (data) => {
     console.log("add_to_neo4j", data);
-    await appendObjAsJsonLineAsync(data)
+    await appendObjAsJsonLineAsync(data);
+
+    // only json
+    // const result = {
+    //   type: "text",
+    //   text: "ok",
+    // };
+
+    // return {
+    //   content: [result],
+    //   structuredContent: result,
+    // };
+
     return await writeToNeo4j(data);
   }
 );
