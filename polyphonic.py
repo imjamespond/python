@@ -49,7 +49,7 @@ def analyze_chunk(text_chunk):
         SystemMessage(content=f""" 
 你是一名中文多音字分析器。
 要求：
-- 替换格式：将词语中的多音字替换为对应的拼音（带数字声调）如：`银行`的行读hang2，替换后：银hang2
+- 替换格式：将词语中的多音字替换为对应的拼音（带数字声调,用1234表示4个声调）如：`银行`的行读hang2，替换后：银hang2
 - 匹配规则：{PROMPT_POLYPHONIC}
 - 输出格式为严格的标准JSON数组：
   [
@@ -109,7 +109,10 @@ def process_novel_by_chapter(file_path):
                 print(f"{i} done")
 
     with open('output.json', 'w', encoding='utf-8') as f:
-        json.dump(result_list, f, ensure_ascii=False, indent=4)
+        # 紧凑格式：每行一个顶层数组元素
+        json_str = '[\n' + ',\n'.join(json.dumps(item, ensure_ascii=False) for item in result_list) + '\n]'
+        f.write(json_str)
+        # json.dump(result_list, f, ensure_ascii=False, indent=4)
 
 # ---------- Step 3: handle ----------
 
@@ -129,13 +132,17 @@ async def handle(json_data):
         print(f"其他错误: {e}")
 
 
-def replace_with_json(text):
+def replace_with_json():
     with open('output.json', 'r', encoding='utf-8') as f:
         list = json.load(f)
-        for original, replacement in list:
-            text = text.replace(original, replacement)
-        with open('output.txt', 'w', encoding='utf-8') as f:
-            f.write(text)
+
+        with open("input.txt", "r", encoding="utf-8") as f:
+            text = f.read()
+
+            with open('output.txt', 'w', encoding='utf-8') as f:
+                for original, replacement in list:
+                    text = text.replace(original, replacement)
+                f.write(text)
 
 
 # ---------- 示例 ----------

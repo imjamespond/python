@@ -6,3 +6,4 @@ tmp.py
 node_modules
 *.txt
 *.jsonl
+*.json
