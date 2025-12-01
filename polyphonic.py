@@ -14,19 +14,24 @@ result_list = []
 
 
 # ---------- Step 1: 小说分片 ----------
-
+""" 
+CHUNK_SIZE=1024
+deepseek-v3.1-terminus 7
+kimi-k2-instruct-0905 6.5
+gpt-oss-20b 5
+"""
 
 # ---------- Step 2: AI分析 ---------- ZHIPU 可以
 def analyze_chunk(text_chunk):
-    title = text_chunk.split('\n')[0][:20]
-    print("\nanalyze_chunk", title)
+    print("\nanalyze_chunk", text_chunk)
+    print("\n===找出多音词===")
 
     LLM_TEXT = models.get_llm_text()
 
     messages = [
         SystemMessage(content=f"""
 你是一名中文多音字分析器。
-按以下匹配规则找出相关词语，不要输出不匹配的词语！若出现的是单字，则输出其所在的最小有意义短语。
+按以下匹配规则找出相关多音字在文本中构成的词语或短语。
   查找规则：{PROMPT_POLYPHONIC}
 每行输出一个词语，最多20个，禁止输出任何样例格式以外的内容！
 样例格式：
@@ -49,7 +54,7 @@ def analyze_chunk(text_chunk):
         SystemMessage(content=f""" 
 你是一名中文多音字分析器。
 要求：
-- 替换格式：将词语中的多音字替换为对应的拼音（带数字声调,用1234表示4个声调）如：`银行`的行读hang2，替换后：银hang2
+- 替换格式：将词语中的多音字替换为对应的拼音，不要音标！用1-4的声调！如：`银行`的行第2声，替换后：银hang2
 - 匹配规则：{PROMPT_POLYPHONIC}
 - 输出格式为严格的标准JSON数组：
   [
@@ -69,18 +74,18 @@ def analyze_chunk(text_chunk):
         full2 = chunk if full2 is None else full2 + chunk
         print(chunk.text, end="")
 
-    print("\nanalyze_chunk done!", title)
+    print("\nanalyze_chunk done!", len(text_chunk))
     return full2.text
 
 
 # ---------- Step 4: 主流程 ----------
 
 
-def process_novel_by_chapter(file_path):
+def process_novel(file_path):
     with open(file_path, "r", encoding="utf-8") as f:
         text = f.read()
-        cp = splitter.ChapterProcessor(chunk_overlap=128)
-        chunks = cp.process_novel_by_chapters(text)
+        cp = splitter.ChapterProcessor(chunk_overlap=0)
+        chunks = cp.process_novel(text)
 
         # debug chunks
         # return
@@ -132,23 +137,7 @@ async def handle(json_data):
         print(f"其他错误: {e}")
 
 
-def replace_with_json():
-    with open('output.json', 'r', encoding='utf-8') as f:
-        list = json.load(f)
-
-        with open("input.txt", "r", encoding="utf-8") as f:
-            text = f.read()
-
-            with open('output.txt', 'w', encoding='utf-8') as f:
-                for original, replacement in list:
-                    text = text.replace(original, replacement)
-                f.write(text)
-
 
 # ---------- 示例 ----------
 if __name__ == "__main__":
-
-    if os.path.exists('output.json'):
-        replace_with_json()
-    else:
-        process_novel_by_chapter("input.txt")
+    process_novel("input.txt")

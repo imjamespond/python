@@ -18,6 +18,10 @@ class ChapterProcessor:
             separators=["\n\n", "\n", "。", "！", "？"]
         )
 
+    def process_novel(self, novel_text):
+        chunks = self.text_splitter.split_text(novel_text)
+        return chunks
+
     def process_novel_by_chapters(self, novel_text):
           """按章分割小说文本"""
           # 假设章节以"第X章"开头
