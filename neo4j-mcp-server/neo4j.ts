@@ -1,4 +1,5 @@
 import neo4j from "neo4j-driver";
+import { z } from "zod";
 
 // 创建 Neo4j 驱动
 function initNeo4j() {
@@ -14,18 +15,44 @@ function initNeo4j() {
       await session.close();
       await driver.close();
     },
-  ];
+  ] as const;
 }
+
 /**
  * 将结构化的角色、事件和关系数据写入 Neo4j 图数据库。
- *
- * @param {Object} data - 包含角色、事件和关系的数据对象。
- * @param {Array<{ name: string, description: string }>} data.characters - 角色列表。
- * @param {Array<{ name: string, description: string, characters: string[] }>|undefined} data.events - 事件列表，每个事件关联一组角色名称。
- * @param {Array<{ source: string, target: string, type: string }>|undefined} data.relationships - 角色之间的关系列表。
  */
-export async function writeToNeo4j(data) {
-  if (!Array.isArray(data.characters) || !data.characters.length > 0) {
+
+export const writeToNeo4jInputSchema = z.object({
+  characters: z.array(
+    z.object({
+      name: z.string(),
+      description: z.string(),
+    })
+  ),
+  events: z
+    .array(
+      z.object({
+        name: z.string(),
+        description: z.string(),
+        characters: z.array(z.string()),
+      })
+    )
+    .optional(),
+  relationships: z
+    .array(
+      z.object({
+        source: z.string(),
+        target: z.string(),
+        type: z.string(),
+      })
+    )
+    .optional(),
+});
+
+type writeToNeo4jInputType = z.infer<typeof writeToNeo4jInputSchema>;
+
+export async function writeToNeo4j(data: writeToNeo4jInputType) {
+  if (!Array.isArray(data.characters) || !(data.characters.length > 0)) {
     const result = {
       type: "text",
       text: "数据为空，跳过执行",
@@ -105,11 +132,11 @@ export async function writeToNeo4j(data) {
       content: [result],
       structuredContent: result,
     };
-  } catch (err) {
-    console.error(err);
+  } catch (error: any) {
+    console.error(error);
     const result = {
       type: "text",
-      text: err.message,
+      text: error.message,
     };
     return {
       content: [result],
@@ -120,7 +147,17 @@ export async function writeToNeo4j(data) {
   }
 }
 
-export async function queryNeo4j(data) {
+/**
+ * 查询 Neo4j 图数据库
+ */
+
+export const queryNeo4jInputSchema = z.object({
+  cypher: z.string(),
+});
+
+type queryNeo4jInputType = z.infer<typeof queryNeo4jInputSchema>;
+
+export async function queryNeo4j(data: queryNeo4jInputType) {
   const [session, close] = initNeo4j();
 
   try {
@@ -137,7 +174,7 @@ export async function queryNeo4j(data) {
       content: [structuredContent],
       structuredContent,
     };
-  } catch (error) {
+  } catch (error: any) {
     console.error(error);
     const result = {
       type: "text",

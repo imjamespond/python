@@ -2,7 +2,7 @@ import { z } from "zod";
 import { McpServer, ResourceTemplate } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
 import express from "express";
-import { writeToNeo4j, queryNeo4j } from "./neo4j.js";
+import { queryNeo4j, queryNeo4jInputSchema, writeToNeo4jInputSchema } from "./neo4j.ts";
 import { appendObjAsJsonLineAsync } from "./jsonl.js";
 
 const server = new McpServer({
@@ -15,36 +15,7 @@ server.registerTool(
   {
     title: "add_to_neo4j",
     description: "将数据写入 Neo4j",
-    inputSchema: z.object({
-      chapter: z.string().nullish(),
-      characters: z
-        .array(
-          z.object({
-            name: z.string(),
-            description: z.string(),
-          })
-        )
-        .optional(),
-      events: z
-        .array(
-          z.object({
-            name: z.string(),
-            description: z.string(),
-            reference: z.string().optional(),
-            characters: z.array(z.string()).default([]),
-          })
-        )
-        .optional(),
-      relationships: z
-        .array(
-          z.object({
-            source: z.string(),
-            target: z.string(),
-            type: z.string(),
-          })
-        )
-        .optional(),
-    }),
+    inputSchema: writeToNeo4jInputSchema,
     outputSchema: z.object({ type: z.string(), text: z.string() }), // langgraph对格式严格要求
   },
   async (data) => {
@@ -71,9 +42,7 @@ server.registerTool(
   {
     title: "query neo4j",
     description: "执行 cypher 查询",
-    inputSchema: z.object({
-      cypher: z.string(),
-    }),
+    inputSchema: queryNeo4jInputSchema,
     outputSchema: z.object({ type: z.string(), text: z.string() }), // langgraph对格式严格要求
   },
   async (data) => {
