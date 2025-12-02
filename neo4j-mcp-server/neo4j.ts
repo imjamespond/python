@@ -23,18 +23,22 @@ function initNeo4j() {
  */
 
 export const writeToNeo4jInputSchema = z.object({
-  characters: z.array(
-    z.object({
-      name: z.string(),
-      description: z.string(),
-    })
-  ),
+  chapter: z.string().nullish(),
+  characters: z
+    .array(
+      z.object({
+        name: z.string(),
+        description: z.string(),
+      })
+    )
+    .optional(),
   events: z
     .array(
       z.object({
         name: z.string(),
         description: z.string(),
-        characters: z.array(z.string()),
+        reference: z.string().optional(),
+        characters: z.array(z.string()).default([]),
       })
     )
     .optional(),
@@ -52,7 +56,8 @@ export const writeToNeo4jInputSchema = z.object({
 type writeToNeo4jInputType = z.infer<typeof writeToNeo4jInputSchema>;
 
 export async function writeToNeo4j(data: writeToNeo4jInputType) {
-  if (!Array.isArray(data.characters) || !(data.characters.length > 0)) {
+  const characters = data.characters;
+  if (!Array.isArray(characters) || characters.length === 0) {
     const result = {
       type: "text",
       text: "数据为空，跳过执行",
@@ -68,7 +73,7 @@ export async function writeToNeo4j(data: writeToNeo4jInputType) {
   try {
     await session.executeWrite(async (tx) => {
       /** --- 写入角色 --- **/
-      for (const character of data.characters) {
+      for (const character of characters) {
         await tx.run(
           `
           MERGE (p:person {name: $name})
@@ -87,7 +92,7 @@ export async function writeToNeo4j(data: writeToNeo4jInputType) {
           WITH prev ORDER BY prev.seq DESC LIMIT 1
           WITH prev, coalesce(prev.seq + 1, 1) AS newSeq
           
-          CREATE (e:event {name: $name, description: $description, reference: $reference, seq: newSeq})
+          CREATE (e:event {chapter: $chapter, name: $name, description: $description, reference: $reference, seq: newSeq})
 
           WITH prev, e
           WHERE prev IS NOT NULL
@@ -100,7 +105,7 @@ export async function writeToNeo4j(data: writeToNeo4jInputType) {
           WHERE p IS NOT NULL
           MERGE (p)-[:PARTICIPATED_IN]->(e)
           `,
-            event
+            { ...event, chapter: data.chapter }
           );
         }
       }
