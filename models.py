@@ -14,6 +14,35 @@ BASE_URL_CF = "https://gateway.ai.cloudflare.com/v1/7b606aa2446b22c790782eaba9cf
 BASE_URL_OR = "https://openrouter.ai/api/v1/"
 BASE_URL_NV = "https://integrate.api.nvidia.com/v1"
 
+
+def get_extra_body(model_type: str):
+    extra = {}
+
+    if model_type == "qwen":
+        extra.update({
+            "enable_thinking": False,
+            "thinking_budget": 2918
+        })
+    elif model_type == "oss":
+        extra.update({
+            "reasoningEffort": "low"
+        })
+    elif model_type == "glm":
+        extra.update({
+            "thinking": {
+                "type": "disabled"
+            }
+        })
+
+    # 可选：如果模型类型不匹配，可以忽略或抛出警告
+    return extra
+
+# 从环境变量获取模型类型，默认为 'qwen'
+model_type = os.getenv("MODEL_TYPE","").lower()
+
+# 构建 extra_body
+extra_body = get_extra_body(model_type)
+
 # ---------- 配置 ----------
 # 直接初始化ChatOpenAI
 LLM_BAIDU = init_chat_model(
@@ -107,23 +136,6 @@ LLM_NV = init_chat_model(
     timeout=60
 )
 
-LLM_OPENAI = init_chat_model(
-    model=os.getenv("TEXT_MODEL", "qwen/qwen3-next-80b-a3b-instruct"),
-    model_provider=MODEL_PROVIDER,
-    api_key=os.getenv("TEXT_API_KEY", API_KEY_NV),
-    base_url=os.getenv("TEXT_API_BASE", BASE_URL_NV),
-    max_tokens=os.getenv("MAX_TOKENS", 8192),
-    temperature=0.2,
-    timeout=60,
-    extra_body={
-        "enable_thinking": False, # for Qwen
-        "thinking_budget":2918, # for Qwen
-        "reasoningEffort":"low", # for oss 
-        "thinking": {
-          "type": "disabled"
-        }
-    }
-)
 
 LLM_OLLAMA = init_chat_model(
     # 小模型一定要把input不能太大！！！否则会忽略很多细节，最好不超1倍，即4096。
@@ -142,7 +154,16 @@ LLM_OLLAMA = init_chat_model(
 def get_llm_text():
     model_provider = os.getenv("TEXT_PROVIDER", MODEL_PROVIDER)
     if model_provider == MODEL_PROVIDER:
-        return LLM_OPENAI
+        return init_chat_model(
+            model=os.getenv("TEXT_MODEL", "qwen/qwen3-next-80b-a3b-instruct"),
+            model_provider=MODEL_PROVIDER,
+            api_key=os.getenv("TEXT_API_KEY", API_KEY_NV),
+            base_url=os.getenv("TEXT_API_BASE", BASE_URL_NV),
+            max_tokens=os.getenv("MAX_TOKENS", 8192),
+            temperature=0.2,
+            timeout=60,
+            extra_body=extra_body
+        )
     return LLM_OLLAMA
 
 

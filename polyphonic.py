@@ -31,9 +31,9 @@ def analyze_chunk(text_chunk):
     messages = [
         SystemMessage(content=f"""
 你是一名中文多音字分析器。
-按以下匹配规则找出相关多音字在文本中构成的词语或短语。
-  查找规则：{PROMPT_POLYPHONIC}
-每行输出一个词语，最多20个，禁止输出任何样例格式以外的内容！
+1. 按以下规则找出多音字，输出每个多音字在文本中构成的词语或短语，禁止输出单字！
+查找规则：{PROMPT_POLYPHONIC}
+2. 每行输出一个词语，最多20个，禁止输出任何样例格式以外的内容！
 样例格式：
 原词1
 原词2
@@ -55,7 +55,7 @@ def analyze_chunk(text_chunk):
 你是一名中文多音字分析器。
 要求：
 - 替换格式：将词语中的多音字替换为对应的拼音，不要音标！用1-4的声调！如：`银行`的行第2声，替换后：银hang2
-- 匹配规则：{PROMPT_POLYPHONIC}
+- 替换规则：{PROMPT_POLYPHONIC}
 - 输出格式为严格的标准JSON数组：
   [
     ["原词1", "替换后1"],
