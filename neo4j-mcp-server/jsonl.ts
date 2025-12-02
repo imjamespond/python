@@ -1,7 +1,7 @@
 // 使用 import 导入 Node.js 内置模块（ESM 风格）
 import fs from "fs";
 import fsPromises from "fs/promises";
-import { join } from 'path';
+import { join } from "path";
 import { createReadStream } from "fs";
 import { createInterface } from "readline";
 
@@ -13,13 +13,13 @@ import { createInterface } from "readline";
 const FILE_PATH = join(process.cwd(), "data.jsonl");
 
 // 同步追加一行 JSON
-export function appendObjAsJsonLine(obj) {
+export function appendObjAsJsonLine(obj: unknown) {
   const jsonLine = JSON.stringify(obj) + "\n";
   fs.appendFileSync(FILE_PATH, jsonLine, "utf8");
 }
 
 // 异步追加（推荐用于性能）
-export async function appendObjAsJsonLineAsync(obj) {
+export async function appendObjAsJsonLineAsync(obj: unknown) {
   const jsonLine = JSON.stringify(obj) + "\n";
   await fsPromises.appendFile(FILE_PATH, jsonLine, "utf8");
 }
@@ -38,10 +38,9 @@ export async function* readJsonLines() {
     if (line.trim() === "") continue;
     try {
       const obj = JSON.parse(line);
-      yield obj
+      yield obj;
     } catch (err) {
       console.error("Invalid JSON line:", line, err);
     }
   }
 }
-

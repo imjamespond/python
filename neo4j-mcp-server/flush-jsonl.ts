@@ -1,5 +1,5 @@
-import { readJsonLines } from "./jsonl.js";
-import { writeToNeo4j } from "./neo4j.js";
+import { readJsonLines } from "./jsonl.ts";
+import { writeToNeo4j } from "./neo4j.ts";
 
 // 示例使用
 async function main() {
