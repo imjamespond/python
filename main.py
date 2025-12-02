@@ -37,7 +37,7 @@ def analyze_chunk(text_chunk):
 
 - events: 主要事件列表（每个对象包含）：
   - name: 10字以内描述
-  - description: 概括事件。要求：完整说明事件的时间、地点、起因与经过(100字内)。
+  - description: 详细说明事件的时间、地点、起因、经过和结果(200字内)。
   - reference: 该事件在原文中的第一句话(不超过50字)，以……结束。
   - characters: 参与该事件的全部人物名称列表。
 

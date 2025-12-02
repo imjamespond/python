@@ -114,7 +114,15 @@ LLM_OPENAI = init_chat_model(
     base_url=os.getenv("TEXT_API_BASE", BASE_URL_NV),
     max_tokens=os.getenv("MAX_TOKENS", 8192),
     temperature=0.2,
-    timeout=60
+    timeout=60,
+    extra_body={
+        "enable_thinking": False, # for Qwen
+        "thinking_budget":2918, # for Qwen
+        "reasoningEffort":"low", # for oss 
+        "thinking": {
+          "type": "disabled"
+        }
+    }
 )
 
 LLM_OLLAMA = init_chat_model(
