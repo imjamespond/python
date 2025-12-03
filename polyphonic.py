@@ -6,6 +6,8 @@ import json
 
 from langchain_core.messages import HumanMessage, SystemMessage
 import models
+import json_tool
+
 
 PROMPT_POLYPHONIC = os.getenv("PROMPT_POLYPHONIC", "")
 RATE_LIMIT = int(os.getenv("RATE_LIMIT", 10))
@@ -16,30 +18,47 @@ result_list = []
 # ---------- Step 1: 小说分片 ----------
 """ 
 CHUNK_SIZE=1024
+TEMPERATURE=0
+# 开启思考模式效果好，适合执行分析查找，不适合总结
 deepseek-v3.1-terminus 7
 kimi-k2-instruct-0905 6.5
-gpt-oss-20b 5
+meituan-longcat/LongCat-Flash-Chat-FP8 512 不错
+gpt-oss-20b 512 不错 256 很好
+gpt-5-nano  512 很好
+x-ai/grok-4.1-fast:free 1024 很好,较慢
+google-ai-studio/gemini-2.5-flash  512 多词还行
+zai-org/GLM-4.5-Air 512 多出其它词,很慢
+deepseek-ai/deepseek-r1-0528 巨慢，多词
+GLM-4.5-Flash 512 还行,很慢
+Qwen/Qwen3-4B  128 偶出错
+Qwen/Qwen3-8B  192 还行
+Qwen/Qwen3-14B 192 可以
+Qwen/Qwen3-32B 192 较好
+# 非思考模式分析查找效果差
+Qwen/Qwen3-Next-80B-A3B-Instruct 512 漏词
+deepseek-ai/DeepSeek-V3.2-Exp 512 尚可 1024 多出其它词
 """
 
 # ---------- Step 2: AI分析 ---------- ZHIPU 可以
 def analyze_chunk(text_chunk):
-    print("\nanalyze_chunk", text_chunk)
-    print("\n===找出多音词===")
+    print("analyze_chunk", len(text_chunk), text_chunk)
+    print("===找出多音词===")
 
     LLM_TEXT = models.get_llm_text()
 
     messages = [
         SystemMessage(content=f"""
 你是一名中文多音字分析器。
-1. 按以下规则找出多音字，输出每个多音字在文本中构成的词语或短语，禁止输出单字！
+1. 根据给出上下文的意思按以下规则找出多音字，输出每个多音字在文本中构成的词汇或短语，禁止输出单字！
 查找规则：{PROMPT_POLYPHONIC}
-2. 每行输出一个词语，最多20个，禁止输出任何样例格式以外的内容！
-样例格式：
-原词1
-原词2
+2. 禁止输出原文中未出现的词语！
+3. 拼音禁止带音标！而是其后用`1234`表示4个声调！如：银行, 行读hang2; 行走, 行读xing2。
+4. 严格按样例格式输出，最多输出20行，禁止输出任何样例格式以外的内容！
+样例格式:
+{{原词语1}}, {{多音字}} 读 {{拼音}}
+{{原词语2}}, {{多音字}} 读 {{拼音}}
 ...
 """),
-
         HumanMessage(content=text_chunk)
     ]
     full = None
@@ -47,35 +66,35 @@ def analyze_chunk(text_chunk):
         full = chunk if full is None else full + chunk
         print(chunk.text, end="")
 
-    print("\n===找出多音词===")
-    time.sleep(RATE_LIMIT)
+    print("\n===输出===")
+    # time.sleep(RATE_LIMIT)
 
-    messages2 = [
+    LLM_TEXT = models.LLM_QWEN
+
+    messages = [
         SystemMessage(content=f""" 
 你是一名中文多音字分析器。
 要求：
-- 替换格式：将词语中的多音字替换为对应的拼音，不要音标！用1-4的声调！如：`银行`的行第2声，替换后：银hang2
-- 替换规则：{PROMPT_POLYPHONIC}
+- 替换规则：
+    * 按格式读取每行：{{原词}}, {{多音字}}读{{读音}}
+    * 根据`读音`将`原词`中的多音字替换为拼音。如：银行，替换后：银hang2；行走，替换后：xing2走。
+    * 只替换每行给出的`多音字`，禁止替换非`多音字`！
+    * 没有内容，则输出空数组。
 - 输出格式为严格的标准JSON数组：
   [
-    ["原词1", "替换后1"],
-    ["原词2", "替换后2"]
+    [{{原词1}},{{替换后1}}],
+    [{{原词2}},{{替换后2}}]
   ]
-
-注意：
-- 仅输出符合匹配规则多音词的结果
-- 每个条目必须是二维数组，对应原词与替换结果
-- 禁止输出任何非JSON内容（包括Markdown、反引号、解释文字等）
-- 确保所有输出均可被标准JSON解析器直接解析 """),
+"""),
         HumanMessage(content=full.text)
     ]
-    full2 = None
-    for chunk in LLM_TEXT.stream(messages2):
-        full2 = chunk if full2 is None else full2 + chunk
+    full = None
+    for chunk in LLM_TEXT.stream(messages):
+        full = chunk if full is None else full + chunk
         print(chunk.text, end="")
 
     print("\nanalyze_chunk done!", len(text_chunk))
-    return full2.text
+    return full.text
 
 
 # ---------- Step 4: 主流程 ----------
@@ -126,8 +145,7 @@ async def handle(json_data):
     print("handle", len(json_data))
     try:
         # 解析JSON字符串
-        parsed_data = json.loads(json_data.replace("```json\n", "").replace(
-            "```\n", "").replace("```", "").strip())
+        parsed_data = json_tool.getJSON(json_data)
 
         # 将解析后的数据添加到列表中
         result_list.extend(parsed_data)
@@ -140,4 +158,4 @@ async def handle(json_data):
 
 # ---------- 示例 ----------
 if __name__ == "__main__":
-    process_novel("input.txt")
+    process_novel("input-polyphonic.txt")

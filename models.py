@@ -58,22 +58,23 @@ LLM_BAIDU = init_chat_model(
 )
 
 LLM_QWEN = init_chat_model(
-    "Qwen/Qwen3-Next-80B-A3B-Instruct",
+    # "Qwen/Qwen3-Next-80B-A3B-Instruct",
     # model="Qwen/Qwen3-32B",
     # model="Qwen/Qwen3-14B",
+    model="Qwen/Qwen3-8B",
     # model="Qwen/Qwen3-Coder-30B-A3B-Instruct",
     model_provider=MODEL_PROVIDER,
     api_key=os.getenv("MODELSCOPE_API_KEY"),      # apikey: 设置API密钥
     base_url=BASE_URL_MD,  # apiurl: 设置基础URL
     # 其他可选参数
     temperature=0.1,
-    max_tokens=8192,
+    max_tokens=4096,
     timeout=30,
     # https://www.dataleadsfuture.com/build-autogen-agents-with-qwen3-structured-output-thinking-mode/
     # Qwen3's extra_body parameters
-    extra_body={
-        "enable_thinking": False
-    }
+    # extra_body={
+    #     "enable_thinking": False
+    # }
 )
 
 LLM_ZHIPU = init_chat_model(
@@ -152,15 +153,18 @@ LLM_OLLAMA = init_chat_model(
 
 
 def get_llm_text():
+    model=os.getenv("TEXT_MODEL", "qwen/qwen3-next-80b-a3b-instruct")
     model_provider = os.getenv("TEXT_PROVIDER", MODEL_PROVIDER)
+    temperature=os.getenv("TEMPERATURE", 0.2)
+    print("using model", model,"t",temperature)
     if model_provider == MODEL_PROVIDER:
         return init_chat_model(
-            model=os.getenv("TEXT_MODEL", "qwen/qwen3-next-80b-a3b-instruct"),
+            model=model,
             model_provider=MODEL_PROVIDER,
             api_key=os.getenv("TEXT_API_KEY", API_KEY_NV),
             base_url=os.getenv("TEXT_API_BASE", BASE_URL_NV),
             max_tokens=os.getenv("MAX_TOKENS", 8192),
-            temperature=0.2,
+            temperature=temperature,
             timeout=60,
             extra_body=extra_body
         )
