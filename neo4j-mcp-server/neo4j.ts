@@ -37,7 +37,7 @@ export const writeToNeo4jInputSchema = z.object({
       z.object({
         name: z.string(),
         description: z.string(),
-        reference: z.string().optional(),
+        reference: z.string().nullish(),
         characters: z.array(z.string()).default([]),
       })
     )
@@ -47,7 +47,7 @@ export const writeToNeo4jInputSchema = z.object({
       z.object({
         source: z.string(),
         target: z.string(),
-        type: z.string(),
+        type: z.string().nullish(),
       })
     )
     .optional(),
