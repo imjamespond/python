@@ -142,8 +142,6 @@ def get_args():
         "timeout": 60,
     }
 
-    print("using model", model, "args", args)
-
     # 根据 model_type 添加特定参数
     if model_type == "qwen":
         args["extra_body"] = {
@@ -185,6 +183,8 @@ def get_args():
             "frequency_penalty": 0.00,
             "presence_penalty": 0.00,
         })
+
+    print("using model", model, "args", args)
 
     return args
 
