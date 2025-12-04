@@ -33,8 +33,8 @@ LLM_BAIDU = init_chat_model(
 LLM_QWEN = init_chat_model(
     # "Qwen/Qwen3-Next-80B-A3B-Instruct",
     # model="Qwen/Qwen3-32B",
-    # model="Qwen/Qwen3-14B",
-    model="Qwen/Qwen3-8B",
+    model="Qwen/Qwen3-14B",
+    # model="Qwen/Qwen3-8B",
     # model="Qwen/Qwen3-Coder-30B-A3B-Instruct",
     model_provider=MODEL_PROVIDER_OPAI,
     api_key=os.getenv("MODELSCOPE_API_KEY"),      # apikey: 设置API密钥
@@ -154,6 +154,11 @@ def get_args():
         args["extra_body"] = {
             "reasoningEffort": "low"
         }
+        args.update({
+            "temperature": 1,
+            "top_p": 1,
+            "max_tokens": 4096,
+        })
     elif model_type == "glm":
         args["extra_body"] = {
             "thinking": {
@@ -172,8 +177,17 @@ def get_args():
             "frequency_penalty": 0,
             "presence_penalty": 0,
         })
+    elif model_type == "mistral":
+        args.update({
+            "max_tokens": 2048,
+            "temperature": 0.15,
+            "top_p": 1.00,
+            "frequency_penalty": 0.00,
+            "presence_penalty": 0.00,
+        })
 
     return args
+
 
 def get_llm_text():
 

@@ -25,6 +25,7 @@ kimi-k2-instruct-0905 6.5
 meituan-longcat/LongCat-Flash-Chat-FP8 512 不错
 gpt-oss-20b 512 不错 256 很好
 gpt-5-nano  512 很好
+bytedance/seed-oss-36b-instruct 512 效果好
 x-ai/grok-4.1-fast:free 1024 很好,较慢
 google-ai-studio/gemini-2.5-flash  512 多词还行
 zai-org/GLM-4.5-Air 512 多出其它词,很慢
