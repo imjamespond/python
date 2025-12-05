@@ -4,6 +4,7 @@
 __pycache__
 tmp.py
 node_modules
-*.txt
-*.jsonl
-*.json
+input*.txt
+output*.txt
+data*.jsonl
+output*.json
