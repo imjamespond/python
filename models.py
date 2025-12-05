@@ -32,8 +32,8 @@ LLM_BAIDU = init_chat_model(
 
 LLM_QWEN = init_chat_model(
     # "Qwen/Qwen3-Next-80B-A3B-Instruct",
-    # model="Qwen/Qwen3-32B",
-    model="Qwen/Qwen3-14B",
+    model="Qwen/Qwen3-32B",
+    # model="Qwen/Qwen3-14B",
     # model="Qwen/Qwen3-8B",
     # model="Qwen/Qwen3-Coder-30B-A3B-Instruct",
     model_provider=MODEL_PROVIDER_OPAI,

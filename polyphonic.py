@@ -52,7 +52,7 @@ def analyze_chunk(text_chunk):
 你是一名中文多音字分析器。
 1. 根据给出上下文的意思按以下规则找出多音字，输出每个多音字在文本中构成的词汇或短语，禁止输出单字！
 查找规则：{PROMPT_POLYPHONIC}
-2. 禁止输出原文中未出现的词语！
+2. 没有多音字直接返回`无`！禁止输出原文中未出现的词语！
 3. 拼音禁止带音标！而是其后用`1234`表示4个声调！如：银行, 行读hang2; 行走, 行读xing2。
 4. 严格按样例格式输出，最多输出20行，禁止输出任何样例格式以外的内容！
 样例格式:
@@ -70,7 +70,7 @@ def analyze_chunk(text_chunk):
     print("\n===输出===")
     # time.sleep(RATE_LIMIT)
 
-    LLM_TEXT = models.LLM_QWEN
+    # LLM_TEXT = models.LLM_QWEN
 
     messages = [
         SystemMessage(content=f""" 
