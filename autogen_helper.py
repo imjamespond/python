@@ -16,7 +16,17 @@ def make_model_client(model: str = "qwen/qwen3-next-80b-a3b-instruct"):
     api_key = os.getenv("TEXT_API_KEY", models.API_KEY_NV)
     # 可选：用于自定义 OpenAI 兼容 endpoint
     base_url = os.getenv("TEXT_API_BASE", models.BASE_URL_NV)
-    return OpenAIChatCompletionClient(model=os.getenv("TEXT_MODEL", model), api_key=api_key, base_url=base_url, model_info={
+    # create_args = _create_args_from_config(copied_args)
+    # create_args = {k: v for k, v in config.items() if k in create_kwargs}
+    """ 
+    说明能读取extra_body键
+    create_kwargs = set(completion_create_params.CompletionCreateParamsBase.__annotations__.keys()) | set(
+        ("timeout", "stream", "extra_body")
+    ) 
+    """
+    return OpenAIChatCompletionClient(model=os.getenv("TEXT_MODEL", model), api_key=api_key, base_url=base_url, extra_body={
+        # "enable_thinking": False
+    }, model_info={
         "vision": False,
         "function_calling": True,
         "json_output": True,
@@ -24,4 +34,3 @@ def make_model_client(model: str = "qwen/qwen3-next-80b-a3b-instruct"):
         "structured_output": True,
 
     })
-

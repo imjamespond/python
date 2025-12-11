@@ -7,10 +7,10 @@ from typing import Dict, List
 # Agent/Team APIs
 from autogen_agentchat.agents import AssistantAgent
 # from autogen_agentchat.tools import AgentTool
-from autogen_agentchat.teams import SelectorGroupChat
-from autogen_agentchat.conditions import MaxMessageTermination
+# from autogen_agentchat.teams import SelectorGroupChat
+# from autogen_agentchat.conditions import MaxMessageTermination
 # from autogen_agentchat.ui import Console
-from autogen_agentchat.messages import BaseAgentEvent, BaseChatMessage
+# from autogen_agentchat.messages import BaseAgentEvent, BaseChatMessage
 
 import autogen_helper
 import json_tool
@@ -29,11 +29,11 @@ _shared_model_client = autogen_helper.make_model_client()
 event_extractor = AssistantAgent(
     name="EVENT_EXTRACTOR",
     system_message=(
-        "你是事件抽取器。输入是一章小说文本。\n"
+        "你是事件抽取器。输入是一章小说文本。提取其中不超过5个最主要的事件。\n"
         "请严格输出一个 JSON 数组，每个元素是一个事件对象，包含以下字段：\n"
         "- name: 事件简短名称\n"
-        "- summary: 事件简要总结（1-2句）\n"
-        "- first_sentence: 事件的第一句原文句子\n"
+        "- summary: 事件简要总结（1-2句） string\n"
+        "- first_sentence: 事件的第一句原文句子 string\n"
         "确保 JSON 有效，不要有额外文字。"
     ),
     model_client=_shared_model_client,
@@ -48,8 +48,8 @@ event_analyzer = AssistantAgent(
 输入包括：原文全文 + 一个具体事件（包含 name, summary, first_sentence）。
 请针对该单个事件，结合原文上下文，输出一个 JSON 对象，包含以下字段：
 - name: 原事件名称
-- cause: 起因分析（3~6句详细描述事件发生的背景和触发原因）
-- relationships: 涉及的主要人物和物件，以及它们之间的关系（每个对象包含）：
+- cause: 起因分析（3~6句详细描述事件发生的背景和触发原因） string
+- relationships: 涉及的主要人物和物件的关系（每个对象包含）：
   - source: 人物或物件名称 
   - target: 人物或物件名称 
 - consequence: 事件结果（1-2句）
