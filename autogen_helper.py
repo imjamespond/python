@@ -38,14 +38,16 @@ def extractor_model_client(model: str = "qwen/qwen3-next-80b-a3b-instruct"):
 
 def analyze_model_client():
 
-    api_key = models.API_KEY_NV
-    base_url = models.BASE_URL_NV
+    model = os.getenv("ANALYSIS_MODEL", "qwen/qwen3-next-80b-a3b-instruct")
+    family = os.getenv("ANALYSIS_MODEL_FAMILY", "qwen")
+    api_key = os.getenv("ANALYSIS_API_KEY", models.API_KEY_NV)
+    base_url = os.getenv("ANALYSIS_API_BASE", models.BASE_URL_NV)
 
-    return OpenAIChatCompletionClient(model="qwen/qwen3-next-80b-a3b-instruct", api_key=api_key, base_url=base_url, extra_body={
+    return OpenAIChatCompletionClient(model=model, api_key=api_key, base_url=base_url, extra_body={
     }, model_info={
         "vision": False,
         "function_calling": True,
         "json_output": True,
-        "family": "qwen3",
+        "family": family,
         "structured_output": True,
     })
