@@ -25,7 +25,8 @@ RATE_LIMIT = int(os.getenv("RATE_LIMIT", 10))
 # Agents：每个 AssistantAgent 接收 model_client 实例
 # ================================
 # 为每个 agent 创建（或共享）model_client。通常可复用同一个 client。
-_shared_model_client = autogen_helper.make_model_client()
+event_extractor_model_client = autogen_helper.extractor_model_client()
+event_analyzer_model_client = autogen_helper.analyze_model_client()
 
 # 1. Event Extractor Agent
 event_extractor = AssistantAgent(
@@ -45,7 +46,7 @@ event_extractor = AssistantAgent(
 确保 JSON 有效，不要有额外文字。
 """
     ),
-    model_client=_shared_model_client,
+    model_client=event_extractor_model_client,
     description="负责从小说章节中抽取事件列表。",
     model_client_stream=True
 )
@@ -65,7 +66,7 @@ event_analyzer = AssistantAgent(
 - when: 原文明确提及事件发生时间（如果原文未明确，可推断或写 '未知'）string
 - where: 原文明确提及事件发生地点（如果原文未明确，可写 '未知'）string
 严格返回 JSON，不要有额外解释。""",
-    model_client=_shared_model_client,
+    model_client=event_analyzer_model_client,
     description="负责对单个事件进行深度分析。",
     model_client_stream=True
 )
