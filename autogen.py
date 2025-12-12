@@ -42,7 +42,6 @@ event_extractor = AssistantAgent(
 - events: 主要事件列表（每个对象包含）：
   - name: 事件简短名称
   - summary: 事件简要总结（1-2句） string
-  - first_sentence: 事件的第一句原文句子 string
 确保 JSON 有效，不要有额外文字。
 """
     ),
@@ -58,6 +57,7 @@ event_analyzer = AssistantAgent(
 输入包括：原文全文 + 一个具体事件（包含 name, summary, first_sentence）。
 请针对该单个事件，结合原文上下文，输出一个 JSON 对象，包含以下字段：
 - name: 原事件名称 string
+- first_sentence: 提及该事件在原文的第一句 string
 - relationships: 涉及的主要人物和物件的关系列表（每个对象包含）：
   - source: 人物名称 string
   - target: 人物名称 string
