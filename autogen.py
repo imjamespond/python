@@ -12,10 +12,12 @@ from autogen_agentchat.agents import AssistantAgent
 # from autogen_agentchat.ui import Console
 # from autogen_agentchat.messages import BaseAgentEvent, BaseChatMessage
 
+import agent_tools
 import autogen_helper
 import json_tool
 import splitter
 
+PROMPT_PERSON = os.getenv("PROMPT_PERSON") or ""
 RATE_LIMIT = int(os.getenv("RATE_LIMIT", 10))
 
 
@@ -29,12 +31,19 @@ _shared_model_client = autogen_helper.make_model_client()
 event_extractor = AssistantAgent(
     name="EVENT_EXTRACTOR",
     system_message=(
-        "你是事件抽取器。输入是一章小说文本。提取其中不超过5个最主要的事件。\n"
-        "请严格输出一个 JSON 数组，每个元素是一个事件对象，包含以下字段：\n"
-        "- name: 事件简短名称\n"
-        "- summary: 事件简要总结（1-2句） string\n"
-        "- first_sentence: 事件的第一句原文句子 string\n"
-        "确保 JSON 有效，不要有额外文字。"
+        """
+你是事件抽取器。输入是一章小说文本。提取其中不超过5个最主要的事件。
+请严格输出一个 JSON Map，包含以下字段：
+- chapter: 章节信息 string
+- characters: 主要人物列表（每个对象包含）：
+  - name: 人物名称{PROMPT_PERSON}
+  - description: 人物描述（1句）string
+- events: 主要事件列表（每个对象包含）：
+  - name: 事件简短名称
+  - summary: 事件简要总结（1-2句） string
+  - first_sentence: 事件的第一句原文句子 string
+确保 JSON 有效，不要有额外文字。
+"""
     ),
     model_client=_shared_model_client,
     description="负责从小说章节中抽取事件列表。",
@@ -47,17 +56,17 @@ event_analyzer = AssistantAgent(
     system_message="""你是剧情事件深度分析师。
 输入包括：原文全文 + 一个具体事件（包含 name, summary, first_sentence）。
 请针对该单个事件，结合原文上下文，输出一个 JSON 对象，包含以下字段：
-- name: 原事件名称
-- cause: 起因分析（3~6句详细描述事件发生的背景和触发原因） string
-- relationships: 涉及的主要人物和物件的关系（每个对象包含）：
-  - source: 人物或物件名称 
-  - target: 人物或物件名称 
-- consequence: 事件结果（1-2句）
-- when: 事件发生的大致时间描述（如果原文未明确，可推断或写 '未知'）
-- location: 事件发生地点（如果原文未明确，可写 '未知'）
+- name: 原事件名称 string
+- relationships: 涉及的主要人物和物件的关系列表（每个对象包含）：
+  - source: 人物名称 string
+  - target: 人物名称 string
+  - type: 关系类型，用一个词表示：朋友，敌人等 string
+- what: 事件过程。详述事件起因，说清该事件由什么引起，然后是事件经过 string
+- when: 原文明确提及事件发生时间（如果原文未明确，可推断或写 '未知'）string
+- where: 原文明确提及事件发生地点（如果原文未明确，可写 '未知'）string
 严格返回 JSON，不要有额外解释。""",
     model_client=_shared_model_client,
-    description="负责对单个事件进行起因、关系、结果等深度分析。",
+    description="负责对单个事件进行深度分析。",
     model_client_stream=True
 )
 
@@ -69,13 +78,14 @@ event_analyzer = AssistantAgent(
 
 
 async def analyze_chapter(chapter_text: str):
-    all_events = await extract_events(chapter_text)
+    data = await extract_events(chapter_text)
     await asyncio.sleep(RATE_LIMIT)
 
-    if not all_events:
+    if not data:
         print("本章节未抽取到任何事件，跳过分析。")
         return
-
+    
+    all_events = data["events"]
     for i, event in enumerate(all_events):
         print(f"\n🔄 正在处理第 {i+1}/{len(all_events)} 个事件...")
 
@@ -89,6 +99,8 @@ async def analyze_chapter(chapter_text: str):
         if i < len(all_events) - 1:
             print(f"⏳ 等待 {RATE_LIMIT} 秒后处理下一个事件...")
             await asyncio.sleep(RATE_LIMIT)
+
+    return data
 
     # team = SelectorGroupChat(
     #     participants=[event_analyzer],
@@ -149,12 +161,13 @@ async def extract_events(chapter_text: str) -> List[Dict]:
 
     print("\n--- 事件抽取完成 ---")
     try:
-        events = json_tool.getJSON(final_message_content)
+        data = json_tool.getJSON(final_message_content)
+        events = data["events"]
         if not isinstance(events, list):
             print(f"⚠️ 警告：抽取器未返回有效的JSON数组。返回内容：{final_message_content}")
             return []
         print(f"✅ 成功抽取 {len(events)} 个事件。")
-        return events
+        return data
     except json.JSONDecodeError:
         print(f"❌ 错误：无法解析抽取器返回的JSON。返回内容：{final_message_content}")
         return []
@@ -221,8 +234,21 @@ async def process_novel_by_chapter(file_path):
 
         if result:
             print(f"章节 {idx} 完成")
-            print(result)
+            await send_to_mcp(result)
             time.sleep(RATE_LIMIT)
+
+
+async def send_to_mcp(json_data):
+    print("send_to_mcp")
+
+    all_tools = await agent_tools.client.get_tools()
+    selected_tools = [
+        tool for tool in all_tools
+        if tool.name in ['add_to_neo4j']
+    ]
+
+    rs = await selected_tools[0].ainvoke(json_data)
+    print('mcp result', rs)
 
 
 async def main() -> None:

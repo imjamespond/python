@@ -1,11 +1,11 @@
 import { readJsonLines } from "./jsonl.ts";
-import { writeToNeo4j } from "./neo4j.ts";
+import { writeToNeo4j, writeToNeo4jInputSchema } from "./neo4j.ts";
 
 // 示例使用
 async function main() {
   for await (const data of readJsonLines()) {
     console.log(data); // 串行处理（也可改成并发）
-    await writeToNeo4j(data);
+    await writeToNeo4j(writeToNeo4jInputSchema.parse(data));
   }
 }
 

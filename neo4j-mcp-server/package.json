@@ -16,5 +16,8 @@
     "express": "^5.1.0",
     "neo4j-driver": "5.26.0",
     "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@types/node": "^25.0.1"
   }
 }
