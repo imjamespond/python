@@ -13,7 +13,7 @@ def extractor_model_client(model: str = "qwen/qwen3-next-80b-a3b-instruct"):
     示例使用 OpenAI 兼容的客户端。若使用 Azure/其他，请替换为相应的实现类。
     需要安装 extras： pip install "autogen-ext[openai]"
     """
-    family = os.getenv("MODEL_TYPE", "qwen")
+    family = os.getenv("MODEL_FAMILY", "qwen")
     api_key = os.getenv("TEXT_API_KEY", models.API_KEY_NV)
     # 可选：用于自定义 OpenAI 兼容 endpoint
     base_url = os.getenv("TEXT_API_BASE", models.BASE_URL_NV)

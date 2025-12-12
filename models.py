@@ -70,7 +70,7 @@ LLM_ZHIPU = init_chat_model(
 LLM_GEMINI = init_chat_model(
     model="google-ai-studio/gemini-2.5-flash-lite",  # 逻辑能力强
     model_provider=MODEL_PROVIDER_OPAI,
-    api_key=os.getenv("GM_API_KEY"),
+    api_key=os.getenv("CF_API_KEY"),
     base_url=BASE_URL_CF,
     # 其他可选参数
     temperature=0.2,
