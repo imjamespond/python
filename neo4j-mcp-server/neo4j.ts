@@ -99,7 +99,12 @@ export async function writeToNeo4j(data: writeToNeo4jInputType) {
           //   WHEN p.description IS NULL THEN [$description]
           //   ELSE p.description + [$description]
           // END
-          SET p.description = coalesce(p.description, []) + [$description]
+          SET p.description = 
+            CASE 
+              WHEN size(p.description) <= 5 OR p.description IS NULL
+              THEN coalesce(p.description, []) + [$description]
+              ELSE p.description
+            END
           `,
           character
         );
