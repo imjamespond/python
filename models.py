@@ -5,7 +5,10 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+# https://reference.langchain.com/python/langchain/models/#langchain.chat_models.init_chat_model(model)
+# 不同provider调用库不同
 MODEL_PROVIDER_OPAI = "openai"
+MODEL_PROVIDER_OLLM = "ollama"
 
 BASE_URL_MD = "https://api-inference.modelscope.cn/v1"
 BASE_URL_BD = "https://aistudio.baidu.com/llm/lmapi/v3"
@@ -193,12 +196,14 @@ def get_llm_text():
 
     args = get_args()
 
-    if model_provider == MODEL_PROVIDER_OPAI:
-        return init_chat_model(
-            model_provider=MODEL_PROVIDER_OPAI,
-            **args
-        )
-    return LLM_OLLAMA
+    if model_provider == MODEL_PROVIDER_OLLM:
+        return LLM_OLLAMA
+    
+    return init_chat_model(
+        model_provider=model_provider,
+        **args
+    )
+    
 
 
 LLM_TEXT = get_llm_text()

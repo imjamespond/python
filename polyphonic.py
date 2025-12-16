@@ -41,6 +41,8 @@ deepseek-ai/DeepSeek-V3.2-Exp 512 尚可 1024 多出其它词
 """
 
 # ---------- Step 2: AI分析 ---------- ZHIPU 可以
+
+
 def analyze_chunk(text_chunk):
     print("analyze_chunk", len(text_chunk), text_chunk)
     print("===找出多音词===")
@@ -65,7 +67,13 @@ def analyze_chunk(text_chunk):
     full = None
     for chunk in LLM_TEXT.stream(messages):
         full = chunk if full is None else full + chunk
-        print(chunk.text, end="")
+        if (chunk.additional_kwargs):
+            reasoning = chunk.additional_kwargs["reasoning_content"]
+            role = chunk.role
+            # print(f"\r{role}: {reasoning}".replace("\n", ""), end="")
+            print(reasoning, end="")
+        else:
+            print(chunk.text, end="")
 
     print("\n===输出===")
     # time.sleep(RATE_LIMIT)
@@ -135,7 +143,8 @@ def process_novel(file_path):
 
     with open('output.json', 'w', encoding='utf-8') as f:
         # 紧凑格式：每行一个顶层数组元素
-        json_str = '[\n' + ',\n'.join(json.dumps(item, ensure_ascii=False) for item in result_list) + '\n]'
+        json_str = '[\n' + ',\n'.join(json.dumps(item, ensure_ascii=False)
+                                      for item in result_list) + '\n]'
         f.write(json_str)
         # json.dump(result_list, f, ensure_ascii=False, indent=4)
 
@@ -154,7 +163,6 @@ async def handle(json_data):
         print(f"JSON解析错误: {e}")
     except Exception as e:
         print(f"其他错误: {e}")
-
 
 
 # ---------- 示例 ----------
