@@ -7,6 +7,7 @@ load_dotenv()
 
 # https://reference.langchain.com/python/langchain/models/#langchain.chat_models.init_chat_model(model)
 # 不同provider调用库不同
+MODEL_PROVIDER_NV = "nvidia"
 MODEL_PROVIDER_OPAI = "openai"
 MODEL_PROVIDER_OLLM = "ollama"
 
@@ -17,8 +18,13 @@ BASE_URL_CF = "https://gateway.ai.cloudflare.com/v1/7b606aa2446b22c790782eaba9cf
 BASE_URL_OR = "https://openrouter.ai/api/v1/"
 BASE_URL_NV = "https://integrate.api.nvidia.com/v1"
 
-model_provider = os.getenv("TEXT_PROVIDER", MODEL_PROVIDER_OPAI)
+model_providers = {
+    BASE_URL_NV: "nvidia",
+    BASE_URL_MD: "nvidia"
+}
+model_provider = os.getenv("TEXT_PROVIDER")
 
+"""
 # ---------- 配置 ----------
 # 直接初始化ChatOpenAI
 LLM_BAIDU = init_chat_model(
@@ -32,7 +38,7 @@ LLM_BAIDU = init_chat_model(
     max_tokens=8192,
     timeout=30
 )
-
+"""
 LLM_QWEN = init_chat_model(
     model=os.getenv("QWEN_MODEL", "Qwen/Qwen3-Next-80B-A3B-Instruct"),
     # model="Qwen/Qwen3-32B",
@@ -52,7 +58,7 @@ LLM_QWEN = init_chat_model(
     #     "enable_thinking": False
     # }
 )
-
+"""
 LLM_ZHIPU = init_chat_model(
     model="GLM-4.5-Flash",  # 不能输出纯JSON！
     model_provider=MODEL_PROVIDER_OPAI,
@@ -93,25 +99,26 @@ LLM_OR = init_chat_model(
     max_tokens=8192,
     timeout=30
 )
+"""
 
 # https://build.nvidia.com/search?q=text-generation
 API_KEY_NV = os.getenv("NV_API_KEY")
-LLM_NV = init_chat_model(
-    model="qwen/qwen3-next-80b-a3b-instruct",  # 生成json不错
-    # model="qwen/qwen3-next-80b-a3b-thinking", too slow
-    # model="deepseek-ai/deepseek-v3.1-terminus", not good
-    # model="deepseek-ai/deepseek-v3.1", # 还行
-    # model="moonshotai/kimi-k2-instruct-0905", # 较快
-    # model="bytedance/seed-oss-36b-instruct", # 不错
-    # model="nvidia/nvidia-nemotron-nano-9b-v2",
-    model_provider=MODEL_PROVIDER_OPAI,
-    api_key=API_KEY_NV,
-    base_url=BASE_URL_NV,
-    # 其他可选参数
-    temperature=0.2,
-    max_tokens=8192,
-    timeout=60
-)
+# LLM_NV = init_chat_model(
+#     model="qwen/qwen3-next-80b-a3b-instruct",  # 生成json不错
+#     # model="qwen/qwen3-next-80b-a3b-thinking", too slow
+#     # model="deepseek-ai/deepseek-v3.1-terminus", not good
+#     # model="deepseek-ai/deepseek-v3.1", # 还行
+#     # model="moonshotai/kimi-k2-instruct-0905", # 较快
+#     # model="bytedance/seed-oss-36b-instruct", # 不错
+#     # model="nvidia/nvidia-nemotron-nano-9b-v2",
+#     model_provider=MODEL_PROVIDER_OPAI,
+#     api_key=API_KEY_NV,
+#     base_url=BASE_URL_NV,
+#     # 其他可选参数
+#     temperature=0.2,
+#     max_tokens=8192,
+#     timeout=60
+# )
 
 
 LLM_OLLAMA = init_chat_model(
@@ -134,12 +141,13 @@ def get_args():
     temperature = float(os.getenv("TEMPERATURE", 0.2))
     max_tokens = int(os.getenv("MAX_TOKENS", 4096))
     model_type = os.getenv("MODEL_TYPE", "").lower()
-
+    base_url = os.getenv("TEXT_API_BASE", BASE_URL_NV)
     # 基础参数
     args = {
         "model": model,
+        "model_provider": model_provider if model_provider is not None else model_providers.get(base_url, MODEL_PROVIDER_OPAI),
         "api_key": os.getenv("TEXT_API_KEY", API_KEY_NV),
-        "base_url": os.getenv("TEXT_API_BASE", BASE_URL_NV),
+        "base_url": base_url,
         "max_tokens": max_tokens,
         "temperature": temperature,
         "timeout": 60,
@@ -198,12 +206,10 @@ def get_llm_text():
 
     if model_provider == MODEL_PROVIDER_OLLM:
         return LLM_OLLAMA
-    
+
     return init_chat_model(
-        model_provider=model_provider,
         **args
     )
-    
 
 
 LLM_TEXT = get_llm_text()

@@ -34,6 +34,16 @@
       "subProcess": true // 如果你的 asyncio 创建了子任务
     },
     {
+      "name": "autogen",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "autogen.py", // "${file}",
+      "args": [],
+      "console": "integratedTerminal",
+      "justMyCode": false, // 必须关闭以调试库内部的异步调用
+      "subProcess": true // 如果你的 asyncio 创建了子任务
+    },
+    {
       "name": "file",
       "type": "debugpy",
       "request": "launch",
