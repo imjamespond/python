@@ -147,7 +147,7 @@ export async function writeToNeo4j(data: writeToNeo4jInputType) {
 
             WITH e
             UNWIND $characters AS character
-            OPTIONAL MATCH (p:person {name: character})
+            MERGE (p:person {name: character})
             WITH e, p
             WHERE p IS NOT NULL
             MERGE (p)-[:PARTICIPATED_IN]->(e)
