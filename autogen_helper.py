@@ -17,6 +17,7 @@ def extractor_model_client(model: str = "qwen/qwen3-next-80b-a3b-instruct"):
     api_key = os.getenv("TEXT_API_KEY", models.API_KEY_NV)
     # 可选：用于自定义 OpenAI 兼容 endpoint
     base_url = os.getenv("TEXT_API_BASE", models.BASE_URL_NV)
+    max_tokens = int(os.getenv("MAX_TOKENS", 4096))
     # create_args = _create_args_from_config(copied_args)
     # create_args = {k: v for k, v in config.items() if k in create_kwargs}
     """ 
@@ -25,7 +26,7 @@ def extractor_model_client(model: str = "qwen/qwen3-next-80b-a3b-instruct"):
         ("timeout", "stream", "extra_body")
     ) 
     """
-    return OpenAIChatCompletionClient(model=os.getenv("TEXT_MODEL", model), api_key=api_key, base_url=base_url, extra_body={
+    return OpenAIChatCompletionClient(model=os.getenv("TEXT_MODEL", model), api_key=api_key, base_url=base_url, max_tokens=max_tokens, extra_body={
         # "enable_thinking": False
     }, model_info={
         "vision": False,

@@ -62,9 +62,9 @@ event_analyzer = AssistantAgent(
   - source: 人物名称 string
   - target: 人物名称 string
   - type: 关系类型，用一个词表示：朋友，敌人等 string
-- what: 事件过程。详述事件起因，说清该事件由什么引起，然后是事件经过 string
-- when: 原文明确提及事件发生时间（如果原文未明确，可推断或写 '未知'）string
-- where: 原文明确提及事件发生地点（如果原文未明确，可写 '未知'）string
+- what: 事件过程。详述事件起因，说清该事件由什么引起，然后是事件经过，string
+- when: 原文明确提及事件发生时间（如果原文未明确，可推断或写 '未知'），string
+- where: 原文明确提及事件发生地点（如果原文未明确，可写 '未知'），string
 严格返回 JSON，不要有额外解释。""",
     model_client=event_analyzer_model_client,
     description="负责对单个事件进行深度分析。",
