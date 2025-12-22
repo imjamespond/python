@@ -33,11 +33,11 @@ event_extractor = AssistantAgent(
     name="EVENT_EXTRACTOR",
     system_message=(
         """
-你是事件抽取器。输入是一章小说文本。提取其中不超过5个最主要的事件。
+你是事件抽取器。输入是一章小说文本。提取最主要的事件，不要超过5个。
 请严格输出一个 JSON Map，包含以下字段：
 - chapter: 章节信息 string
 - characters: 主要人物列表（每个对象包含）：
-  - name: 人物名称{PROMPT_PERSON}
+  - name: 人物名称
   - description: 人物描述（1句）string
 - events: 主要事件列表（每个对象包含）：
   - name: 事件简短名称
@@ -58,13 +58,13 @@ event_analyzer = AssistantAgent(
 请针对该单个事件，结合原文上下文，输出一个 JSON 对象，包含以下字段：
 - name: 原事件名称 string
 - first_sentence: 提及该事件在原文的第一句 string
-- relationships: 涉及的主要人物和物件的关系列表{PROMPT_PERSON}，（每个对象包含）：
+- relationships: 涉及的主要人物和物件的关系列表（每个对象包含）：
   - source: 人物名称 string
   - target: 人物名称 string
   - type: 关系类型，用一个词表示：朋友，敌人等 string
-- what: 事件过程。详述事件起因，说清该事件由什么引起，然后是事件经过，string
-- when: 原文明确提及事件发生时间（如果原文未明确，可推断或写 '未知'），string
-- where: 原文明确提及事件发生地点（如果原文未明确，可写 '未知'），string
+- what: 事件过程。详述事件起因，说清该事件由什么引起，然后是事件经过，类型string
+- when: 原文明确提及事件发生时间（如果原文未明确，可推断或写 '未知'），类型string
+- where: 原文明确提及事件发生主要地点，单个（如果原文未明确，可写 '未知'），类型string
 严格返回 JSON，不要有额外解释。""",
     model_client=event_analyzer_model_client,
     description="负责对单个事件进行深度分析。",
@@ -85,7 +85,7 @@ async def analyze_chapter(chapter_text: str):
     if not data:
         print("本章节未抽取到任何事件，跳过分析。")
         return
-    
+
     all_events = data["events"]
     for i, event in enumerate(all_events):
         print(f"\n🔄 正在处理第 {i+1}/{len(all_events)} 个事件...")
@@ -139,7 +139,8 @@ async def analyze_chapter(chapter_text: str):
 async def extract_events(chapter_text: str) -> List[Dict]:
     """使用 event_extractor agent 流式抽取所有事件。"""
     print("--- 开始抽取事件 ---")
-    task = f"请从以下小说章节中抽取事件列表：\n{chapter_text}"
+    task = (f"请从以下小说章节中抽取事件列表：\n{chapter_text}"
+            f"{PROMPT_PERSON}")
 
     final_message_content = ""
     # 使用 run_stream 进行流式调用
@@ -181,6 +182,7 @@ async def analyze_single_event(chapter_text: str, event: Dict) -> Dict:
     task = (
         f"小说原文全文：\n{chapter_text}\n\n"
         f"请深度分析以下这个具体事件：\n{json.dumps(event, ensure_ascii=False)}"
+        f"{PROMPT_PERSON}"
     )
 
     final_analysis_content = ""
