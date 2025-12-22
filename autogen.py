@@ -58,7 +58,7 @@ event_analyzer = AssistantAgent(
 请针对该单个事件，结合原文上下文，输出一个 JSON 对象，包含以下字段：
 - name: 原事件名称 string
 - first_sentence: 提及该事件在原文的第一句 string
-- relationships: 涉及的主要人物和物件的关系列表（每个对象包含）：
+- relationships: 涉及的主要人物和物件的关系列表{PROMPT_PERSON}，（每个对象包含）：
   - source: 人物名称 string
   - target: 人物名称 string
   - type: 关系类型，用一个词表示：朋友，敌人等 string

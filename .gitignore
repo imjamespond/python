@@ -8,3 +8,4 @@ input*.txt
 output*.txt
 data*.jsonl
 output*.json
+*.zip
