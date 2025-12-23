@@ -26,10 +26,10 @@ if not shutil.which(ffmpeg):
 """
   获取文件列表
 """
-pattern = re.compile(r"gen-(\d+)-(\d+)-(\d+)\.wav")
+pattern = re.compile(r"gen(\d+)-(\d+)-(\d+)\.wav")
 
 files = []
-for f in glob.glob(str(base_dir / "gen-*-*-*.wav")):
+for f in glob.glob(str(base_dir / "gen*-*-*.wav")):
     m = pattern.match(Path(f).name)
     if not m:
         continue

@@ -1,3 +1,4 @@
+.continue
 .venv
 .env
 .env-*
@@ -9,3 +10,5 @@ output*.txt
 data*.jsonl
 output*.json
 *.zip
+list.txt
+*.aac
