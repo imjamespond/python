@@ -5,6 +5,10 @@ import shutil
 import subprocess
 from pathlib import Path
 
+from dotenv import load_dotenv
+# uv run wave2aac.py
+load_dotenv()
+
 """
   环境变量
 """
@@ -60,5 +64,5 @@ subprocess.run([
     "-i", "list.txt",
     "-c:a", "aac",
     "-b:a", "64k",
-    "output.aac"
+    "output.m4a"
 ], check=True)
