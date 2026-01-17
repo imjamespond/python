@@ -47,7 +47,7 @@ LLM_JSON = init_chat_model(
     # model="Qwen/Qwen3-Coder-30B-A3B-Instruct",
     model_provider=MODEL_PROVIDER_OPAI,
     api_key=os.getenv("JSON_API_KEY"),      # apikey: 设置API密钥
-    base_url=os.getenv("JSON_BASE_URL", BASE_URL_MD),,  # apiurl: 设置基础URL
+    base_url=os.getenv("JSON_BASE_URL", BASE_URL_MD),  # apiurl: 设置基础URL
     # 其他可选参数
     temperature=0.1,
     max_tokens=4096,
