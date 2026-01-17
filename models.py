@@ -39,15 +39,15 @@ LLM_BAIDU = init_chat_model(
     timeout=30
 )
 """
-LLM_QWEN = init_chat_model(
-    model=os.getenv("QWEN_MODEL", "Qwen/Qwen3-Next-80B-A3B-Instruct"),
+LLM_JSON = init_chat_model(
+    model=os.getenv("JSON_MODEL", "Qwen/Qwen3-Next-80B-A3B-Instruct"),
     # model="Qwen/Qwen3-32B",
     # model="Qwen/Qwen3-14B",
     # model="Qwen/Qwen3-8B",
     # model="Qwen/Qwen3-Coder-30B-A3B-Instruct",
     model_provider=MODEL_PROVIDER_OPAI,
-    api_key=os.getenv("MODELSCOPE_API_KEY"),      # apikey: 设置API密钥
-    base_url=BASE_URL_MD,  # apiurl: 设置基础URL
+    api_key=os.getenv("JSON_API_KEY"),      # apikey: 设置API密钥
+    base_url=os.getenv("JSON_BASE_URL", BASE_URL_MD),,  # apiurl: 设置基础URL
     # 其他可选参数
     temperature=0.1,
     max_tokens=4096,
@@ -213,5 +213,4 @@ def get_llm_text():
 
 
 LLM_TEXT = get_llm_text()
-LLM_JSON = LLM_QWEN
 LLM_TOOLS = LLM_OLLAMA
