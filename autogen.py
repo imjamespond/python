@@ -29,47 +29,51 @@ event_extractor_model_client = autogen_helper.extractor_model_client()
 event_analyzer_model_client = autogen_helper.analyze_model_client()
 
 # 1. Event Extractor Agent
-event_extractor = AssistantAgent(
-    name="EVENT_EXTRACTOR",
-    system_message=(
-        """
-你是事件抽取器。输入是一章小说文本。提取最主要的事件，不要超过5个。
-请严格输出一个 JSON Map，包含以下字段：
-- chapter: 章节信息 string
-- characters: 主要人物列表（每个对象包含）：
-  - name: 人物名称
-  - description: 人物描述（1句）string
-- events: 主要事件列表（每个对象包含）：
-  - name: 事件简短名称
-  - summary: 事件简要总结（1-2句） string
-确保 JSON 有效，不要有额外文字。
-"""
-    ),
-    model_client=event_extractor_model_client,
-    description="负责从小说章节中抽取事件列表。",
-    model_client_stream=True
-)
+def get_event_extractor():
+  event_extractor = AssistantAgent(
+      name="EVENT_EXTRACTOR",
+      system_message=(
+          """
+  你是事件抽取器。输入是一章小说文本。提取最主要的事件，不要超过5个。
+  请严格输出一个 JSON Map，包含以下字段：
+  - chapter: 章节信息 string
+  - characters: 主要人物列表（每个对象包含）：
+    - name: 人物名称
+    - description: 人物描述（1句）string
+  - events: 主要事件列表（每个对象包含）：
+    - name: 事件简短名称
+    - summary: 事件简要总结（1-2句） string
+  确保 JSON 有效，不要有额外文字。
+  """
+      ),
+      model_client=event_extractor_model_client,
+      description="负责从小说章节中抽取事件列表。",
+      model_client_stream=True
+  )
+  return event_extractor
 
 # 2. Event Analyzer Agent（改进系统提示以满足你的需求）
-event_analyzer = AssistantAgent(
-    name="EVENT_ANALYZER",
-    system_message="""你是剧情事件深度分析师。
-输入包括：原文全文 + 一个具体事件（包含 name, summary, first_sentence）。
-请针对该单个事件，结合原文上下文，输出一个 JSON 对象，包含以下字段：
-- name: 原事件名称 string
-- first_sentence: 提及该事件在原文的第一句 string
-- relationships: 涉及的主要人物和物件的关系列表（每个对象包含）：
-  - source: 人物名称 string
-  - target: 人物名称 string
-  - type: 关系类型，用一个词表示：朋友，敌人等 string
-- what: 事件过程。详述事件起因，说清该事件由什么引起，然后是事件经过，类型string
-- when: 原文明确提及事件发生时间（如果原文未明确，可推断或写 '未知'），类型string
-- where: 原文明确提及事件发生主要地点，单个（如果原文未明确，可写 '未知'），类型string
-严格返回 JSON，不要有额外解释。""",
-    model_client=event_analyzer_model_client,
-    description="负责对单个事件进行深度分析。",
-    model_client_stream=True
-)
+def get_event_analyzer():
+  event_analyzer = AssistantAgent(
+      name="EVENT_ANALYZER",
+      system_message="""你是剧情事件深度分析师。
+  输入包括：原文全文 + 一个具体事件（包含 name, summary, first_sentence）。
+  请针对该单个事件，结合原文上下文，输出一个 JSON 对象，包含以下字段：
+  - name: 原事件名称 string
+  - first_sentence: 提及该事件在原文的第一句 string
+  - relationships: 涉及的主要人物和物件的关系列表（每个对象包含）：
+    - source: 人物名称 string
+    - target: 人物名称 string
+    - type: 关系类型，用一个词表示：朋友，敌人等 string
+  - what: 事件过程。详述事件起因，说清该事件由什么引起，然后是事件经过，类型string
+  - when: 原文明确提及事件发生时间（如果原文未明确，可推断或写 '未知'），类型string
+  - where: 原文明确提及事件发生主要地点，单个（如果原文未明确，可写 '未知'），类型string
+  严格返回 JSON，不要有额外解释。""",
+      model_client=event_analyzer_model_client,
+      description="负责对单个事件进行深度分析。",
+      model_client_stream=True
+  )
+  return event_analyzer
 
 # 由于只有一个参与者，selector_func 不再需要
 # def selector_func(messages: Sequence[BaseAgentEvent | BaseChatMessage]):
@@ -144,6 +148,7 @@ async def extract_events(chapter_text: str) -> List[Dict]:
 
     final_message_content = ""
     # 使用 run_stream 进行流式调用
+    event_extractor = get_event_extractor()
     stream = event_extractor.run_stream(task=task)
 
     # 实时打印流式输出并拼接完整内容
@@ -187,6 +192,7 @@ async def analyze_single_event(chapter_text: str, event: Dict) -> Dict:
 
     final_analysis_content = ""
     # 使用 run_stream 进行流式调用
+    event_analyzer = get_event_analyzer()
     stream = event_analyzer.run_stream(task=task)
 
     # 实时打印流式输出并拼接完整内容
