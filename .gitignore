@@ -1,0 +1,7 @@
+__pycache__
+
+.venv
+*.pt
+*.jpg
+output*
+face_db
