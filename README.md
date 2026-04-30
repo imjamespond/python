@@ -2,7 +2,7 @@
 uv venv --python 3.10
 # cuda 11.8
 uv pip install torch==2.6.0 torchaudio==2.6.0 torchvision==0.21 -f https://mirrors.aliyun.com/pytorch-wheels/cu118
-uv pip install ultralytics
+uv pip install ultralytics dotenv
 uv run python -c "import torch; print(torch.cuda.is_available())"
 ```
 

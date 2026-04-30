@@ -1,15 +1,19 @@
 import sys
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 import cv2
 from ultralytics import YOLO
 
-img_path = "e:/temp/covers/IMG_349-gigapixel-hq-scale-8_00x_Nero AI_Photo_Face.jpeg"
+img_path = sys.argv[1]
 
 # 自动下载 yolo11n.pt 预训练权重, 当前目录下读取
-model = YOLO("yolov11l-face.pt")
+model = YOLO(os.getenv("MODEL"))
 
 # 指定 GPU 推理（device=0 表示第一张卡，也可写 device="cuda"）
-results = model.predict(img_path, device=0, conf=0.3)
+results = model.predict(img_path, device=os.getenv("DEVICE"), conf=0.3)
 
 # # 3. 获取预测结果并画图
 # # results[0] 是第一张图的结果
