@@ -2,11 +2,16 @@ import os
 from pathlib import Path
 from typing import Callable, Union
 
+import config
+
+gap_step = int( os.getenv("GAP_STEP", "1") )
+gap_max = int( os.getenv("GAP_MAX", "100") )
 
 def traverse_files(
     path: Union[str, Path],
-    callback: Callable[[Path], bool],
-    ignore_errors: bool = True
+    callback: Callable[[Path, int, int, int], bool],
+    ignore_errors: bool = True,
+    depth_max: int = -1
 ) -> None:
     """
     递归遍历目录，按间隔计数规则对文件执行回调
@@ -19,7 +24,11 @@ def traverse_files(
     Returns:
         None
     """
-    def _traverse(dir_path: Path):
+    def _traverse(dir_path: Path, depth: int):
+
+        if depth_max >= 0 and depth > depth_max:
+            return
+
         i = 0
         gap = 0
         next = 0
@@ -28,14 +37,14 @@ def traverse_files(
             for item in dir_path.iterdir():
                 if item.is_file():
                     
-                    
                     try:
-                        value = False if next > i else callback(item)
+                        value = False if next > i else callback(item, i, gap, next)
                         if value:
                             next = gap + i
-                            gap += 1
+                            gap += gap_step
+                            gap = min(gap, gap_max)
 
-                            print(f"i {i}, gap {gap}, next {next}, item {item}")
+                            # print(f"i {i}, gap {gap}, next {next}, item {item}")
                         
                     except Exception as e:
                         if not ignore_errors:
@@ -46,7 +55,7 @@ def traverse_files(
                 
                 elif item.is_dir():
                     # 子目录，独立状态递归
-                    _traverse(item)
+                    _traverse(item, depth + 1)
 
             # for img in os.listdir(img_path):
             #     if os.path.isdir(img):
@@ -66,10 +75,12 @@ def traverse_files(
         # 如果传入的是文件，直接callback
         callback(root)
     elif root.is_dir():
-        _traverse(root)
+        _traverse(root, 0)
 
 
 if __name__ == '__main__':
-    traverse_files("K:\Documents\Jenya", lambda f, runnable: (
-       runnable and f.suffix.lower() in [".jpg", ".png"] 
+    img_path = os.getenv("IMG_PATH")
+    print(img_path)
+    traverse_files(img_path, lambda f, i, gap, next: (
+       f.suffix.lower() in [".jpg", ".png"] 
     ))
