@@ -4,8 +4,9 @@ from typing import Callable, Union
 
 import config
 
-gap_step = int( os.getenv("GAP_STEP", "1") )
-gap_max = int( os.getenv("GAP_MAX", "100") )
+gap_step = config.gap_step
+gap_max = config.gap_max
+depth_max = config.depth_max
 
 def traverse_files(
     path: Union[str, Path],
@@ -30,7 +31,7 @@ def traverse_files(
             return
 
         i = 0
-        gap = 0
+        gap = 1
         next = 0
 
         try:
@@ -79,8 +80,8 @@ def traverse_files(
 
 
 if __name__ == '__main__':
-    img_path = os.getenv("IMG_PATH")
+    img_path = config.img_path
     print(img_path)
-    traverse_files(img_path, lambda f, i, gap, next: (
-       f.suffix.lower() in [".jpg", ".png"] 
-    ))
+    traverse_files(img_path, lambda item, i, gap, next: (
+       item.suffix.lower() in [".jpg", ".png"] and None == print(f"i {i}, gap {gap}, next {next}, item {item}")
+    ), depth_max=depth_max)
