@@ -31,6 +31,8 @@ def append_filepath(img_path, face_img):
     count += 1
 
 def run(file_path, i, gap, next):
+    global count, started
+
     if not file_path.suffix.lower() in [".jpg", ".png"]:
       return False
   
@@ -41,9 +43,6 @@ def run(file_path, i, gap, next):
       
       if not started:
         return True
-       
-       
-    global count
     
     try:
       detect.detect_face(file, append_filepath)
