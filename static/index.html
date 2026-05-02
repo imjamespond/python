@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="UTF-8" />
+    <title>图片上传</title>
+  </head>
+  <body>
+    <h2>上传图片</h2>
+    <input type="file" id="fileInput" accept="image/*" />
+    <button onclick="upload()">上传</button>
+    <pre>
+        <code id="result"></code>
+    </pre>
+
+    <script>
+      async function upload() {
+        const file = document.getElementById("fileInput").files[0];
+        if (!file) return alert("请先选择图片");
+
+        const form = new FormData();
+        form.append("image", file);
+
+        const res = await fetch("/upload", {
+          method: "POST",
+          body: form,
+        });
+        const data = await res.json();
+        document.getElementById("result").textContent = JSON.stringify(data, null, 2 ) || data.error;
+      }
+    </script>
+  </body>
+</html>

@@ -1,14 +1,5 @@
-import os
 import sys
-from typing import List
-
-import multiprocessing as mp
-from deepface import DeepFace
-import pandas as pd
-import config
-import test_face
-import chroma
-import resize
+import chroma 
 
 
 img_path = "e:/temp/covers/"

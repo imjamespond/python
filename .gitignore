@@ -1,7 +1,8 @@
 __pycache__
 
+.env
 .venv
 *.pt
 *.jpg
 output*
-face_db
+*_db

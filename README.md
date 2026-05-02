@@ -1,8 +1,11 @@
 ```bash
 uv venv --python 3.10
 # cuda 11.2
-uv pip install tensorflow==2.10.0 numpy<2.0 chromadb==0.4.24
-uv pip install deepface tf-keras
+uv pip install tensorflow==2.10.0 "numpy<2.0" chromadb==0.4.24
+# mac
+uv pip install tensorflow==2.13.0 chromadb==0.4.24 protobuf==3.20.3
+uv pip install deepface tf-keras dotenv
+
 uv pip show deepface  
 ```
 

@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 from typing import List
 
@@ -11,7 +12,7 @@ import traverse
 # 初始化 ChromaDB 客户端和集合
 client = chromadb.PersistentClient(path="./test_db")  # 或使用内存模式
 collection = client.get_or_create_collection(name="face_collection")
-
+resize_img = os.getenv("RESIZE_IMG")
 
 def batch_save_embeding(img_path: str):
     # for img in os.listdir(img_path):
@@ -45,12 +46,12 @@ def batch_save_embeding(img_path: str):
 
 def save_embeding(image_path: str, person_name: str):
 
-    risized_img = resize.resize_to_width(image_path)
+    img = image_path if resize_img == None else resize.resize_to_width(image_path)
 
     # # DeepFace.represent 返回嵌入向量的列表，每个元素对应图像中检测到的一张人脸
     # embeddings = DeepFace.represent(img_path=image_path, model_name="Facenet", enforce_detection=False)
     embeddings: List[dict] = DeepFace.represent(
-        img_path=risized_img, detector_backend=config.detector, align=config.align)
+        img_path=img, detector_backend=config.detector, align=config.align)
     # print(embeddings)
 
     for embedding_obj in embeddings:
@@ -70,7 +71,7 @@ def search_embeding(image_path):
     risized_img = resize.resize_to_width(image_path)
 
     embeddings: List[dict] = DeepFace.represent(
-        img_path=risized_img,  detector_backend=config.detector, align=config.align)
+        img_path=risized_img,  detector_backend=config.backends[3], align=config.align)
     # print(embeddings)
 
     # 假设图像中只有一张人脸，取第一个embedding
@@ -80,12 +81,16 @@ def search_embeding(image_path):
     results = collection.query(
         query_embeddings=[embedding],     # 查询向量
         n_results=10                      # 返回最相似的1个结果
+        # include: Include = ["metadatas", "documents", "distances"],
     )
 
     # 获取最相似的元数据
-    metadata = results["metadatas"]
-    return metadata
+    # metadata = results["metadatas"]
+    distances = results["distances"]
+    print(distances)
+
+    return results
 
 
-if __name__ == '__main__':
-    batch_save_embeding("K:\Documents")
+# if __name__ == '__main__':
+#     batch_save_embeding(os.getenv("IMAGE_PATH"))

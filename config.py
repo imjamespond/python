@@ -1,5 +1,8 @@
 import os
 import tensorflow as tf
+import dotenv
+
+dotenv.load_dotenv()
 
 backends = [
     'opencv', 'ssd', 'dlib', 'mtcnn', 'fastmtcnn',
@@ -8,7 +11,7 @@ backends = [
     'yolov11l', 'yolov12n', 'yolov12s', 'yolov12m',
     'yolov12l', 'yunet', 'centerface',
 ]
-detector = backends[3]
+detector = os.getenv("DETECTOR", backends[3])
 align = True
 
 os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
