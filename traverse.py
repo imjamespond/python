@@ -2,11 +2,10 @@ import os
 from pathlib import Path
 from typing import Callable, Union
 
-import config
-
-gap_step = config.gap_step
-gap_max = config.gap_max
-depth_max = config.depth_max
+gap_max = int( os.getenv("GAP_MAX", "100") )
+gap_step = int( os.getenv("GAP_STEP", "1") )
+depth_max = int( os.getenv("DEPTH_MAX", "-1") )
+start = int( os.getenv("START", "0") )
 
 def traverse_files(
     path: Union[str, Path],
@@ -40,7 +39,7 @@ def traverse_files(
                     
                     try:
                         value = False if next > i else callback(item, i, gap, next)
-                        if value:
+                        if value and i >= start:
                             next = gap + i
                             gap += gap_step
                             gap = min(gap, gap_max)

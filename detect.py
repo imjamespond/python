@@ -5,13 +5,15 @@ from typing import Callable
 import config
 
 model = YOLO(config.model)
-def detect_face(img_path: str, callback: Callable[[str, ndarray], None]):
+def detect_face(img_path: str, callback: Callable[[str, ndarray], None]) -> bool:
+  has_face = False
   results = model.predict(img_path, device=config.device, conf=0.3)
   for result in results:
     # result.save_crop("crops", img_file)
     image = result.orig_img
     boxes = result.boxes
     for box in boxes:
+        has_face = True
         # cls = int(box.cls[0])
         # label = result.names[cls]
         # 获取左上角和右下角坐标
@@ -21,3 +23,5 @@ def detect_face(img_path: str, callback: Callable[[str, ndarray], None]):
         face_img = image[y1:y2, x1:x2]
 
         callback(img_path, face_img)
+    
+  return has_face

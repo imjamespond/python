@@ -8,7 +8,8 @@ import traverse
 count = 0
 start_from = os.getenv("START_FROM")
 started = False
-output_file = open('output_file.txt', "a")
+output_file = open('output_file.txt', "a", encoding='utf-8')
+
 
 def append_filepath(img_path, face_img):
     global count
@@ -30,33 +31,37 @@ def append_filepath(img_path, face_img):
 
     count += 1
 
+
 def run(file_path, i, gap, next):
     global count, started
 
     if not file_path.suffix.lower() in [".jpg", ".png"]:
-      return False
-  
+        return False
+
     file = str(file_path)
     if start_from:
-      if start_from == file:
-        started = True
-      
-      if not started:
-        return True
-    
-    try:
-      detect.detect_face(file, append_filepath)
+        if start_from == file:
+            started = True
 
-      print(f"count{count}, i {i}, gap {gap}, next {next} ")
+        if not started:
+            return True
+
+    has_face = False
+
+    try:
+        has_face = detect.detect_face(file, append_filepath)
+
+        print(f"count{count}, i {i}, gap {gap}, next {next} ")
 
     except Exception as e:
-      print(file, e)
-      return False
+        print(file, e)
+        return False
 
     if count % 10 == 0:
         output_file.flush()
 
-    return True
+    return has_face
+
 
 if __name__ == '__main__':
     img_path = os.getenv("IMG_PATH")
