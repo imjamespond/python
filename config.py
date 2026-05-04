@@ -14,7 +14,7 @@ backends = [
 detector = os.getenv("DETECTOR", backends[3])
 align = True
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
+# os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 
 def config_gpu():
 

@@ -1,4 +1,7 @@
 import tensorflow as tf
+import dotenv
+
+dotenv.load_dotenv()
 
 # 1. 确认版本
 print("TensorFlow 版本:", tf.__version__)
