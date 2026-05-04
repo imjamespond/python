@@ -1,8 +1,12 @@
+import os
+
 from numpy import ndarray
 from ultralytics import YOLO
 from typing import Callable
 
 import config
+
+max_face_num = int(os.getenv("START", "3"))
 
 model = YOLO(config.model)
 def detect_face(img_path: str, callback: Callable[[str, ndarray], None]) -> bool:
@@ -12,7 +16,9 @@ def detect_face(img_path: str, callback: Callable[[str, ndarray], None]) -> bool
     # result.save_crop("crops", img_file)
     image = result.orig_img
     boxes = result.boxes
-    for box in boxes:
+    for i, box in enumerate(boxes):
+        if i >= max_face_num:
+            break
         has_face = True
         # cls = int(box.cls[0])
         # label = result.names[cls]
