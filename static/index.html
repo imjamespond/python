@@ -6,7 +6,16 @@
   </head>
   <body>
     <h2>上传图片</h2>
+    <select id="topN" >
+      <option value="">请选择TopN</option>
+      <option value="10">10</option>
+      <option value="20">20</option>
+      <option value="30">30</option>
+      <option value="50">50</option>
+      <option value="100">100</option>
+    </select>
     <input type="file" id="fileInput" accept="image/*" />
+    <br />
     <button onclick="upload()">上传</button>
     <pre>
         <code id="result"></code>
@@ -19,13 +28,19 @@
 
         const form = new FormData();
         form.append("image", file);
+        const topN = document.getElementById("topN").value;
+        if (topN)
+          form.append("topN", topN);
 
         const res = await fetch("/upload", {
           method: "POST",
           body: form,
         });
         const data = await res.json();
-        document.getElementById("result").textContent = JSON.stringify(data, null, 2 ) || data.error;
+        if(!data) return
+        const results = data.results;
+        const distances = results.distances[0].map((dist,i) => (dist.toFixed(3) + ": " + results.ids[0][i]));
+        document.getElementById("result").textContent = JSON.stringify(distances, null, 2 ) || data.error;
       }
     </script>
   </body>

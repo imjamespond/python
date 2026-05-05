@@ -69,7 +69,7 @@ def save_embeding(image_path: str, person_name: str):
         )
 
 
-def search_embeding(image_path):
+def search_embeding(image_path, top_N=10):
 
     risized_img = resize.resize_to_width(image_path)
 
@@ -83,7 +83,7 @@ def search_embeding(image_path):
     # 使用向量搜索
     results = collection.query(
         query_embeddings=[embedding],     # 查询向量
-        n_results=10                      # 返回最相似的1个结果
+        n_results=top_N                      # 返回最相似的1个结果
         # include: Include = ["metadatas", "documents", "distances"],
     )
 
