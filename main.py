@@ -1,13 +1,13 @@
 import math
 import os
-
 import cv2
 import detect
 import traverse
+import config
 
 count = 0
 
-depth_max = int(os.getenv("DEPTH_MAX", "-1"))
+depth_max = config.depth_max
 start_from = os.getenv("START_FROM")
 started = False
 output_file = open('output_file.txt', "a", encoding='utf-8')

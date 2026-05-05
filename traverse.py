@@ -6,6 +6,8 @@ gap_max = int(os.getenv("GAP_MAX", "100"))
 gap_start = int(os.getenv("GAP_START", "0"))
 gap_step = int(os.getenv("GAP_STEP", "1"))
 img_path = os.getenv("IMG_PATH")
+exclude_dirs = None if os.getenv("EXCLUDE_DIRS") == None else os.getenv("EXCLUDE_DIRS").split(",")
+include_dirs = None if os.getenv("INCLUDE_DIRS") == None else os.getenv("INCLUDE_DIRS").split(",") 
 
 
 def traverse_files(
@@ -57,6 +59,10 @@ def traverse_files(
 
                 elif item.is_dir():
                     # 子目录，独立状态递归
+                    if include_dirs != None and depth == 0 and item.name not in include_dirs:
+                        continue
+                    if exclude_dirs != None and item.name in exclude_dirs:
+                        continue
                     _traverse(item, depth + 1)
 
             # for img in os.listdir(img_path):
