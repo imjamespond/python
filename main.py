@@ -6,6 +6,8 @@ import detect
 import traverse
 
 count = 0
+
+depth_max = int(os.getenv("DEPTH_MAX", "-1"))
 start_from = os.getenv("START_FROM")
 started = False
 output_file = open('output_file.txt', "a", encoding='utf-8')
@@ -65,5 +67,5 @@ def run(file_path, i, gap, next):
 
 if __name__ == '__main__':
     img_path = os.getenv("IMG_PATH")
-    traverse.traverse_files(img_path, run)
+    traverse.traverse_files(img_path, run, depth_max=depth_max)
     output_file.close()

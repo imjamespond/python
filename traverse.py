@@ -5,7 +5,6 @@ from typing import Callable, Union
 gap_max = int(os.getenv("GAP_MAX", "100"))
 gap_start = int(os.getenv("GAP_START", "0"))
 gap_step = int(os.getenv("GAP_STEP", "1"))
-depth_max = int(os.getenv("DEPTH_MAX", "-1"))
 img_path = os.getenv("IMG_PATH")
 
 
@@ -86,4 +85,4 @@ if __name__ == '__main__':
     traverse_files(img_path, lambda item, i, gap, next: (
         item.suffix.lower() in [".jpg", ".png"] and None == print(
             f"i {i}, gap {gap}, next {next}, item {item}")
-    ), depth_max=depth_max)
+    ), depth_max=0)

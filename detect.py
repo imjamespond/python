@@ -6,7 +6,7 @@ from typing import Callable
 
 import config
 
-max_face_num = int(os.getenv("START", "3"))
+max_face_num = int(os.getenv("MAX_FACE_NUM", "3"))
 
 model = YOLO(config.model)
 def detect_face(img_path: str, callback: Callable[[str, ndarray], None]) -> bool:
