@@ -2,6 +2,9 @@ import math
 import os
 
 import chroma
+import config
+
+config.config_gpu()
 
 filelist = os.getenv("FILELIST")
 crops_path = os.getenv("CROPS_PATH")

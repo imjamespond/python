@@ -2,6 +2,9 @@ from flask import Flask, request, send_from_directory
 import os
 
 import chroma
+import config
+
+config.config_gpu()
 
 app = Flask(__name__)
 top_N = int(os.getenv("TOP_N", "10"))

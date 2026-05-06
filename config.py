@@ -33,7 +33,7 @@ def config_gpu():
                 # 如果你的显卡是 8G，建议设置 4096；如果是 12G，可以设 6144 或 8192
                 tf.config.set_logical_device_configuration(
                     gpu,
-                    [tf.config.LogicalDeviceConfiguration(memory_limit=4096)]
+                    [tf.config.LogicalDeviceConfiguration(memory_limit=2048)]
                 )
                 print("✅ GPU 显存配置成功：按需分配，上限 4GB", gpu)
         except RuntimeError as e:
