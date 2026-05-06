@@ -11,7 +11,7 @@ max_face_num = int(os.getenv("MAX_FACE_NUM", "3"))
 model = YOLO(config.model)
 def detect_face(img_path: str, callback: Callable[[str, ndarray], None]) -> bool:
   has_face = False
-  results = model.predict(img_path, device=config.device, conf=0.3)
+  results = model.predict(img_path, device=config.device, conf=0.5)
   for result in results:
     # result.save_crop("crops", img_file)
     image = result.orig_img

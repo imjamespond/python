@@ -10,8 +10,8 @@ count = 0
 depth_max = config.depth_max
 start_from = os.getenv("START_FROM")
 started = False
-output_file = open('output_file.txt', "a", encoding='utf-8')
-
+# output_file = open('output_file.txt', "a", encoding='utf-8')
+output_file = open('output_file.txt', "w", encoding='utf-8') # 清空文件
 
 def append_filepath(img_path, face_img):
     global count
