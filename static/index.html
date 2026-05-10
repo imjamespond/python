@@ -39,7 +39,7 @@
         const data = await res.json();
         if(!data) return
         const results = data.results;
-        const distances = results.distances[0].map((dist,i) => (dist.toFixed(3) + ": " + results.ids[0][i]));
+        const distances = results.distances[0].map((dist,i) => (dist.toFixed(3) + ": " + results.metadatas[0][i]['name']));
         document.getElementById("result").textContent = JSON.stringify(distances, null, 2 ) || data.error;
       }
     </script>

@@ -1,4 +1,6 @@
 import os
+import time
+import random
 from pathlib import Path
 from typing import List
 
@@ -11,10 +13,17 @@ import traverse
 
 # 初始化 ChromaDB 客户端和集合
 db_path = os.getenv("DB_PATH", "./test_db")
-client = chromadb.PersistentClient(path=db_path)  # 或使用内存模式
-collection = client.get_or_create_collection(name="face_collection")
 resize_img = os.getenv("RESIZE_IMG")
 
+
+from chromadb.config import Settings
+
+settings = Settings(
+    chroma_memory_limit_bytes=1 * 1024 * 1024 * 1024,
+    chroma_segment_cache_policy="LRU"
+)
+client = chromadb.PersistentClient(path=db_path, settings=settings)  # 或使用内存模式
+collection = client.get_or_create_collection(name="face_collection")
 
 def batch_save_embeding(img_path: str):
     # for img in os.listdir(img_path):
@@ -64,10 +73,13 @@ def save_embeding(image_path: str, person_name: str):
         # embedding 是一个列表，代表向量
         collection.add(
             embeddings=[embedding],           # 向量列表
-            ids=[person_name],                # 唯一标识符，通常用姓名或ID
+            ids=[unique_id()],                # 唯一标识符，通常用姓名或ID
             metadatas=[{"name": person_name}]  # 其他元数据
         )
 
+
+def unique_id():
+    return f"{int(time.time() * 1000)}_{random.randint(1000, 9999)}"
 
 def search_embeding(image_path, top_N=10):
 

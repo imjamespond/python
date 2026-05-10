@@ -1,0 +1,1 @@
+uv run face_to_chromadb.py
