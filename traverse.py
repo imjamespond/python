@@ -37,7 +37,7 @@ def traverse_files(
     Returns:
         None
     """
-    def _traverse(dir_path: Path, depth: int):
+    def _traverse(dir_path: Path, depth: int, ignore_file: bool):
 
         if depth_max >= 0 and depth > depth_max:
             return
@@ -49,7 +49,11 @@ def traverse_files(
         try:
 
             for item in dir_path.iterdir():
+
                 if item.is_file():
+
+                    if ignore_file:
+                        continue
 
                     if depth < file_depth:
                         return
@@ -73,12 +77,13 @@ def traverse_files(
 
                 elif item.is_dir():
                     # 子目录，独立状态递归
-                    if include_dirs != None and depth == 0 and item.name not in include_dirs:
-                        continue
+                    ignore_subdir_file = False
+                    if include_dirs != None and item.name not in include_dirs:
+                        ignore_subdir_file = False if ignore_file == False else True  # 如上级不忽略文件，下级也不忽略
                     if exclude_dirs != None and item.name in exclude_dirs:
                         continue
 
-                    _traverse(item, depth + 1)
+                    _traverse(item, depth + 1, ignore_subdir_file)
 
             # for img in os.listdir(img_path):
             #     if os.path.isdir(img):
@@ -99,7 +104,7 @@ def traverse_files(
         # callback(root)
         print(f"请传入目录")
     elif root.is_dir():
-        _traverse(root, 0)
+        _traverse(root, 0, ignore_file=include_dirs != None)
 
 
 if __name__ == '__main__':
