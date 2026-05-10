@@ -6,12 +6,13 @@ import traverse
 import config
 
 count = 0
-
+debug = os.getenv("DEBUG")
 depth_max = config.depth_max
 start_from = os.getenv("START_FROM")
 started = False
 # output_file = open('output_file.txt', "a", encoding='utf-8')
-output_file = open('output_file.txt', "w", encoding='utf-8') # 清空文件
+output_file = open('output_file.txt', "w", encoding='utf-8')  # 清空文件
+
 
 def append_filepath(img_path, face_img):
     global count
@@ -40,23 +41,27 @@ def run(file_path, i, gap, next):
     if not file_path.suffix.lower() in [".jpg", ".png"]:
         return False
 
-    file = str(file_path)
+    file_path_str = str(file_path)
     if start_from:
-        if start_from == file:
+        if start_from == file_path_str:
             started = True
 
         if not started:
             return True
 
+    if debug:
+        print(file_path_str)
+        return True
+
     has_face = False
 
     try:
-        has_face = detect.detect_face(file, append_filepath)
+        has_face = detect.detect_face(file_path_str, append_filepath)
 
         print(f"count{count}, i {i}, gap {gap}, next {next} ")
 
     except Exception as e:
-        print(file, e)
+        print(file_path_str, e)
         return False
 
     if count % 10 == 0:
@@ -66,6 +71,5 @@ def run(file_path, i, gap, next):
 
 
 if __name__ == '__main__':
-    img_path = os.getenv("IMG_PATH")
-    traverse.traverse_files(img_path, run, depth_max=depth_max)
+    traverse.traverse_files(config.root_path, run, depth_max=depth_max)
     output_file.close()

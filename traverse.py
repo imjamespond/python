@@ -2,16 +2,26 @@ import os
 from pathlib import Path
 from typing import Callable, Union
 
+import config
+
+# 设置为1，忽略当前目录文件
+file_depth = int(os.getenv("FILE_DEPTH", "0"))
+# 文件开始位置
+file_start = int(os.getenv("FILE_START", "0"))
+# gap最大值
 gap_max = int(os.getenv("GAP_MAX", "100"))
+# gap开始自增的index
 gap_start = int(os.getenv("GAP_START", "0"))
+# gap每次增量
 gap_step = int(os.getenv("GAP_STEP", "1"))
-img_path = os.getenv("IMG_PATH")
-exclude_dirs = None if os.getenv("EXCLUDE_DIRS") == None else os.getenv("EXCLUDE_DIRS").split(",")
-include_dirs = None if os.getenv("INCLUDE_DIRS") == None else os.getenv("INCLUDE_DIRS").split(",") 
+# 排除的目录
+exclude_dirs = config.getenv_list("EXCLUDE_DIRS")
+# depth 为0时 包含的目录
+include_dirs = config.getenv_list("INCLUDE_DIRS")
 
 
 def traverse_files(
-    path: Union[str, Path],
+    root_path: Union[str, Path],
     callback: Callable[[Path, int, int, int], bool],
     ignore_errors: bool = True,
     depth_max: int = -1
@@ -37,8 +47,12 @@ def traverse_files(
         next = 0
 
         try:
+
             for item in dir_path.iterdir():
                 if item.is_file():
+
+                    if depth < file_depth:
+                        return
 
                     try:
                         value = False if next > i else callback(
@@ -63,6 +77,7 @@ def traverse_files(
                         continue
                     if exclude_dirs != None and item.name in exclude_dirs:
                         continue
+
                     _traverse(item, depth + 1)
 
             # for img in os.listdir(img_path):
@@ -78,17 +93,18 @@ def traverse_files(
                 raise
             print(f"遍历目录 {dir_path} 时出错: {e}")
 
-    root = Path(path)
+    root = Path(root_path)
     if root.is_file():
         # 如果传入的是文件，直接callback
-        callback(root)
+        # callback(root)
+        print(f"请传入目录")
     elif root.is_dir():
         _traverse(root, 0)
 
 
 if __name__ == '__main__':
-    print(img_path)
-    traverse_files(img_path, lambda item, i, gap, next: (
+    print(config.root_path)
+    traverse_files(config.root_path, lambda item, i, gap, next: (
         item.suffix.lower() in [".jpg", ".png"] and None == print(
             f"i {i}, gap {gap}, next {next}, item {item}")
     ), depth_max=0)
