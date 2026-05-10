@@ -56,7 +56,7 @@ def traverse_files(
                         continue
 
                     if depth < file_depth:
-                        return
+                        continue
 
                     try:
                         value = False if next > i else callback(
