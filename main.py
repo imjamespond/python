@@ -1,3 +1,6 @@
+from dotenv import load_dotenv
+load_dotenv()
+
 import splitter
 import os
 import sys
@@ -11,6 +14,8 @@ import agent_tools
 import json_tool
 import models
 
+
+
 PROMPT_PERSON = os.getenv("PROMPT_PERSON") or ""
 RATE_LIMIT = int(os.getenv("RATE_LIMIT", 10))
 
@@ -22,14 +27,10 @@ def analyze_chunk(text_chunk):
     title = text_chunk.split('\n')[0][:20]
     print("\nanalyze_chunk", title)
     messages = [
-        SystemMessage(content="你是一个小说分析器，提取人物、主要事件和核心关系。"),
-        HumanMessage(content=f"""
-请分析以下小说片段：
-{text_chunk}
-
+        SystemMessage(content=f"""你是一个小说分析器，按以下要求提取人物、主要事件和核心关系。
 提取核心内容，并**严格以 JSON 字符串格式**输出，类型为Map，仅包含以下字段：
 
-- chapter: 章节编号，不要标题（如“第一章，第二章，第三章…”）,类型为string。
+- chapter: 第几章,类型为string。
 
 - characters: 主要人物列表（每个对象包含）：
   - name: 人物名称{PROMPT_PERSON}
@@ -49,8 +50,8 @@ def analyze_chunk(text_chunk):
 要求：
 - 你必须只返回纯 JSON，不允许出现任何 Markdown、代码块、反引号或额外说明。输出必须可被 JSON 解析器直接解析。
 - 严格基于片段内容，不作任何超出文本的推断。
-- 忽略次要细节，仅保留最核心要素。
-""")]
+- 忽略次要细节，仅保留最核心要素。"""),
+        HumanMessage(content=text_chunk)]
     # TODO: 事件名称不唯一，所以不能有事件物件节点，人物相对少名称唯一
 
     # response = llm.invoke(messages)
@@ -59,7 +60,8 @@ def analyze_chunk(text_chunk):
     full = None
     for chunk in models.LLM_TEXT.stream(messages):
         full = chunk if full is None else full + chunk
-        print(chunk.text, end="")
+        if chunk.content:
+          print(">", chunk.content, end="", flush=True)
     print("\nanalyze_chunk done!", title)
     return full.text
 

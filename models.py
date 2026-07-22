@@ -1,9 +1,8 @@
 import os
 # https://reference.langchain.com/python/langchain/models/#langchain.chat_models.init_chat_model(model)
 from langchain.chat_models import init_chat_model
-from dotenv import load_dotenv
+from langchain_openai import ChatOpenAI
 
-load_dotenv()
 
 # https://reference.langchain.com/python/langchain/models/#langchain.chat_models.init_chat_model(model)
 # 不同provider调用库不同
@@ -206,6 +205,16 @@ def get_llm_text():
 
     if model_provider == MODEL_PROVIDER_OLLM:
         return LLM_OLLAMA
+    if model_provider == "llamacpp":
+        llm = ChatOpenAI(
+            model=os.getenv("TEXT_MODEL"), 
+            openai_api_base= os.getenv("TEXT_API_BASE"), 
+            openai_api_key="no-key-needed",         
+            temperature=0.7,
+            max_tokens=65536,
+            streaming=True,
+        )
+        return llm
 
     return init_chat_model(
         **args
