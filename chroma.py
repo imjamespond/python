@@ -106,6 +106,65 @@ def search_embeding(image_path, top_N=10):
 
     return results
 
+def search_name_fuzzy_batch(person_name: str, limit: int = 10, batch_size: int = 100):
+    """
+    分批模糊查找人名（子串匹配，不区分大小写）
+    
+    Args:
+        person_name: 部分人名关键词
+        limit: 最多返回条数
+        batch_size: 每批拉取的记录数，默认100
+    
+    Returns:
+        匹配的记录，包含 ids, embeddings, metadatas 等
+    """
+    keyword = person_name.lower()
+    matched_ids = []
+    
+    offset = 0
+    while True:
+        # 分批获取元数据（不包含向量，减轻传输压力）
+        batch = collection.get(
+            limit=batch_size,
+            offset=offset,
+            include=["metadatas"]
+        )
+        
+        # 如果没有更多数据，退出
+        if not batch or not batch.get("ids"):
+            break
 
-# if __name__ == '__main__':
-#     batch_save_embeding(os.getenv("IMAGE_PATH"))
+        print('offset', offset, "matched_ids", len(matched_ids))
+        
+        # 在当前批次中筛选匹配的记录
+        for i, meta in enumerate(batch["metadatas"]):
+            if meta and "name" in meta and keyword in meta["name"].lower():
+                matched_ids.append(batch["ids"][i])
+                if len(matched_ids) >= limit:
+                    break
+        
+        # 如果已经找到足够记录，停止分页
+        if len(matched_ids) >= limit:
+            break
+        
+        # 如果本批次数量小于 batch_size，说明已是最后一批
+        if len(batch["ids"]) < batch_size:
+            break
+        
+        offset += batch_size
+    
+    # 没有匹配结果
+    if not matched_ids:
+        return {"ids": [], "embeddings": [], "metadatas": [], "documents": []}
+    
+    # 根据匹配 ID 获取完整数据（含向量）
+    results = collection.get(
+        ids=matched_ids,
+        include=["embeddings", "metadatas", "documents"]
+    )
+    return results
+
+if __name__ == '__main__':
+    # batch_save_embeding(os.getenv("IMAGE_PATH"))
+    print(search_name_fuzzy_batch("林志玲"))
+

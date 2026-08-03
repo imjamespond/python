@@ -12,7 +12,17 @@ top_N = int(os.getenv("TOP_N", "10"))
 UPLOAD_DIR = "uploads"
 @app.route('/upload', methods=['POST'])
 def upload():
+    
+    searchName = request.form.get('searchName')
     topN = int(request.form.get('topN', top_N))
+
+
+    if (searchName):
+        results = chroma.search_name_fuzzy_batch(searchName, 200)
+        return {'message': '搜索成功', 'results': results}
+
+
+
     file = request.files.get('image')
     if not file:
         return {'error': '没有文件'}, 400
@@ -20,6 +30,7 @@ def upload():
     # os.makedirs(UPLOAD_DIR, exist_ok=True)
     # path = os.path.join(UPLOAD_DIR, file.filename)
     # file.save(path)
+
 
     results = chroma.search_embeding(file, topN)
 
